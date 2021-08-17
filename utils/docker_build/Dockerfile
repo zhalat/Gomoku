@@ -17,6 +17,10 @@ RUN apt-get update \
     gdb-multiarch \
     rsync \
     valgrind \
+    #---diagnostic tools---
+    net-tools \
+    iputils-ping \
+    #----------------------
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
