@@ -14,6 +14,7 @@ RUN apt-get update \
     libgtest-dev \
     openssh-server \
     python3 \
+    gdb-multiarch \
     rsync \
     valgrind \
   && apt-get clean \
