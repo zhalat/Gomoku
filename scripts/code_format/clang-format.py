@@ -89,7 +89,7 @@ class ClangFormat:
             cmd[cmd_len - 1] = file
             ret = call(cmd)
 
-            if ret is not 0:
+            if ret != 0:
                 logging.error("Clang format error {} for {}".format(ret, cmd))
 
 
