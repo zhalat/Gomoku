@@ -19,19 +19,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 add_subdirectory(src)
 
 #Google tests
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-if(GTEST_FOUND)
-	enable_testing()
-	add_subdirectory(ci/UT)
-endif()
+include(cmake/google-test.cmake)
 
-#Clang format
-find_package(Python3)
-if(Python3_Interpreter_FOUND)
-    add_custom_target(format_sources ALL
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/code_format/clang-format.py --path=${CMAKE_SOURCE_DIR} --clang_ignore ${CMAKE_SOURCE_DIR}/scripts/code_format/.clangignore
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Format source code using clang-format tool"
-    )
-endif()
+#Cpp check
+include(cmake/cppcheck.cmake)
+
+#Code formatting
+include(cmake/code_format/clang-format.cmake)
+
