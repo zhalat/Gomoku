@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
-include(${CMAKE_CURRENT_LIST_DIR}/variables.cmake)
 
 if("$ENV{DEFAULT_TOOLCHAIN_PATH}" STREQUAL "")
     message(FATAL_ERROR "env variable DEFAULT_TOOLCHAIN_PATH must be defined")
