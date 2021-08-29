@@ -45,10 +45,10 @@ pipeline {
 
     agent any
 
-    //options {
-    //    timestamps()
-    //    timeout(time: 1, unit: 'HOURS')
-    //}
+    options {
+       timestamps()
+       timeout(time: 1, unit: 'HOURS')
+    }
 
     parameters {
         booleanParam(name: 'BUILD_SD_IMAGE_RPI3', defaultValue: false, description: 'Create SD card image for RPi 3+')
