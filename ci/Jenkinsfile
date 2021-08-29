@@ -20,20 +20,18 @@ pipeline {
 
     stages {
         stage('docker images'){
-
-            dir("${DOCKER_DIR}") {
-                // script{
-                //     env.DOCKER_BUILD_TAG = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
-                //     env.DOCKER_DOXY_TAG = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
-                // }
-                echo "aaaaa ${DOCKER_DIR}"
+            steps{
+                dir("${DOCKER_DIR}") {
+                    script{
+                        env.DOCKER_BUILD_TAG = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
+                        env.DOCKER_DOXY_TAG = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
+                    }
+                    echo "aaaaa ${DOCKER_DIR}"
+                }
+                
+                //sh 'cd ${DOCKER_DIR}/docker_builder_pi_zero && docker build ${DOCKER_LAB} --target=${DOCKER_ARMHF} --tag=${DOCKER_ARMHF_TAG} .'
+                //sh 'cd ${DOCKER_DIR}/docker_builder && docker build ${DOCKER_LAB} --target=${DOCKER_ARM64} --tag=${DOCKER_ARM64_TAG} .'
             }
-
-
-
-
-            //sh 'cd ${DOCKER_DIR}/docker_builder_pi_zero && docker build ${DOCKER_LAB} --target=${DOCKER_ARMHF} --tag=${DOCKER_ARMHF_TAG} .'
-            //sh 'cd ${DOCKER_DIR}/docker_builder && docker build ${DOCKER_LAB} --target=${DOCKER_ARM64} --tag=${DOCKER_ARM64_TAG} .'
         }
 
 
