@@ -15,10 +15,10 @@ pipeline {
     }
 
     stages{
-	stage('Build')
-	{
-	    echo 'building aa'
-	}
+        stage('Build')
+        {
+            echo 'building aa'
+        }
     }
 
 
