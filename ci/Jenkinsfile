@@ -16,8 +16,28 @@ pipeline {
 
     stages{
         stage('Build')
+        {   
+            steps{
+                echo 'building src'
+            }
+
+            steps{
+                echo 'building ut'
+            }
+        }
+
+        stage('Testing')
         {
-            echo 'building aa'
+            steps{
+                echo 'test 1'
+            }
+            steps{
+                echo 'test 2'
+            }
+            steps{
+                echo 'test 3'
+            }
+
         }
     }
 
