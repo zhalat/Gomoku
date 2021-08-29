@@ -1,8 +1,8 @@
 pipeline {
 
-    //agent {
-    //    label 'iuser_build'
-    //}
+    agent {
+        label any
+    }
 
     options {
         timestamps()
@@ -12,6 +12,13 @@ pipeline {
         booleanParam(name: 'BUILD_SD_IMAGE_RPI3', defaultValue: false, description: 'Create SD card image for RPi 3+')
         booleanParam(name: 'BUILD_SD_IMAGE_RPI0W', defaultValue: false, description: 'Create SD card image for RPi Zero W')
         booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run bahve tests')
+    }
+
+    stages{
+	stage('Build')
+	{
+	    echo 'building aa'
+	}
     }
 
 
