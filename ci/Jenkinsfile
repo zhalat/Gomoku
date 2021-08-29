@@ -22,10 +22,10 @@ pipeline {
         stage('docker images'){
 
             dir("${DOCKER_DIR}") {
-                script{
-                    env.DOCKER_BUILD_TAG = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
-                    env.DOCKER_DOXY_TAG = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
-                }
+                // script{
+                //     env.DOCKER_BUILD_TAG = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
+                //     env.DOCKER_DOXY_TAG = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
+                // }
                 echo "aaaaa ${DOCKER_DIR}"
             }
 
