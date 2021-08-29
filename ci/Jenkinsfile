@@ -43,29 +43,35 @@ pipeline {
 */
 
 
-agent any
+    agent {
+        label any
+    }
+    options {
+        timestamps()
+        timeout(time: 1, unit: 'HOURS')
+    }
+    parameters {
+        booleanParam(name: 'BUILD_SD_IMAGE_RPI3', defaultValue: false, description: 'Create SD card image for RPi 3+')
+        booleanParam(name: 'BUILD_SD_IMAGE_RPI0W', defaultValue: false, description: 'Create SD card image for RPi Zero W')
+        booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run bahve tests')
+    }
 
-stages {
-    stage('Build') {
-        steps {
-            echo 'Building..'
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
+            }
         }
     }
-    stage('Test') {
-        steps {
-            echo 'Testing..'
-        }
-    }
-    stage('Deploy') {
-        steps {
-            echo 'Deploying....'
-        }
-    }
-}
-
-
-
-
-
 }
 
