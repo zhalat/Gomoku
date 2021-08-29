@@ -1,47 +1,4 @@
 pipeline {
-/*
-    agent {
-        label any
-    }
-
-    options {
-        timestamps()
-        timeout(time: 1, unit: 'HOURS')
-    }
-    parameters {
-        booleanParam(name: 'BUILD_SD_IMAGE_RPI3', defaultValue: false, description: 'Create SD card image for RPi 3+')
-        booleanParam(name: 'BUILD_SD_IMAGE_RPI0W', defaultValue: false, description: 'Create SD card image for RPi Zero W')
-        booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run bahve tests')
-    }
-
-    stages{
-        stage('Build')
-        {   
-            steps{
-                echo 'building src'
-            }
-
-            steps{
-                echo 'building ut'
-            }
-        }
-
-        stage('Testing')
-        {
-            steps{
-                echo 'test 1'
-            }
-            steps{
-                echo 'test 2'
-            }
-            steps{
-                echo 'test 3'
-            }
-
-        }
-    }
-*/
-
 
     agent any
 
@@ -51,12 +8,35 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'BUILD_SD_IMAGE_RPI3', defaultValue: false, description: 'Create SD card image for RPi 3+')
-        booleanParam(name: 'BUILD_SD_IMAGE_RPI0W', defaultValue: false, description: 'Create SD card image for RPi Zero W')
-        booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run bahve tests')
+        booleanParam(name: 'RUN_UT_TESTS', defaultValue: true, description: 'Run unit tests')
+        booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run behave tests')
     }
 
+    environment{
+        PRJ = "${env.WORKSPACE}"
+        DOCKER_DIR = "${PRJ}/utils"
+    }
+
+
     stages {
+        stage('docker images'){
+
+            dir("${DOCKER_DIR}") {
+                script{
+                    env.DOCKER_BUILD_TAG = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
+                    env.DOCKER_DOXY_TAG = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
+                }
+                echo "aaaaa ${DOCKER_DIR}"
+            }
+
+
+
+
+            //sh 'cd ${DOCKER_DIR}/docker_builder_pi_zero && docker build ${DOCKER_LAB} --target=${DOCKER_ARMHF} --tag=${DOCKER_ARMHF_TAG} .'
+            //sh 'cd ${DOCKER_DIR}/docker_builder && docker build ${DOCKER_LAB} --target=${DOCKER_ARM64} --tag=${DOCKER_ARM64_TAG} .'
+        }
+
+
         stage('Build') {
             steps {
                 echo 'Building..'
