@@ -8,7 +8,6 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'RUN_UT_TESTS', defaultValue: true, description: 'Run unit tests')
         booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run behave tests')
     }
 
@@ -27,8 +26,9 @@ pipeline {
                         env.DOCKER_BUILDER_TAG_ID = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
                         env.DOCKER_DOXYGEN_TAG_ID = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
                     }
-                    sh 'cd docker_build && docker build ${DOCKER_LAB} --tag="gomoku_src_img" .'
-                    sh 'cd docker_doxygen && docker build ${DOCKER_LAB}  --tag="gomoku_doxy_img" .'
+                    sh "pwd"
+                    sh 'cd docker_build && pwd && build ${DOCKER_LAB} --tag="gomoku_src_img" .'
+                    //sh 'cd docker_doxygen && docker build ${DOCKER_LAB}  --tag="gomoku_doxy_img" .'
                 }
             }
         }
