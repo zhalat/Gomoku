@@ -1,5 +1,6 @@
 #base on debian
-FROM debian:stable-slim
+#FROM debian:stable-slim
+FROM debian:buster-slim
 
 # install common utilities
 RUN apt-get update \
