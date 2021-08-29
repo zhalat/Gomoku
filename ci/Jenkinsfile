@@ -15,6 +15,7 @@ pipeline {
     environment{
         PRJ = "${env.WORKSPACE}"
         DOCKER_DIR = "${PRJ}/utils"
+        DOCKER_LAB="--label=job=${BUILD_TAG} --label=project=gomoku"
     }
 
 
@@ -23,14 +24,12 @@ pipeline {
             steps{
                 dir("${DOCKER_DIR}") {
                     script{
-                        env.DOCKER_BUILD_TAG = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
-                        env.DOCKER_DOXY_TAG = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
+                        env.DOCKER_BUILDER_TAG_ID = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
+                        env.DOCKER_DOXYGEN_TAG_ID = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
                     }
-                    echo "aaaaa ${DOCKER_DIR}"
+                    sh 'cd docker_build && docker build ${DOCKER_LAB} --tag="gomoku_src_img" .'
+                    sh 'cd docker_doxygen && docker build ${DOCKER_LAB}  --tag="gomoku_doxy_img" .'
                 }
-                
-                //sh 'cd ${DOCKER_DIR}/docker_builder_pi_zero && docker build ${DOCKER_LAB} --target=${DOCKER_ARMHF} --tag=${DOCKER_ARMHF_TAG} .'
-                //sh 'cd ${DOCKER_DIR}/docker_builder && docker build ${DOCKER_LAB} --target=${DOCKER_ARM64} --tag=${DOCKER_ARM64_TAG} .'
             }
         }
 
