@@ -11,43 +11,56 @@ pipeline {
         booleanParam(name: 'RUN_BEHAVE_TESTS', defaultValue: true, description: 'Run behave tests')
     }
 
-    environment{
+    environment {
         PRJ = "${env.WORKSPACE}"
         DOCKER_DIR = "${PRJ}/utils"
-        DOCKER_LAB="--label=job=${BUILD_TAG} --label=project=gomoku"
+        DOCKER_LABEL_COMMON="--label=job=${BUILD_TAG} --label=project=gomoku"
     }
 
-
     stages {
-        stage('docker images'){
-            steps{
+        stage('docker images') {
+            steps {
                 dir("${DOCKER_DIR}") {
                     script{
-                        env.DOCKER_BUILDER_TAG_ID = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
-                        env.DOCKER_DOXYGEN_TAG_ID = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
+                        env.DOCKER_BUILDER_HASH = sh(script: 'git hash-object docker_build/Dockerfile', returnStdout: true).substring(0, 8)
+                        env.DOCKER_DOXYGEN_HASH = sh(script: 'git hash-object docker_doxygen/Dockerfile', returnStdout: true).substring(0, 8)
+                        env.DOCKER_BUILDER_TAG_ID_IMG = 'builder_img'+ ":" + env.DOCKER_BUILDER_HASH
+                        env.DOCKER_DOXYGEN_TAG_ID_IMG = 'doxygen_img'+ ":" + env.DOCKER_DOXYGEN_HASH
                     }
-                    sh 'cd docker_build && docker build ${DOCKER_LAB} --tag="gomoku_src_img" .'
-                    sh 'cd docker_doxygen && docker build ${DOCKER_LAB} --tag="gomoku_doxy_img" .'
+                    sh 'cd docker_build && docker build ${DOCKER_LABEL_COMMON} --tag=${DOCKER_BUILDER_TAG_ID_IMG} .'
+                    sh 'cd docker_doxygen && docker build ${DOCKER_LABEL_COMMON} --tag=${DOCKER_DOXYGEN_TAG_ID_IMG} .'
                 }
             }
         }
 
-
         stage('Build') {
-            steps {
-                echo 'Building..'
+            parallel {
+                stage('doxygen doc') {
+                    steps {
+                        sh 'docker run ${DOCKER_LABEL_COMMON} --label task=doxygen --rm --volume ${PRJ}:/gomoku_prj ${DOCKER_DOXYGEN_TAG_ID_IMG}'
+                        sh 'rm -f ${PRJ}/Doxygen/*.map ${PRJ}/Doxygen/*.md5 doxygen_html_doc.zip'
+                        zip zipFile: "doxygen_html_doc.zip", archive: true, dir: "${PRJ}/Doxygen"
+                        publishHTML (target : [allowMissing: false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true,
+                            reportDir: 'Doxygen',
+                            reportFiles: 'index.html',
+                            reportName: 'Code Documentation',
+                            reportTitles: 'Doxygen documentation for gateway project'])
+                    }
+                }
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         echo 'Testing..'
+        //     }
+        // }
+        // stage('Deploy') {
+        //     steps {
+        //         echo 'Deploying....'
+        //     }
+        // }
     }
 }
 
