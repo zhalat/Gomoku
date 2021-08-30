@@ -43,7 +43,7 @@ pipeline {
                         publishHTML (target : [allowMissing: true,
                            alwaysLinkToLastBuild: true,
                            keepAll: true,
-                           reportDir: 'Doxygen',
+                           reportDir: "${PRJ}/Doxygen",
                            reportFiles: 'index.html',
                            reportName: 'Code Documentation',
                            reportTitles: 'Doxygen documentation for gomoku project'])
