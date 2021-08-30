@@ -37,16 +37,16 @@ pipeline {
             parallel {
                 stage('doxygen doc') {
                     steps {
-                        sh 'docker run ${DOCKER_LABEL_COMMON} --label task=doxygen --rm --volume ${PRJ}:/gomoku_prj ${DOCKER_DOXYGEN_TAG_ID_IMG}'
+                        sh 'docker run -u jenkins ${DOCKER_LABEL_COMMON} --label task=doxygen --rm --volume ${PRJ}:/gomoku_prj ${DOCKER_DOXYGEN_TAG_ID_IMG}'
                         sh 'rm -f ${PRJ}/Doxygen/*.map ${PRJ}/Doxygen/*.md5 doxygen_html_doc.zip'
-                        zip zipFile: "doxygen_html_doc.zip", archive: true, dir: "${PRJ}/Doxygen"
-                        publishHTML (target : [allowMissing: false,
-                            alwaysLinkToLastBuild: true,
-                            keepAll: true,
-                            reportDir: 'Doxygen',
-                            reportFiles: 'index.html',
-                            reportName: 'Code Documentation',
-                            reportTitles: 'Doxygen documentation for gateway project'])
+                        zip zipFile: "doxygen_html_docxxx.zip", archive: true, dir: "${PRJ}/Doxygen"
+                        //publishHTML (target : [allowMissing: false,
+                        //    alwaysLinkToLastBuild: true,
+                        //    keepAll: true,
+                        //    reportDir: 'Doxygen',
+                        //    reportFiles: 'index.html',
+                        //    reportName: 'Code Documentation',
+                        //    reportTitles: 'Doxygen documentation for gomoku project'])
                     }
                 }
             }
