@@ -55,7 +55,7 @@ pipeline {
                         sh 'docker run ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj ${DOCKER_BUILDER_TAG_ID_IMG} mkdir build_stand_alone'
                         sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_stand_alone ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
                         sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_stand_alone ${DOCKER_BUILDER_TAG_ID_IMG} make'
-                        zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_stand_alone/src/gomoku-al"
+                        zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_stand_alone/src/", exclude: "*/CMakeFiles/*"
                     }
                 }
             }
