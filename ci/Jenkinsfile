@@ -37,9 +37,10 @@ pipeline {
             parallel {
                 stage('doxygen doc') {
                     steps {
-                        sh 'echo "duoa"'
+                        sh 'echo "dupa1"'
                         sh '${PRJ}'
-                        sh 'ls -las'
+                        //sh 'ls -las'
+                        sh 'echo "dupa2"'
                         // sh 'docker run  ${DOCKER_LABEL_COMMON} --label task=doxygen --rm --volume ${PRJ}:/gomoku_prj ${DOCKER_DOXYGEN_TAG_ID_IMG}'
                         // sh 'rm -f ${PRJ}/Doxygen/*.map ${PRJ}/Doxygen/*.md5 doxygen_html_doc.zip'
                         // zip zipFile: "doxygen_html_doc.zip", archive: true, dir: "${PRJ}/Doxygen"
