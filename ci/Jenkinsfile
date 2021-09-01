@@ -38,7 +38,7 @@ pipeline {
                 stage('doxygen doc') {
                     steps {
                         sh 'echo "dupa1"'
-                        sh '${PRJ}'
+                        sh 'echo ${PRJ}'
                         //sh 'ls -las'
                         sh 'echo "dupa2"'
                         // sh 'docker run  ${DOCKER_LABEL_COMMON} --label task=doxygen --rm --volume ${PRJ}:/gomoku_prj ${DOCKER_DOXYGEN_TAG_ID_IMG}'
