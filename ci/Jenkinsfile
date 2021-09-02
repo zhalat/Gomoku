@@ -48,33 +48,35 @@ pipeline {
                            reportName: 'Code Documentation',
                            reportTitles: 'Doxygen documentation for gomoku project'])
                     }
+
+                    stage('cppcheck') {
+                        steps {
+                            sh 'mkdir -p build_cppcheck'
+                            sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
+                            //sh 'docker run ${DOCKER_LABEL_COMMON} --label task=cppcheck --rm -v ${PRJ}:${PRJ} -w=${PRJ}/build_stand_alone ${DOCKER_BUILDER_TAG_ID_IMG} cmake --build . --target cppcheck'
+                        }
+                    }
                 }
 
                 stage('x86') {
                     stages {
                         stage('PC gomoku_al debug') {
                             steps {
-                                sh 'echo dupa1'
-                                sh 'pwd'
-
                                 sh 'mkdir -p build_debug'
                                 sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake"'
                                 sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} make'
-                                zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_dbg/src/", exclude: "*/CMakeFiles/*"
+                                zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_debug/src/", exclude: "*/CMakeFiles/*"
                             }
                         }
 
-                        stage('cppcheck') {
-                            steps {
-                                sh 'echo dupa2'
-                                sh 'pwd'
-
-                                sh 'mkdir build_cppcheck'
-                                sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
-                                //sh 'docker run ${DOCKER_LABEL_COMMON} --label task=cppcheck --rm -v ${PRJ}:${PRJ} -w=${PRJ}/build_stand_alone ${DOCKER_BUILDER_TAG_ID_IMG} cmake --build . --target cppcheck'
-                            }
+                        stage('PC gomoku_al release') {
+                            # steps {
+                            #     sh 'mkdir -p build_release'
+                            #     sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_release --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_release ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake"'
+                            #     sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_release --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_release ${DOCKER_BUILDER_TAG_ID_IMG} make'
+                            #     zip zipFile: "gomoku_al_release.zip", archive: true, dir: "${PRJ}/build_release/src/", exclude: "*/CMakeFiles/*"
+                            # }
                         }
-
                     }
                 }
             }
