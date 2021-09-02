@@ -61,18 +61,18 @@ pipeline {
                     }
                 }
 
-                stage('x86') {
-                    stages {
-                        stage('PC gomoku_al debug') {
-                            steps {
-                                sh 'mkdir -p build_debug'
-                                sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake"'
-                                sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} make'
-                                zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_debug/src/", exclude: "*/CMakeFiles/*"
-                            }
-                        }
-                    }
-                }
+                // stage('x86') {
+                //     stages {
+                //         stage('PC gomoku_al debug') {
+                //             steps {
+                //                 sh 'mkdir -p build_debug'
+                //                 sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake"'
+                //                 sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} make'
+                //                 zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_debug/src/", exclude: "*/CMakeFiles/*"
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
         // stage('Test') {
