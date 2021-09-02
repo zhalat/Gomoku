@@ -54,7 +54,7 @@ pipeline {
                     steps {
                             sh 'mkdir -p build_cppcheck'
                             sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_cppcheck --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
-                            sh 'docker run ${DOCKER_LABEL_COMMON} --label task=cppcheck --rm -volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake --build . --target cppcheck'
+                            sh 'docker run ${DOCKER_LABEL_COMMON} --label task=cppcheck --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake --build . --target cppcheck'
                     }
                 }
 
