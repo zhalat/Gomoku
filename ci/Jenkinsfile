@@ -66,8 +66,8 @@ pipeline {
                                 reportFiles: 'cppcheck-result.xml',
                                 reportName: 'Code ddd',
                                 reportTitles: 'sadfsdf'])
-                    }
-                    }
+                            
+                            }
                 }
 
                 stage('x86') {
