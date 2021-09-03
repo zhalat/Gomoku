@@ -45,7 +45,7 @@ pipeline {
                            keepAll: true,
                            reportDir: "${PRJ}/Doxygen",
                            reportFiles: 'index.html',
-                           reportName: 'Code Documentation',
+                           reportName: 'Doxygen',
                            reportTitles: 'Doxygen documentation for gomoku project'])
                     }
                 }
@@ -57,15 +57,7 @@ pipeline {
                             sh 'docker run ${DOCKER_LABEL_COMMON} --label task=cppcheck --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake --build . --target cppcheck'
                             dir("${PRJ}/build_cppcheck") {
                                 publishCppcheck()
-                            }
-
-                            // publishHTML (target : [allowMissing: true,
-                            //     alwaysLinkToLastBuild: true,
-                            //     keepAll: true,
-                            //     reportDir: "${PRJ}/build_cppcheck",
-                            //     reportFiles: 'cppcheck-result.xml',
-                            //     reportName: 'Code ddd',
-                            //     reportTitles: 'sadfsdf'])            
+                            }         
                     }
                 }
 
