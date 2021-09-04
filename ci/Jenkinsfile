@@ -78,11 +78,11 @@ pipeline {
     
 
     }
-    
+
     post {
         always {
             sh '''
-            //before cleaning
+            #before cleaning
             echo "---------------------------------------"
             echo "containers before cleaning:"
             docker ps -q --filter "label=project=gomoku"
@@ -90,16 +90,16 @@ pipeline {
             docker images --filter label=project=gomoku -q
             echo "---------------------------------------"
 
-            //stop containers if any
+            #stop containers if any
             docker ps -q --filter "label=project=gomoku" | xargs --verbose --no-run-if-empty docker stop || true
 
-            //remove containers if any
+            #remove containers if any
             docker ps -q --filter "label=project=gomoku" | xargs --verbose --no-run-if-empty docker rm || true
             
             //remove images
             docker images --filter label=project=gomoku -q | xargs --verbose --no-run-if-empty docker rmi || true
 
-            //after cleaning
+            #after cleaning
             echo "---------------------------------------"
             echo "containers after cleaning:"
             docker ps -q --filter "label=project=gomoku"
