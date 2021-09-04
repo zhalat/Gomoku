@@ -96,7 +96,7 @@ pipeline {
             #remove containers if any
             docker ps -q --filter "label=project=gomoku" | xargs --verbose --no-run-if-empty docker rm || true
             
-            //remove images
+            #remove images
             docker images --filter label=project=gomoku -q | xargs --verbose --no-run-if-empty docker rmi || true
 
             #after cleaning
