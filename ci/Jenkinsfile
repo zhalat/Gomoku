@@ -75,8 +75,6 @@ pipeline {
                 }
             }
         }
-    
-
     }
 
     post {
@@ -97,7 +95,7 @@ pipeline {
             docker ps -q --filt | xargs --verbose --no-run-if-empty docker rm || true
             
             #remove images older than 24h
-            docker image prune --force --all --filter "label=project=gomoku" --filter until=5m
+            docker image prune --force --all --filter "label=project=gomoku" --filter until=12h
 
             #after cleaning
             echo "---------------------------------------"
