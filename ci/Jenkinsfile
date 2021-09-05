@@ -79,6 +79,10 @@ pipeline {
 
     post {
         always {
+
+
+            //Do that command to keep jekins images & container under control.
+            //Images and containers shall be removed are not used to free disk usage.
             sh '''
             #before cleaning
             echo "---------------------------------------"
