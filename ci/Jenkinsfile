@@ -80,7 +80,35 @@ pipeline {
     }
 
     post {
+        always {
+            sh '''
+            #before cleaning
+            echo "---------------------------------------"
+            echo "containers before cleaning:"
+            docker ps -q --filter "label=project=gomoku"
+            echo "images before cleaning:"
+            docker images --filter label=project=gomoku -q
+            echo "---------------------------------------"
 
+            #stop containers if any
+            docker ps -q --filter "label=project=gomoku" | xargs --verbose --no-run-if-empty docker stop || true
+
+            #remove containers if any
+            docker ps -q --filt | xargs --verbose --no-run-if-empty docker rm || true
+            
+            #remove images older than 24h
+            docker image prune --force --all --filter "label=project=gomoku" --filter until=5m
+
+            #after cleaning
+            echo "---------------------------------------"
+            echo "containers after cleaning:"
+            docker ps -q --filter "label=project=gomoku"
+            echo "images after cleaning:"
+            docker images --filter label=project=gomoku -q
+            echo "---------------------------------------"
+            
+            '''
+        }
 
         success {
             echo 'I succeeded!'
