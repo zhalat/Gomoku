@@ -80,7 +80,7 @@ class VectorUnique
     ///
     /// @retval True - value pointed by it was removed. False otherwise.
     ///////////////////////////////////////////////////////////////////////
-    bool Remove(typename std::list<T>::iterator& it);
+    bool Remove(typename std::list<T>::iterator & it);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: VectorUnique::IsSpace
@@ -155,7 +155,7 @@ class VectorUnique
     virtual ~VectorUnique();
 
     /// Assign operator from stl vector.
-    VectorUnique& operator=(const std::vector<T>& rStlVector)
+    VectorUnique & operator=(const std::vector<T> & rStlVector)
     {
         this->Clear();
 
@@ -220,7 +220,7 @@ bool VectorUnique<T, Size>::Remove(const T val)
 }
 
 template<typename T, uint32_t Size>
-bool VectorUnique<T, Size>::Remove(typename std::list<T>::iterator& it)
+bool VectorUnique<T, Size>::Remove(typename std::list<T>::iterator & it)
 {
     bool retVal     = false;
     const T val     = *it;

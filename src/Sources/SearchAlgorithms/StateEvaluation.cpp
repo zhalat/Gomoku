@@ -8,15 +8,15 @@
 
 // FORWARD REFERENCES
 /// Get first common element.
-static Board::PositionField FindCommonMove(const std::vector<Board::PositionField>& rGapsA,
-                                           const std::vector<Board::PositionField>& rGapsB);
+static Board::PositionField FindCommonMove(const std::vector<Board::PositionField> & rGapsA,
+                                           const std::vector<Board::PositionField> & rGapsB);
 
 /// Get all common elements.
-static std::vector<Board::PositionField> FindCommonMovements(const std::vector<Board::PositionField>& rGapsA,
-                                                             const std::vector<Board::PositionField>& rGapsB);
+static std::vector<Board::PositionField> FindCommonMovements(const std::vector<Board::PositionField> & rGapsA,
+                                                             const std::vector<Board::PositionField> & rGapsB);
 
 /// Evaluate score value taking offset into account.
-static int ScoreEval(const StateEvaluationIf* const pStateEvaluationIf, const int offset);
+static int ScoreEval(const StateEvaluationIf * const pStateEvaluationIf, const int offset);
 
 // Point beyond the board. Useful for initialization.
 static const Board::PositionField POSITION_OUT_OF_BOARD = Board::PositionField(Board::PositionField::INVALID_FIELD);
@@ -24,55 +24,55 @@ static const Board::PositionXY XY_OUT_OF_BOARD =
     Board::PositionXY(Board::PositionXY::INVALID_FIELD, Board::PositionXY::INVALID_FIELD);
 
 StateEvaluation::HeadShotActionState StateEvaluation::m_HeadShotActionStateMaxConditionCheckerEnabled[] = {
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible},
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible },
 };
 
 StateEvaluation::HeadShotActionState StateEvaluation::m_HeadShotActionStateMinConditionCheckerEnabled[] = {
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible},
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible },
 };
 
 StateEvaluation::HeadShotActionState StateEvaluation::m_HeadShotActionStateMaxConditionCheckerDisabled[] = {
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible},
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible },
 };
 
 StateEvaluation::HeadShotActionState StateEvaluation::m_HeadShotActionStateMinConditionCheckerDisabled[] = {
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible},
-    {false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible},
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot4BCPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3APossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShot3AAPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotDragonPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsHeadShotLizardPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AOneStrokePossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsDouble3AMitigationPossible },
+    { false, false, XY_OUT_OF_BOARD, &StateEvaluation::IsBlockAndAttack3APossible },
 };
 
-bool StateEvaluation::IsWinner(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const
+bool StateEvaluation::IsWinner(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const
 {
     bool retVal = false;
     int mySign  = 0;
 
-    const BoardScore* pMyBoardState = NULL;
+    const BoardScore * pMyBoardState = NULL;
 
     if(isMaxPlayer)
     {
@@ -97,12 +97,12 @@ bool StateEvaluation::IsWinner(const bool isMaxPlayer, Board::PositionXY& rBuild
     return retVal;
 }
 
-bool StateEvaluation::IsLooser(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const
+bool StateEvaluation::IsLooser(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const
 {
     bool retVal       = false;
     int adversarySign = 0;
 
-    const BoardScore* pAdversaryState = NULL;
+    const BoardScore * pAdversaryState = NULL;
 
     if(isMaxPlayer)
     {
@@ -128,14 +128,14 @@ bool StateEvaluation::IsLooser(const bool isMaxPlayer, Board::PositionXY& rBuild
 }
 
 /// Predict the winner.
-bool StateEvaluation::ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const
+bool StateEvaluation::ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const
 {
     bool retVal = false;
     int mySign  = 0;
     Board::PositionXY temp;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer)
     {
@@ -273,14 +273,14 @@ bool StateEvaluation::ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY&
     return retVal;
 }
 
-bool StateEvaluation::ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const
+bool StateEvaluation::ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const
 {
     bool retVal       = false;
     int adversarySign = 0;
     Board::PositionXY temp;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer)
     {
@@ -358,21 +358,21 @@ bool StateEvaluation::ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY&
     return retVal;
 }
 
-bool StateEvaluation::RegularEval(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const
+bool StateEvaluation::RegularEval(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const
 {
     rStateScore = (static_cast<int>(m_pBoardScoreCpu->GetScore() + GetBonus(true, rBuildUpMove)) -
                    static_cast<int>(m_pBoardScoreHuman->GetScore() + GetBonus(false, rBuildUpMove)));
 }
 
-bool StateEvaluation::ExtendWinnerThreatMove(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                             int& rStateScore) const
+bool StateEvaluation::ExtendWinnerThreatMove(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                             int & rStateScore) const
 {
     bool retVal       = false;
     int mySign        = 0;
     int adversarySign = 0;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer)
     {
@@ -390,7 +390,7 @@ bool StateEvaluation::ExtendWinnerThreatMove(const bool isMaxPlayer, Board::Posi
     }
 
     // Operate on this board instance.
-    Board* pBoard = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard = const_cast<Board *>(&pMyBoardState->GetBoard());
 
     const bool isMy4ABC = pMyBoardState->GetNumberOfRecognizedThreat(ThreatFinder::THREAT_4_CASE_A) ||
                           pMyBoardState->GetNumberOfRecognizedThreat(ThreatFinder::THREAT_4_CASE_B) ||
@@ -435,7 +435,7 @@ bool StateEvaluation::ExtendWinnerThreatMove(const bool isMaxPlayer, Board::Posi
         for(auto iter = gaps3A.begin(); iter != gaps3A.end(); ++iter)
         {
             const Board::PositionXY newMove(m_pBoard->GetSize(), *iter);
-            BoardScore* pMyBoardStateCopy = new BoardScore(*pMyBoardState);
+            BoardScore * pMyBoardStateCopy = new BoardScore(*pMyBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
 
             pBoard->PutMove(newMove, pMyBoardState->GetPlayer());
@@ -459,14 +459,14 @@ bool StateEvaluation::ExtendWinnerThreatMove(const bool isMaxPlayer, Board::Posi
     return retVal;
 }
 
-bool StateEvaluation::ExtendWinnerActionMove(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                             int& rStateScore) const
+bool StateEvaluation::ExtendWinnerActionMove(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                             int & rStateScore) const
 {
-    int retVal                             = false;
-    int mySign                             = 0;
-    int adversarySign                      = 0;
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    int retVal                              = false;
+    int mySign                              = 0;
+    int adversarySign                       = 0;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
     Board::PositionXY buildUpTmp;
 
     if(isMaxPlayer)
@@ -524,18 +524,18 @@ bool StateEvaluation::ExtendWinnerActionMove(const bool isMaxPlayer, Board::Posi
     return retVal;
 }
 
-void StateEvaluation::SetBoards(const BoardScore& rBoardScoreCpu, const BoardScore& rBoardScoreHuman)
+void StateEvaluation::SetBoards(const BoardScore & rBoardScoreCpu, const BoardScore & rBoardScoreHuman)
 {
     m_pBoardScoreCpu   = &rBoardScoreCpu;
     m_pBoardScoreHuman = &rBoardScoreHuman;
 
     // Human and CPU must use the same  board.
     assert(&m_pBoardScoreHuman->GetBoard() == &m_pBoardScoreCpu->GetBoard());
-    const Board* pBoard = &m_pBoardScoreCpu->GetBoard();
-    m_pBoard            = const_cast<Board*>(pBoard);
+    const Board * pBoard = &m_pBoardScoreCpu->GetBoard();
+    m_pBoard             = const_cast<Board *>(pBoard);
 }
 
-StateEvaluation* StateEvaluation::GetInstance()
+StateEvaluation * StateEvaluation::GetInstance()
 {
     static StateEvaluation stateEvaluation;
     return &stateEvaluation;
@@ -554,11 +554,11 @@ void StateEvaluation::Update() const
 }
 
 bool StateEvaluation::HeadShotRun(const HeadShotAction headShotAction, const bool isMaxPlayer,
-                                  Board::PositionXY& rShotMove, const bool checkWinnerCondition) const
+                                  Board::PositionXY & rShotMove, const bool checkWinnerCondition) const
 {
-    bool retVal                                                = false;
-    const uint32_t index                                       = static_cast<uint32_t>(headShotAction);
-    StateEvaluation::HeadShotActionState* pHeadShotActionState = NULL;
+    bool retVal                                                 = false;
+    const uint32_t index                                        = static_cast<uint32_t>(headShotAction);
+    StateEvaluation::HeadShotActionState * pHeadShotActionState = NULL;
 
     if(isMaxPlayer && checkWinnerCondition)
     {
@@ -602,14 +602,14 @@ bool StateEvaluation::HeadShotRun(const HeadShotAction headShotAction, const boo
     return retVal;
 }
 
-bool StateEvaluation::IsHeadShot4BCPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                            const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                            const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsHeadShot4BCPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                            const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                                            const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -685,14 +685,14 @@ bool StateEvaluation::IsHeadShot4BCPossible(const bool isMaxPlayer, Board::Posit
     return retVal;
 }
 
-bool StateEvaluation::IsHeadShot3APossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                           const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                           const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsHeadShot3APossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                           const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                                           const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -720,7 +720,7 @@ bool StateEvaluation::IsHeadShot3APossible(const bool isMaxPlayer, Board::Positi
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     // Head shoot is possible when you have: 2A && 3BC && opponent doesn't have 4ABC.
@@ -768,8 +768,8 @@ bool StateEvaluation::IsHeadShot3APossible(const bool isMaxPlayer, Board::Positi
         {
             // Revert board. Use copy boardState 1.
             pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-            BoardScore* pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
-            BoardScore* pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
+            BoardScore * pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
+            BoardScore * pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
             pAdversaryBoardStateCopy->SetBoard(*pBoard);
 
@@ -921,14 +921,14 @@ bool StateEvaluation::IsHeadShot3APossible(const bool isMaxPlayer, Board::Positi
     return retVal;
 }
 
-bool StateEvaluation::IsHeadShot3AAPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                            const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                            const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsHeadShot3AAPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                            const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                                            const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -956,7 +956,7 @@ bool StateEvaluation::IsHeadShot3AAPossible(const bool isMaxPlayer, Board::Posit
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     // Head shoot is possible when you have: 2A && 3BC && opponent doesn't have 4ABC.
@@ -1005,8 +1005,8 @@ bool StateEvaluation::IsHeadShot3AAPossible(const bool isMaxPlayer, Board::Posit
         {
             // Revert board. Use copy boardState 1.
             pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-            BoardScore* pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
-            BoardScore* pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
+            BoardScore * pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
+            BoardScore * pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
             pAdversaryBoardStateCopy->SetBoard(*pBoard);
 
@@ -1104,14 +1104,14 @@ bool StateEvaluation::IsHeadShot3AAPossible(const bool isMaxPlayer, Board::Posit
     return retVal;
 }
 
-bool StateEvaluation::IsHeadShotDragonPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                               const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                               const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsHeadShotDragonPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                               const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                                               const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -1139,7 +1139,7 @@ bool StateEvaluation::IsHeadShotDragonPossible(const bool isMaxPlayer, Board::Po
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     // Dragon shoot is possible when you have: 2x3BC opponent doesn't have 4ABC.
@@ -1177,8 +1177,8 @@ bool StateEvaluation::IsHeadShotDragonPossible(const bool isMaxPlayer, Board::Po
         {
             // Revert board. Use copy boardState 1.
             pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-            BoardScore* pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
-            BoardScore* pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
+            BoardScore * pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
+            BoardScore * pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
             pAdversaryBoardStateCopy->SetBoard(*pBoard);
 
@@ -1235,14 +1235,14 @@ bool StateEvaluation::IsHeadShotDragonPossible(const bool isMaxPlayer, Board::Po
     return retVal;
 }
 
-bool StateEvaluation::IsHeadShotLizardPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                               const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                               const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsHeadShotLizardPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                               const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                                               const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -1270,7 +1270,7 @@ bool StateEvaluation::IsHeadShotLizardPossible(const bool isMaxPlayer, Board::Po
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     // Lizard shoot is possible when you have: 2x3BC && 2A opponent doesn't have 4ABC.
@@ -1302,15 +1302,15 @@ bool StateEvaluation::IsHeadShotLizardPossible(const bool isMaxPlayer, Board::Po
     {
         // a. Get gaps for each 3BC threat.
         static const uint32_t maxGapSize                    = 2;
-        Board::PositionXY xyGaps[myNumberOf3BC][maxGapSize] = {0};
-        ThreatFinder::KindOfThreats kindOfThreats[] = {ThreatFinder::THREAT_3_CASE_AA, ThreatFinder::THREAT_3_CASE_B,
-                                                       ThreatFinder::THREAT_3_CASE_C};
+        Board::PositionXY xyGaps[myNumberOf3BC][maxGapSize] = { 0 };
+        ThreatFinder::KindOfThreats kindOfThreats[] = { ThreatFinder::THREAT_3_CASE_AA, ThreatFinder::THREAT_3_CASE_B,
+                                                        ThreatFinder::THREAT_3_CASE_C };
 
         uint32_t index = 0;
         for(uint32_t i = 0; i < NUMELEM(kindOfThreats); ++i)
         {
             // Get 4BC threat list.
-            const std::list<ThreatFinder::ThreatLocation>& theratList = pMyBoardState->GetThreatList(kindOfThreats[i]);
+            const std::list<ThreatFinder::ThreatLocation> & theratList = pMyBoardState->GetThreatList(kindOfThreats[i]);
 
             for(auto iter = theratList.begin(); iter != theratList.end(); ++iter)
             {
@@ -1333,8 +1333,8 @@ bool StateEvaluation::IsHeadShotLizardPossible(const bool isMaxPlayer, Board::Po
 
                     // Revert board. Use copy boardState 1.
                     pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-                    BoardScore* pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
-                    BoardScore* pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
+                    BoardScore * pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
+                    BoardScore * pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
                     pMyBoardStateCopy->SetBoard(*pBoard);
                     pAdversaryBoardStateCopy->SetBoard(*pBoard);
 
@@ -1422,14 +1422,15 @@ exit:
     return retVal;
 }
 
-bool StateEvaluation::IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                                  const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                                  const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                                  const bool checkWinnerMoveCondition,
+                                                  const BoardScore * pCpuBoardScore,
+                                                  const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -1457,7 +1458,7 @@ bool StateEvaluation::IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board:
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     // 1. Head shoot is possible when you have: at least 2x 2A and opponent neither have 3A nor 4ABC.
@@ -1500,7 +1501,7 @@ bool StateEvaluation::IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board:
         {
             // Revert board. Use copy boardState 1.
             pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-            BoardScore* pMyBoardStateCopy = new BoardScore(*pMyBoardState);
+            BoardScore * pMyBoardStateCopy = new BoardScore(*pMyBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
 
             // Put move to create 3A.
@@ -1534,7 +1535,7 @@ bool StateEvaluation::IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board:
                 {
                     // Revert board. Use copy boardState 2.
                     pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-                    BoardScore* pMyBoardStateCopy2 = new BoardScore(*pMyBoardStateCopy);
+                    BoardScore * pMyBoardStateCopy2 = new BoardScore(*pMyBoardStateCopy);
                     pMyBoardStateCopy2->SetBoard(*pBoard);
 
                     // Put move to create 3A.
@@ -1576,15 +1577,15 @@ bool StateEvaluation::IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board:
     return retVal;
 }
 
-bool StateEvaluation::IsDouble3AMitigationPossible(const bool isMaxPlayer, Board::PositionXY& rBuildDownMove,
+bool StateEvaluation::IsDouble3AMitigationPossible(const bool isMaxPlayer, Board::PositionXY & rBuildDownMove,
                                                    const bool checkWinnerMoveCondition,
-                                                   const BoardScore* pCpuBoardScore,
-                                                   const BoardScore* pHumanBoardScore) const
+                                                   const BoardScore * pCpuBoardScore,
+                                                   const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -1612,7 +1613,7 @@ bool StateEvaluation::IsDouble3AMitigationPossible(const bool isMaxPlayer, Board
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     const bool isMy4ABC = (pMyBoardState->GetNumberOfRecognizedThreat(ThreatFinder::THREAT_4_CASE_A) > 0 ||
@@ -1668,8 +1669,8 @@ bool StateEvaluation::IsDouble3AMitigationPossible(const bool isMaxPlayer, Board
 
             // Revert board. Use copy boardState 1.
             pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-            BoardScore* pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
-            BoardScore* pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
+            BoardScore * pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
+            BoardScore * pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
             pAdversaryBoardStateCopy->SetBoard(*pBoard);
 
@@ -1760,14 +1761,14 @@ bool StateEvaluation::IsDouble3AMitigationPossible(const bool isMaxPlayer, Board
     return retVal;
 }
 
-bool StateEvaluation::IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::PositionXY& rBuildDownMove,
-                                                 const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                                                 const BoardScore* pHumanBoardScore) const
+bool StateEvaluation::IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::PositionXY & rBuildDownMove,
+                                                 const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                                                 const BoardScore * pHumanBoardScore) const
 {
     bool retVal = false;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer && NULL == pCpuBoardScore && NULL == pHumanBoardScore)
     {
@@ -1795,7 +1796,7 @@ bool StateEvaluation::IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::
     }
 
     // Operate on this board instance.
-    Board* pBoard            = const_cast<Board*>(&pMyBoardState->GetBoard());
+    Board * pBoard           = const_cast<Board *>(&pMyBoardState->GetBoard());
     const uint32_t initMoveN = pMyBoardState->GetBoard().GetMoveNumber();
 
     const bool isMy3A   = (pMyBoardState->GetNumberOfRecognizedThreat(ThreatFinder::THREAT_3_CASE_A) > 0);
@@ -1854,8 +1855,8 @@ bool StateEvaluation::IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::
 
             // Revert board. Use copy boardState 1.
             pBoard->RemoveNLastMove(pBoard->GetMoveNumber() - initMoveN);
-            BoardScore* pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
-            BoardScore* pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
+            BoardScore * pMyBoardStateCopy        = new BoardScore(*pMyBoardState);
+            BoardScore * pAdversaryBoardStateCopy = new BoardScore(*pAdversaryBoardState);
             pMyBoardStateCopy->SetBoard(*pBoard);
             pAdversaryBoardStateCopy->SetBoard(*pBoard);
 
@@ -1897,16 +1898,16 @@ bool StateEvaluation::IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::
     return retVal;
 }
 
-int StateEvaluation::GetBonus(const bool isMaxPlayer, Board::PositionXY& rBuildDownMove,
-                              const bool checkWinnerMoveCondition, const BoardScore* pCpuBoardScore,
-                              const BoardScore* pHumanBoardScore) const
+int StateEvaluation::GetBonus(const bool isMaxPlayer, Board::PositionXY & rBuildDownMove,
+                              const bool checkWinnerMoveCondition, const BoardScore * pCpuBoardScore,
+                              const BoardScore * pHumanBoardScore) const
 {
     int retVal = 0;
     int mySign = 0;
     Board::PositionXY temp;
 
-    const BoardScore* pMyBoardState        = NULL;
-    const BoardScore* pAdversaryBoardState = NULL;
+    const BoardScore * pMyBoardState        = NULL;
+    const BoardScore * pAdversaryBoardState = NULL;
 
     if(isMaxPlayer)
     {
@@ -1951,8 +1952,8 @@ int StateEvaluation::GetBonus(const bool isMaxPlayer, Board::PositionXY& rBuildD
 ///
 /// @retval First common element or POSITION_OUT_OF_BOARD if not found.
 /////////////////////////////////////////////////////////////////////////////////////
-static Board::PositionField FindCommonMove(const std::vector<Board::PositionField>& rGapsA,
-                                           const std::vector<Board::PositionField>& rGapsB)
+static Board::PositionField FindCommonMove(const std::vector<Board::PositionField> & rGapsA,
+                                           const std::vector<Board::PositionField> & rGapsB)
 {
     Board::PositionField retVal = POSITION_OUT_OF_BOARD;
 
@@ -1983,8 +1984,8 @@ static Board::PositionField FindCommonMove(const std::vector<Board::PositionFiel
 ///
 /// @retval Container with common movements.
 /////////////////////////////////////////////////////////////////////////////////////
-static std::vector<Board::PositionField> FindCommonMovements(const std::vector<Board::PositionField>& rGapsA,
-                                                             const std::vector<Board::PositionField>& rGapsB)
+static std::vector<Board::PositionField> FindCommonMovements(const std::vector<Board::PositionField> & rGapsA,
+                                                             const std::vector<Board::PositionField> & rGapsB)
 {
     std::vector<Board::PositionField> retVal;
 
@@ -2014,7 +2015,7 @@ static std::vector<Board::PositionField> FindCommonMovements(const std::vector<B
 ///
 /// @retval Container with common movements.
 /////////////////////////////////////////////////////////////////////////////////////
-static int ScoreEval(const StateEvaluationIf* const pStateEvaluationIf, const int offset)
+static int ScoreEval(const StateEvaluationIf * const pStateEvaluationIf, const int offset)
 {
     int retVal = 0;
 

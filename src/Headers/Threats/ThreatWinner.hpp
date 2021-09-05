@@ -91,7 +91,7 @@ class ThreatWinner : public ThreatFinder
     /// @retval Threat up details.
     ///////////////////////////////////////////////////////////////////////
     virtual void GetThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
-                                    ThreatUpDetails& rThreatUpDetails) const;
+                                    ThreatUpDetails & rThreatUpDetails) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: ThreatFinder::IsBreakWhenFirstFound
@@ -137,10 +137,10 @@ class ThreatWinner : public ThreatFinder
     static const uint32_t m_ThreatPatternElements;
 
     /// Private copy constructor - forbid copying.
-    ThreatWinner(const ThreatWinner&);
+    ThreatWinner(const ThreatWinner &);
 
     /// Private assignment operator - forbid copying.
-    ThreatWinner& operator=(const ThreatWinner&);
+    ThreatWinner & operator=(const ThreatWinner &);
 
     // Threat down details status.
     mutable ThreatDownDetails m_ThreatDownDetails;

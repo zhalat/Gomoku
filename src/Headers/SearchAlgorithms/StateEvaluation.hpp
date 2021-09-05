@@ -36,8 +36,8 @@ class StateEvaluation
 
     static constexpr int HEAD_SHOT_ACTION_NUMBER = 8;
 
-    typedef bool (StateEvaluation::*FuncPtr)(const bool, Board::PositionXY&, bool, const BoardScore*,
-                                             const BoardScore*) const;
+    typedef bool (StateEvaluation::*FuncPtr)(const bool, Board::PositionXY &, bool, const BoardScore *,
+                                             const BoardScore *) const;
     // using FuncPtr = bool( StateEvaluation::* )( const bool, Board::PositionXY&, bool, const BoardScore*, const
     // BoardScore* ) const;
 
@@ -67,7 +67,7 @@ class StateEvaluation
     ///
     /// @retval True if game over, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool IsWinner(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const;
+    virtual bool IsWinner(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::IsLooser
@@ -84,7 +84,7 @@ class StateEvaluation
     ///
     /// @retval True if game over, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool IsLooser(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const;
+    virtual bool IsLooser(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ImpliciteWinner
@@ -101,7 +101,7 @@ class StateEvaluation
     ///
     /// @retval True if implicit winner was found.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const;
+    virtual bool ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ImpliciteLooser
@@ -118,7 +118,7 @@ class StateEvaluation
     ///
     /// @retval True if implicit winner was found.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const;
+    virtual bool ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::RegularEval
@@ -134,7 +134,7 @@ class StateEvaluation
     ///
     /// @retval True if bonus was added to score, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool RegularEval(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const;
+    virtual bool RegularEval(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ExtendWinnerThreatMove
@@ -151,8 +151,8 @@ class StateEvaluation
     ///
     /// @retval True if existing winner threat was found.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ExtendWinnerThreatMove(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                        int& rStateScore) const;
+    virtual bool ExtendWinnerThreatMove(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                        int & rStateScore) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ExtendWinnerActionMove
@@ -169,8 +169,8 @@ class StateEvaluation
     ///
     /// @retval True if extending action move was found, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ExtendWinnerActionMove(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                        int& rStateScore) const;
+    virtual bool ExtendWinnerActionMove(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                        int & rStateScore) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::SetBoards
@@ -183,7 +183,7 @@ class StateEvaluation
     /// @par Full Description
     /// Set boards for evaluation.
     ///////////////////////////////////////////////////////////////////////
-    virtual void SetBoards(const BoardScore& rBoardScoreCpu, const BoardScore& rBoardScoreHuman);
+    virtual void SetBoards(const BoardScore & rBoardScoreCpu, const BoardScore & rBoardScoreHuman);
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: ObserverIf::Update
@@ -205,7 +205,7 @@ class StateEvaluation
     ///
     /// @return pointer to StateEvaluation instance.
     /////////////////////////////////////////////////////////////////////////////////////
-    static StateEvaluation* GetInstance();
+    static StateEvaluation * GetInstance();
 
    private:
     /// Constructor.
@@ -215,10 +215,10 @@ class StateEvaluation
     }
 
     /// Private copy constructor - forbid copying.
-    StateEvaluation(const StateEvaluation&) = delete;
+    StateEvaluation(const StateEvaluation &) = delete;
 
     /// Private assign operator - forbid copying.
-    StateEvaluation& operator=(const StateEvaluation&) = delete;
+    StateEvaluation & operator=(const StateEvaluation &) = delete;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::HeadShotRun
@@ -235,7 +235,7 @@ class StateEvaluation
     ///
     /// @retval True if provided headshot is possible, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool HeadShotRun(const HeadShotAction headShotAction, const bool isMaxPlayer, Board::PositionXY& rShotMove,
+    bool HeadShotRun(const HeadShotAction headShotAction, const bool isMaxPlayer, Board::PositionXY & rShotMove,
                      const bool checkWinnerCondition) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -249,9 +249,9 @@ class StateEvaluation
     ///
     /// @retval True if headshot 4BC is possible, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsHeadShot4BCPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                               const bool checkWinnerMoveCondition = true, const BoardScore* pCpuBoardScore = NULL,
-                               const BoardScore* pHumanBoardScore = NULL) const;
+    bool IsHeadShot4BCPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                               const bool checkWinnerMoveCondition = true, const BoardScore * pCpuBoardScore = NULL,
+                               const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsHeadShot3APossible
@@ -264,9 +264,9 @@ class StateEvaluation
     ///
     /// @retval True if headshot 3A is possible, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsHeadShot3APossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                              const bool checkWinnerMoveCondition = true, const BoardScore* pCpuBoardScore = NULL,
-                              const BoardScore* pHumanBoardScore = NULL) const;
+    bool IsHeadShot3APossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                              const bool checkWinnerMoveCondition = true, const BoardScore * pCpuBoardScore = NULL,
+                              const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsHeadShot3AAPossible
@@ -279,9 +279,9 @@ class StateEvaluation
     ///
     /// @retval True if headshot 3AA is possible, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsHeadShot3AAPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                               const bool checkWinnerMoveCondition = true, const BoardScore* pCpuBoardScore = NULL,
-                               const BoardScore* pHumanBoardScore = NULL) const;
+    bool IsHeadShot3AAPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                               const bool checkWinnerMoveCondition = true, const BoardScore * pCpuBoardScore = NULL,
+                               const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsHeadShotDragonPossible
@@ -296,9 +296,9 @@ class StateEvaluation
     /// @retval True if adversary isMaxPlayer is able to crate threat,
     ///         false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsHeadShotDragonPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                  const bool checkWinnerMoveCondition = true, const BoardScore* pCpuBoardScore = NULL,
-                                  const BoardScore* pHumanBoardScore = NULL) const;
+    bool IsHeadShotDragonPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                  const bool checkWinnerMoveCondition = true, const BoardScore * pCpuBoardScore = NULL,
+                                  const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsHeadShotLizardPossible
@@ -314,9 +314,9 @@ class StateEvaluation
     /// @retval True if adversary isMaxPlayer is able to crate threat,
     ///         false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsHeadShotLizardPossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                  const bool checkWinnerMoveCondition = true, const BoardScore* pCpuBoardScore = NULL,
-                                  const BoardScore* pHumanBoardScore = NULL) const;
+    bool IsHeadShotLizardPossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                  const bool checkWinnerMoveCondition = true, const BoardScore * pCpuBoardScore = NULL,
+                                  const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsDouble3AOneStrokePossible
@@ -329,10 +329,10 @@ class StateEvaluation
     ///
     /// @retval True if isMaxPlayer is able to crate double 3A threats, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
+    bool IsDouble3AOneStrokePossible(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
                                      const bool checkWinnerMoveCondition = true,
-                                     const BoardScore* pCpuBoardScore    = NULL,
-                                     const BoardScore* pHumanBoardScore  = NULL) const;
+                                     const BoardScore * pCpuBoardScore   = NULL,
+                                     const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsDouble3AMitigationPossible
@@ -347,10 +347,10 @@ class StateEvaluation
     /// @retval True if adversary isMaxPlayer is able to mitigate  isMaxPlayer threats,
     ///         false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsDouble3AMitigationPossible(const bool isMaxPlayer, Board::PositionXY& rBuildDownMove,
+    bool IsDouble3AMitigationPossible(const bool isMaxPlayer, Board::PositionXY & rBuildDownMove,
                                       const bool checkWinnerMoveCondition = true,
-                                      const BoardScore* pCpuBoardScore    = NULL,
-                                      const BoardScore* pHumanBoardScore  = NULL) const;
+                                      const BoardScore * pCpuBoardScore   = NULL,
+                                      const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::IsBlockAndAttack3APossible
@@ -365,9 +365,10 @@ class StateEvaluation
     /// @retval True if adversary isMaxPlayer is able to mitigate  isMaxPlayer threats,
     ///         false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    bool IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::PositionXY& rBuildDownMove,
-                                    const bool checkWinnerMoveCondition = true, const BoardScore* pCpuBoardScore = NULL,
-                                    const BoardScore* pHumanBoardScore = NULL) const;
+    bool IsBlockAndAttack3APossible(const bool isMaxPlayer, Board::PositionXY & rBuildDownMove,
+                                    const bool checkWinnerMoveCondition = true,
+                                    const BoardScore * pCpuBoardScore   = NULL,
+                                    const BoardScore * pHumanBoardScore = NULL) const;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluation::GetBonus
@@ -380,8 +381,8 @@ class StateEvaluation
     ///
     /// @retval Bonus socre or 0 if good action not found.
     /////////////////////////////////////////////////////////////////////////////////////
-    int GetBonus(const bool isMaxPlayer, Board::PositionXY& rBuildDownMove, const bool checkWinnerMoveCondition = true,
-                 const BoardScore* pCpuBoardScore = NULL, const BoardScore* pHumanBoardScore = NULL) const;
+    int GetBonus(const bool isMaxPlayer, Board::PositionXY & rBuildDownMove, const bool checkWinnerMoveCondition = true,
+                 const BoardScore * pCpuBoardScore = NULL, const BoardScore * pHumanBoardScore = NULL) const;
 
     /// Head shot action state for max and min player.
     static HeadShotActionState m_HeadShotActionStateMaxConditionCheckerEnabled[HEAD_SHOT_ACTION_NUMBER];
@@ -390,9 +391,9 @@ class StateEvaluation
     static HeadShotActionState m_HeadShotActionStateMinConditionCheckerDisabled[HEAD_SHOT_ACTION_NUMBER];
 
     // Board state.
-    mutable Board* m_pBoard;
-    const BoardScore* m_pBoardScoreCpu;
-    const BoardScore* m_pBoardScoreHuman;
+    mutable Board * m_pBoard;
+    const BoardScore * m_pBoardScoreCpu;
+    const BoardScore * m_pBoardScoreHuman;
 
     // For UT
     friend class TEST_StateEvaluationTest_IsHeadShot4BCPossibleTest1_Test;

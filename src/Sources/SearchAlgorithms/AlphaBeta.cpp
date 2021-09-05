@@ -17,16 +17,16 @@ static bool LogStart           = true;
 #endif
 
 /// Converts vector xy to vector fieldPosition.
-static void VctrXy2VctrPosition(const vector<Board::PositionXY>& rVctrXy, vector<Board::PositionField>& rVctrPos,
+static void VctrXy2VctrPosition(const vector<Board::PositionXY> & rVctrXy, vector<Board::PositionField> & rVctrPos,
                                 const uint32_t size);
 
 /// Add move to n-best container. Log only those from depth == 0.
-static void nBestMoveLogger(const uint32_t deep, SearchTreeAlgorithmIf::PriorityQueueScore& rPriorityQueueScore,
+static void nBestMoveLogger(const uint32_t deep, SearchTreeAlgorithmIf::PriorityQueueScore & rPriorityQueueScore,
                             const SearchTreeAlgorithmIf::ScoreForMove scoreForMove);
 
 /// Finds the best possible move.
-Board::PositionXY AlphaBeta::FindBestMove(PriorityQueueScore& rBestMove,
-                                          const vector<Board::PositionXY>& rInitCandidates)
+Board::PositionXY AlphaBeta::FindBestMove(PriorityQueueScore & rBestMove,
+                                          const vector<Board::PositionXY> & rInitCandidates)
 {
     using namespace std;
 
@@ -41,8 +41,8 @@ Board::PositionXY AlphaBeta::FindBestMove(PriorityQueueScore& rBestMove,
     m_pStateEvaluationIf->SetBoards(*m_pBoardScoreCpuCopy, *m_pBoardScoreHumanCopy);
 
     // Register StateEvaluation as an observer of m_pBoardCopy.
-    const StateEvaluation* pStateEvaluation = static_cast<StateEvaluation*>(m_pStateEvaluationIf);
-    static_cast<GomokuBoard*>(m_pBoardCopy)->RegisterObserver(*pStateEvaluation);
+    const StateEvaluation * pStateEvaluation = static_cast<StateEvaluation *>(m_pStateEvaluationIf);
+    static_cast<GomokuBoard *>(m_pBoardCopy)->RegisterObserver(*pStateEvaluation);
 
     // Generate list of candidate movies.
     const bool isInitCandidatesProvided = !rInitCandidates.empty();
@@ -111,7 +111,7 @@ vector<Board::PositionField> AlphaBeta::GenerateCand() const
     //	|. . . . . . . . . . . . . . .|
 
     vector<graph::Node> neighborhood;
-    const Board& board = *m_pBoard;
+    const Board & board = *m_pBoard;
 
     // Get neighborhoods:
     const auto citr = board.GetIterator();
@@ -171,12 +171,12 @@ vector<Board::PositionField> AlphaBeta::GenerateCand() const
 }
 
 /// Generate list of candidate moves.
-AlphaBeta::VectorUniqueType AlphaBeta::UpdateCand(const VectorUniqueType& rCandidates, const uint32_t position) const
+AlphaBeta::VectorUniqueType AlphaBeta::UpdateCand(const VectorUniqueType & rCandidates, const uint32_t position) const
 {
-    const Board& rBoard = *m_pBoardCopy;
+    const Board & rBoard = *m_pBoardCopy;
 
     // a. Get neighbors of current position.
-    const Board::Neighbours& rNeighbours = rBoard.GetNeighborhood(static_cast<Board::PositionField>(position));
+    const Board::Neighbours & rNeighbours = rBoard.GetNeighborhood(static_cast<Board::PositionField>(position));
 
     VectorUniqueType neighborhood = rCandidates;
 
@@ -217,20 +217,20 @@ AlphaBeta::VectorUniqueType AlphaBeta::UpdateCand(const VectorUniqueType& rCandi
 }
 
 /// Get instance of Score.
-AlphaBeta* AlphaBeta::GetInstance()
+AlphaBeta * AlphaBeta::GetInstance()
 {
-    static AlphaBeta alphaBeta{SearchTreeAlgorithmIf::DEFAULT_DEPTH, "AlphaBeta"};
+    static AlphaBeta alphaBeta{ SearchTreeAlgorithmIf::DEFAULT_DEPTH, "AlphaBeta" };
     return &alphaBeta;
 }
 
 /// Browses the game-tree to find best move.
-SearchTreeAlgorithmIf::ScoreForMove AlphaBeta::GameTreeBrowsing(VectorUniqueType& rCandidates,
-                                                                PriorityQueueScore& rBestMovesPriorityQueue,
-                                                                vector<Board::PositionXY>& rTreeTracker, int alpha,
+SearchTreeAlgorithmIf::ScoreForMove AlphaBeta::GameTreeBrowsing(VectorUniqueType & rCandidates,
+                                                                PriorityQueueScore & rBestMovesPriorityQueue,
+                                                                vector<Board::PositionXY> & rTreeTracker, int alpha,
                                                                 int beta, bool isMaximizingPlayer, const uint32_t deep)
 {
     // Get singleton instance only once.
-    static Score& rScore = *Score::GetInstance();
+    static Score & rScore = *Score::GetInstance();
 
     // Termination condition checker.
     ScoreForMove leafScore;
@@ -573,7 +573,7 @@ SearchTreeAlgorithmIf::ScoreForMove AlphaBeta::GameTreeBrowsing(VectorUniqueType
 }
 
 /// Update candidate list for extended gaps.
-void AlphaBeta::UpdateCand4ExtendGaps(VectorUniqueType& rCandidates) const
+void AlphaBeta::UpdateCand4ExtendGaps(VectorUniqueType & rCandidates) const
 {
     // Get extended gaps.
     std::vector<Board::PositionField> exGaps;
@@ -600,7 +600,7 @@ void AlphaBeta::UpdateCand4ExtendGaps(VectorUniqueType& rCandidates) const
 }
 
 /// Update candidate list for gaps of 3ABC.
-void AlphaBeta::UpdateCand4ThreeListGaps(VectorUniqueType& rCandidates) const
+void AlphaBeta::UpdateCand4ThreeListGaps(VectorUniqueType & rCandidates) const
 {
     // Get threads' gaps.
     std::vector<Board::PositionField> thread3ABCGaps;
@@ -685,7 +685,7 @@ void AlphaBeta::RemoveSnapshot(uint32_t depth)
 }
 
 // Converts vector xy to vector fieldPosition.
-static void VctrXy2VctrPosition(const vector<Board::PositionXY>& rVctrXy, vector<Board::PositionField>& rVctrPos,
+static void VctrXy2VctrPosition(const vector<Board::PositionXY> & rVctrXy, vector<Board::PositionField> & rVctrPos,
                                 const uint32_t boardSize)
 {
     for(auto cit = rVctrXy.begin(); cit != rVctrXy.end(); ++cit)
@@ -696,7 +696,7 @@ static void VctrXy2VctrPosition(const vector<Board::PositionXY>& rVctrXy, vector
 }
 
 /// Add move to n-best container. Log only those from depth == 0.
-static void nBestMoveLogger(const uint32_t deep, SearchTreeAlgorithmIf::PriorityQueueScore& rPriorityQueueScore,
+static void nBestMoveLogger(const uint32_t deep, SearchTreeAlgorithmIf::PriorityQueueScore & rPriorityQueueScore,
                             const SearchTreeAlgorithmIf::ScoreForMove scoreForMove)
 {
     if(0 == deep)

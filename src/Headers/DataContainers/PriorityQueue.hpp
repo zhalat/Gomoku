@@ -14,7 +14,7 @@ class PriorityQueue : public std::priority_queue<T, Sequence, Compare>
         // nothing to do
     }
 
-    void PushData(const T& rData)
+    void PushData(const T & rData)
     {
         // If we've reached capacity, find the FIRST smallest object and replace it if 'rData' is larger.
         if(m_Size == this->size())

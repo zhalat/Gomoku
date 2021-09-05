@@ -54,14 +54,14 @@ class GraphIterator : public IteratorIf<graph::Node>
     virtual void SetToBase() { m_Cntr = 0; }
 
     // Constructor.
-    GraphIterator(graph::NodeVal* pCollection, uint32_t size) : m_pCollection(pCollection), m_size(size), m_Cntr(0)
+    GraphIterator(graph::NodeVal * pCollection, uint32_t size) : m_pCollection(pCollection), m_size(size), m_Cntr(0)
     {
         // Nothing to do.
     }
 
    private:
     // Element collection.
-    graph::NodeVal* m_pCollection;
+    graph::NodeVal * m_pCollection;
 
     // Collection size.
     uint32_t m_size;

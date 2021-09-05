@@ -31,16 +31,17 @@
 
 // FORWARD REFERENCES
 /// Straight and reverse conversion trend to direction.
-const std::unordered_map<ThreatFinder::Trend, Board::Direction, std::hash<int>> ThreatFinder::Trend2DirectionStraight =
-    {{ThreatFinder::VERTICAL, Board::DOWN},
-     {ThreatFinder::HORIZONTAL, Board::RIGHT},
-     {ThreatFinder::RISING, Board::DOWN_LEFT},
-     {ThreatFinder::FALLING, Board::DOWN_RIGHT}};
+const std::unordered_map<ThreatFinder::Trend, Board::Direction, std::hash<int>>
+    ThreatFinder::Trend2DirectionStraight = { { ThreatFinder::VERTICAL, Board::DOWN },
+                                              { ThreatFinder::HORIZONTAL, Board::RIGHT },
+                                              { ThreatFinder::RISING, Board::DOWN_LEFT },
+                                              { ThreatFinder::FALLING, Board::DOWN_RIGHT } };
 const std::unordered_map<ThreatFinder::Trend, Board::Direction, std::hash<int>> ThreatFinder::Trend2DirectionReverse = {
-    {ThreatFinder::VERTICAL, Board::UP},
-    {ThreatFinder::HORIZONTAL, Board::LEFT},
-    {ThreatFinder::RISING, Board::UP_RIGHT},
-    {ThreatFinder::FALLING, Board::UP_LEFT}};
+    { ThreatFinder::VERTICAL, Board::UP },
+    { ThreatFinder::HORIZONTAL, Board::LEFT },
+    { ThreatFinder::RISING, Board::UP_RIGHT },
+    { ThreatFinder::FALLING, Board::UP_LEFT }
+};
 
 // const std::unordered_map<ThreatFinder::Trend, Board::Direction> ThreatFinder::Trend2DirectionReverse = {};
 const Board::PositionXY ThreatFinder::ThreatLocation::XY_OUT_OF_BOARD =
@@ -48,7 +49,7 @@ const Board::PositionXY ThreatFinder::ThreatLocation::XY_OUT_OF_BOARD =
 const Board::PositionXY ThreatFinder::ThreatLocation::XY_BEGIN_OF_BOARD = Board::PositionXY(0, 0);
 
 /// Browse neighborhood for threat.
-bool ThreatFinder::FindThreatPattern(const Board::PositionXY& initialPosition, const Trend trend,
+bool ThreatFinder::FindThreatPattern(const Board::PositionXY & initialPosition, const Trend trend,
                                      const Board::Player playerPerspective)
 {
     bool retVal = false;
@@ -186,7 +187,7 @@ bool ThreatFinder::FindThreatPattern(const Board::PositionXY& initialPosition, c
 }
 
 // Gets begin and end fields of threat.
-void ThreatFinder::GetThreatFields(ThreatLocation& rThreatLocation) const
+void ThreatFinder::GetThreatFields(ThreatLocation & rThreatLocation) const
 {
     // Firstly any threat must be found.
     assert(true == m_IsThreatPatternFound);
@@ -252,7 +253,7 @@ void ThreatFinder::GetPieces(const uint8_t normHexCode, const Board::PositionXY 
 /// From currentXYPosition make one step on trend towards up/right/up_right if no reversion or
 /// down/left/down_left if reversion should take place. Such a new position override currentXYPosition.
 /// If new currentXYPosition would exceed board return false and old position is preserved.
-bool ThreatFinder::MakeStepOnTrend(const bool isReversion, Board::PositionXY& currentXYPosition,
+bool ThreatFinder::MakeStepOnTrend(const bool isReversion, Board::PositionXY & currentXYPosition,
                                    const Trend trend) const
 {
     bool retVal = false;

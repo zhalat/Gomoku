@@ -104,7 +104,8 @@ class BoardScore
     /// @param exGaps     Vector where output to be stored.
     /// @param threatKind Threat family.
     /////////////////////////////////////////////////////////////////////////////
-    void GetGapsNonUnique(std::vector<Board::PositionField>& rGaps, const ThreatFinder::KindOfThreats threatKind) const;
+    void GetGapsNonUnique(std::vector<Board::PositionField> & rGaps,
+                          const ThreatFinder::KindOfThreats threatKind) const;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: BoardScore::GetGapsUnique
@@ -117,7 +118,7 @@ class BoardScore
     /// @param exGaps     Vector where output to be stored.
     /// @param threatKind Threat family.
     /////////////////////////////////////////////////////////////////////////////
-    void GetGapsUnique(std::vector<Board::PositionField>& rGaps, const ThreatFinder::KindOfThreats threatKind) const;
+    void GetGapsUnique(std::vector<Board::PositionField> & rGaps, const ThreatFinder::KindOfThreats threatKind) const;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: BoardScore::GetGapsDuplicated
@@ -130,7 +131,7 @@ class BoardScore
     /// @param exGaps     Vector where output to be stored.
     /// @param threatKind Threat family.
     /////////////////////////////////////////////////////////////////////////////
-    void GetGapsDuplicated(std::vector<Board::PositionField>& rGaps,
+    void GetGapsDuplicated(std::vector<Board::PositionField> & rGaps,
                            const ThreatFinder::KindOfThreats threatKind) const;
 
     /////////////////////////////////////////////////////////////////////////////
@@ -147,7 +148,7 @@ class BoardScore
     /// @param	exGaps     Vector where output to be stored.
     /// @param  threatKind Threat family.
     /////////////////////////////////////////////////////////////////////////////
-    void GetExGaps(std::vector<Board::PositionField>& exGaps, const ThreatFinder::KindOfThreats threatKind) const;
+    void GetExGaps(std::vector<Board::PositionField> & exGaps, const ThreatFinder::KindOfThreats threatKind) const;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: BoardScore::GetCommonFieldNumber
@@ -195,7 +196,7 @@ class BoardScore
     ///
     /// @retval True if threat added, false otherwise (no space for additional threat).
     /////////////////////////////////////////////////////////////////////////////
-    bool AddThreats(const ThreatFinder::ThreatLocation& rTreatLocation, const uint32_t kindOfThreat,
+    bool AddThreats(const ThreatFinder::ThreatLocation & rTreatLocation, const uint32_t kindOfThreat,
                     const uint32_t multiplier = ThreatFinder::ThreatLocation::DEFAULT_MULTIPLIER);
 
     /////////////////////////////////////////////////////////////////////////////
@@ -210,7 +211,7 @@ class BoardScore
     ///
     /// @retval Threat list.
     /////////////////////////////////////////////////////////////////////////////
-    const std::list<ThreatFinder::ThreatLocation>& GetThreatList(const ThreatFinder::KindOfThreats threatKind) const;
+    const std::list<ThreatFinder::ThreatLocation> & GetThreatList(const ThreatFinder::KindOfThreats threatKind) const;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: BoardScore::GetScore
@@ -258,7 +259,7 @@ class BoardScore
     ///
     /// @par Reference to board.
     /////////////////////////////////////////////////////////////////////////////
-    void SetBoard(const Board& rBoard)
+    void SetBoard(const Board & rBoard)
     {
         // Can be used only when there is no board set.
         assert(NULL == m_pBoard);
@@ -275,7 +276,7 @@ class BoardScore
     ///
     /// @retval Reference to board.
     /////////////////////////////////////////////////////////////////////////////
-    const Board& GetBoard() const
+    const Board & GetBoard() const
     {
         // If default constructor BoardScore() was used, operator= must be invoked before
         // this method to provide Board.
@@ -293,42 +294,42 @@ class BoardScore
     /////////////////////////////////////////////////////////////////////////////
     void ResetInstance();
 
-    Spotter& GetSpotter() { return m_Spotter; }
+    Spotter & GetSpotter() { return m_Spotter; }
 
     // Operators ==/!=/</>.
-    bool operator==(const BoardScore& boardScore) const
+    bool operator==(const BoardScore & boardScore) const
     {
         const bool isEqual = (this->m_Score == boardScore.m_Score);
         return isEqual;
     }
 
-    bool operator!=(const BoardScore& boardScore) const
+    bool operator!=(const BoardScore & boardScore) const
     {
         const bool isNotEqual = !(*this == boardScore);
         return isNotEqual;
     }
 
-    bool operator<(const BoardScore& boardScore) const
+    bool operator<(const BoardScore & boardScore) const
     {
         const bool isGrather = (this->m_Score < boardScore.m_Score);
         return isGrather;
     }
 
-    bool operator>(const BoardScore& boardScore) const
+    bool operator>(const BoardScore & boardScore) const
     {
         const bool isLower = (this->m_Score > boardScore.m_Score);
         return isLower;
     }
 
-    BoardScore& operator=(const BoardScore& rBoardScore)
+    BoardScore & operator=(const BoardScore & rBoardScore)
     {
         if(this != &rBoardScore)
         {
             // Copy each members except for m_pBoard.
-            Board::Player* pPlayerTemp = const_cast<Board::Player*>(&this->m_player);
-            *pPlayerTemp               = rBoardScore.m_player;
-            m_ThreatsOnBoard           = rBoardScore.m_ThreatsOnBoard;
-            m_Score                    = rBoardScore.m_Score;
+            Board::Player * pPlayerTemp = const_cast<Board::Player *>(&this->m_player);
+            *pPlayerTemp                = rBoardScore.m_player;
+            m_ThreatsOnBoard            = rBoardScore.m_ThreatsOnBoard;
+            m_Score                     = rBoardScore.m_Score;
             // m_Spotter - don't copy. Just create empty.
         }
 
@@ -343,7 +344,7 @@ class BoardScore
     }
 
     // Copy constructor.
-    BoardScore(const BoardScore& rBoardScore) :
+    BoardScore(const BoardScore & rBoardScore) :
         m_pBoard(NULL),
         m_player(rBoardScore.m_player),
         m_ThreatsOnBoard(rBoardScore.m_ThreatsOnBoard),
@@ -374,7 +375,7 @@ class BoardScore
     /// @param rThreatContainer Provided threat location as pair [threatBegin,threatEnd].
     /// @param xy Position to be checked.
     /////////////////////////////////////////////////////////////////////////////
-    bool IsPartOfThreat(const ThreatFinder::ThreatLocation& rThreatLocation, const Board::PositionXY xy) const;
+    bool IsPartOfThreat(const ThreatFinder::ThreatLocation & rThreatLocation, const Board::PositionXY xy) const;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: BoardScore::GetThreatElement
@@ -389,13 +390,13 @@ class BoardScore
     /// @param player           	Specifies which player move is to be search.
     /// @param threatElements[out]  Element of threat.
     /////////////////////////////////////////////////////////////////////////////
-    void GetThreatElementDismissal(const ThreatFinder::ThreatLocation& rThreatLocation, const Board::Player player,
+    void GetThreatElementDismissal(const ThreatFinder::ThreatLocation & rThreatLocation, const Board::Player player,
                                    Board::PositionXY threatElements[MAX_THREAT_PARTS]) const;
-    void GetThreatElementPromotion(const ThreatFinder::ThreatLocation& rThreatLocation,
-                                   Board::PositionXY& threatElement, const bool isTheFist) const;
+    void GetThreatElementPromotion(const ThreatFinder::ThreatLocation & rThreatLocation,
+                                   Board::PositionXY & threatElement, const bool isTheFist) const;
 
     // Board state.
-    const Board* m_pBoard;
+    const Board * m_pBoard;
 
     // Who's score.
     Board::Player m_player;
@@ -409,7 +410,7 @@ class BoardScore
     Spotter m_Spotter;
 
     /// Print board.
-    friend std::ostream& operator<<(std::ostream& _stream, const BoardScore& rBoardScore)
+    friend std::ostream & operator<<(std::ostream & _stream, const BoardScore & rBoardScore)
     {
         _stream << "Recognized threats:" << endl;
 

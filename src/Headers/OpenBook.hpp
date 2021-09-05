@@ -31,9 +31,9 @@ class OpenBook
         Crawling() : m_Direction(Board::DIRECTION_NONE), m_Shift(0) {}
         Crawling(const Board::Direction direction, const uint32_t shift) : m_Direction(direction), m_Shift(shift) {}
 
-        bool operator==(const Crawling& el)
+        bool operator==(const Crawling & el)
         {
-            bool retVal{false};
+            bool retVal{ false };
 
             if(this->m_Direction == el.m_Direction and this->m_Shift == el.m_Shift)
             {
@@ -43,7 +43,7 @@ class OpenBook
             return retVal;
         }
 
-        bool operator!=(const Crawling& el) { return !(*this == el); }
+        bool operator!=(const Crawling & el) { return !(*this == el); }
     };
 
     struct CrawlingChain
@@ -56,9 +56,9 @@ class OpenBook
     {
         // It's constituated by two first movement.
         Board::Direction m_MainDirection;
-        CrawlingChain* m_pCrawlingChain;
+        CrawlingChain * m_pCrawlingChain;
 
-        Openings(const Board::Direction direction, CrawlingChain* const pCrawlingChain) :
+        Openings(const Board::Direction direction, CrawlingChain * const pCrawlingChain) :
             m_MainDirection(direction), m_pCrawlingChain(pCrawlingChain)
         {}
     };
@@ -75,7 +75,7 @@ class OpenBook
     ///
     /// @retval Best third move for white player.
     ///////////////////////////////////////////////////////////////////////
-    static Board::PositionXY GetBestThirdWhiteMove(const Board& rBoard);
+    static Board::PositionXY GetBestThirdWhiteMove(const Board & rBoard);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: OpenBook::GetBestSecondBlackMove
@@ -89,7 +89,7 @@ class OpenBook
     ///
     /// @retval Best secong move for balck player.
     ///////////////////////////////////////////////////////////////////////
-    static Board::PositionXY GetBestSecondBlackMove(const Board& rBoard);
+    static Board::PositionXY GetBestSecondBlackMove(const Board & rBoard);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: OpenBook::OpenGame
@@ -103,19 +103,19 @@ class OpenBook
     ///
     /// @retval Type of game opening.
     ///////////////////////////////////////////////////////////////////////
-    static OpenGameType OpenGame(const Board& rBoard);
+    static OpenGameType OpenGame(const Board & rBoard);
 
    private:
     // Prevent either copying or assigning (>= C++11).
-    OpenBook(const OpenBook& rOpenBook) = delete;
-    OpenBook& operator=(const OpenBook& rOpenBook) = delete;
+    OpenBook(const OpenBook & rOpenBook) = delete;
+    OpenBook & operator=(const OpenBook & rOpenBook) = delete;
 
     // Directions to find direct or indirect kind of opening game.
-    static constexpr Board::Direction DIRECT_PATH[]   = {Board::UP, Board::RIGHT, Board::DOWN, Board::LEFT};
-    static constexpr Board::Direction INDIRECT_PATH[] = {Board::UP_RIGHT, Board::DOWN_RIGHT, Board::DOWN_LEFT,
-                                                         Board::UP_LEFT};
-    static constexpr auto DIRECT_PATH_SIZE{std::size(DIRECT_PATH)};
-    static constexpr auto INDIRECT_PATH_SIZE{std::size(INDIRECT_PATH)};
+    static constexpr Board::Direction DIRECT_PATH[]   = { Board::UP, Board::RIGHT, Board::DOWN, Board::LEFT };
+    static constexpr Board::Direction INDIRECT_PATH[] = { Board::UP_RIGHT, Board::DOWN_RIGHT, Board::DOWN_LEFT,
+                                                          Board::UP_LEFT };
+    static constexpr auto DIRECT_PATH_SIZE{ std::size(DIRECT_PATH) };
+    static constexpr auto INDIRECT_PATH_SIZE{ std::size(INDIRECT_PATH) };
 
     // Containers for direct open game.
     static const Openings DIRECT_OPEN[];

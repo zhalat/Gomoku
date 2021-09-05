@@ -144,8 +144,8 @@ GomokuBoard::GomokuBoard(uint32_t size)
     // Create an array for quick access to neighbors for each node.
     /// Note: You can fetch the same data by GetNeighborhood(const PositionXY)
     /// but this should be more effective.
-    m_pNeighbours           = new Neighbours[graphSize];
-    Neighbours* pNeighbours = &m_pNeighbours[0];
+    m_pNeighbours            = new Neighbours[graphSize];
+    Neighbours * pNeighbours = &m_pNeighbours[0];
 
     for(uint32_t i = 0; i < graphSize; ++i, pNeighbours++)
     {
@@ -165,7 +165,7 @@ GomokuBoard::GomokuBoard(uint32_t size)
 }
 
 /// Copy constructor.
-GomokuBoard::GomokuBoard(const GomokuBoard& rBoard)
+GomokuBoard::GomokuBoard(const GomokuBoard & rBoard)
 {
     m_Size = rBoard.m_Size;
 
@@ -319,7 +319,7 @@ bool GomokuBoard::RemoveNLastMove(const int n)
 }
 
 /// Last move being put into board.
-bool GomokuBoard::GetLastMove(PositionXY& xy) const
+bool GomokuBoard::GetLastMove(PositionXY & xy) const
 {
     bool retVal = false;
 
@@ -335,7 +335,7 @@ bool GomokuBoard::GetLastMove(PositionXY& xy) const
 }
 
 /// First move being put into board.
-bool GomokuBoard::GetFirstMove(PositionXY& xy) const
+bool GomokuBoard::GetFirstMove(PositionXY & xy) const
 {
     bool retVal = false;
 
@@ -563,68 +563,68 @@ bool GomokuBoard::CanIGo(const PositionXY xy, const Direction direction) const
 }
 
 /// Go to one step toward direction.
-void GomokuBoard::GoDirection(PositionXY& xy, const Direction direction, const uint32_t steps) const
+void GomokuBoard::GoDirection(PositionXY & xy, const Direction direction, const uint32_t steps) const
 {
     // Crawl towards the edge.
     switch(direction)
     {
-    case UP:
-        xy.m_x -= steps;
-        break;
+        case UP:
+            xy.m_x -= steps;
+            break;
 
-    case DOWN:
-        xy.m_x += steps;
-        break;
+        case DOWN:
+            xy.m_x += steps;
+            break;
 
-    case LEFT:
-        xy.m_y -= steps;
-        break;
+        case LEFT:
+            xy.m_y -= steps;
+            break;
 
-    case RIGHT:
-        xy.m_y += steps;
-        break;
+        case RIGHT:
+            xy.m_y += steps;
+            break;
 
-    case UP_RIGHT:
-        xy.m_x -= steps;
-        xy.m_y += steps;
-        break;
+        case UP_RIGHT:
+            xy.m_x -= steps;
+            xy.m_y += steps;
+            break;
 
-    case UP_LEFT:
-        xy.m_x -= steps;
-        xy.m_y -= steps;
-        break;
+        case UP_LEFT:
+            xy.m_x -= steps;
+            xy.m_y -= steps;
+            break;
 
-    case DOWN_RIGHT:
-        xy.m_x += steps;
-        xy.m_y += steps;
-        break;
+        case DOWN_RIGHT:
+            xy.m_x += steps;
+            xy.m_y += steps;
+            break;
 
-    case DOWN_LEFT:
-        xy.m_x += steps;
-        xy.m_y -= steps;
-        break;
+        case DOWN_LEFT:
+            xy.m_x += steps;
+            xy.m_y -= steps;
+            break;
 
-    default:
-        assert(false);
+        default:
+            assert(false);
     }
 }
 
 /// Clone current state of Board.
-Board& GomokuBoard::Clone() const
+Board & GomokuBoard::Clone() const
 {
-    Board* retVal = new GomokuBoard(*this);
+    Board * retVal = new GomokuBoard(*this);
     assert(retVal);
 
     return *retVal;
 }
 
 /// Gets the neighborhood of provided position.
-const Board::Neighbours& GomokuBoard::GetNeighborhood(const PositionField field) const
+const Board::Neighbours & GomokuBoard::GetNeighborhood(const PositionField field) const
 {
     const uint32_t index = static_cast<uint32_t>(field);
     assert((m_Size * m_Size) > index);
 
-    const Board::Neighbours& retVal = m_pNeighbours[index];
+    const Board::Neighbours & retVal = m_pNeighbours[index];
     return retVal;
 }
 
@@ -656,18 +656,18 @@ void GomokuBoard::ResetInstance()
 }
 
 /// Observer register.
-void GomokuBoard::RegisterObserver(const Observer::ObserverIf& rObserver)
+void GomokuBoard::RegisterObserver(const Observer::ObserverIf & rObserver)
 {
     m_ObserverClient.push_back(&rObserver);
 }
 
 /// Removing observer.
-bool GomokuBoard::RemoveObserver(const Observer::ObserverIf& rObserver)
+bool GomokuBoard::RemoveObserver(const Observer::ObserverIf & rObserver)
 {
     bool retVal = false;
 
     // Remove from the list iff it exists.
-    for(std::vector<const Observer::ObserverIf*>::iterator it = m_ObserverClient.begin(); it != m_ObserverClient.end();
+    for(std::vector<const Observer::ObserverIf *>::iterator it = m_ObserverClient.begin(); it != m_ObserverClient.end();
         ++it)
     {
         if(&rObserver == *it)
@@ -685,7 +685,7 @@ bool GomokuBoard::RemoveObserver(const Observer::ObserverIf& rObserver)
 void GomokuBoard::Announce() const
 {
     // Notify all observers.
-    for(std::vector<const Observer::ObserverIf*>::const_iterator cit = m_ObserverClient.begin();
+    for(std::vector<const Observer::ObserverIf *>::const_iterator cit = m_ObserverClient.begin();
         cit != m_ObserverClient.end(); ++cit)
     {
         (*cit)->Update();

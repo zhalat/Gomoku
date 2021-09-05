@@ -53,7 +53,7 @@ uint32_t BoardScore::GetNumberOfRecognizedThreat(ThreatFinder::KindOfThreats thr
 }
 
 /// Gets gaps belonging to provided kind of threat(extended included). Repetitive included.
-void BoardScore::GetGapsNonUnique(std::vector<Board::PositionField>& rGaps,
+void BoardScore::GetGapsNonUnique(std::vector<Board::PositionField> & rGaps,
                                   const ThreatFinder::KindOfThreats threatKind) const
 {
     const uint32_t threatIndex = static_cast<uint32_t>(threatKind);
@@ -64,7 +64,7 @@ void BoardScore::GetGapsNonUnique(std::vector<Board::PositionField>& rGaps,
 
     for(; citer != m_ThreatsOnBoard.m_RecognizedThreats[threatIndex].end(); ++citer)
     {
-        const ThreatFinder::ThreatLocation& rThreatLocation = *citer;
+        const ThreatFinder::ThreatLocation & rThreatLocation = *citer;
 
         // Symmetric threats (like 2A, 3A) might have duplicated gaps. One from normal side and second symmetric side.
         // Prevent adding the same gaps from the same threat.
@@ -91,7 +91,7 @@ void BoardScore::GetGapsNonUnique(std::vector<Board::PositionField>& rGaps,
 }
 
 /// Gets gaps belonging to provided kind of threat(extended included). Repetitive doesn't included.
-void BoardScore::GetGapsUnique(std::vector<Board::PositionField>& rGaps,
+void BoardScore::GetGapsUnique(std::vector<Board::PositionField> & rGaps,
                                const ThreatFinder::KindOfThreats threatKind) const
 {
     const uint32_t threatIndex = static_cast<uint32_t>(threatKind);
@@ -105,7 +105,7 @@ void BoardScore::GetGapsUnique(std::vector<Board::PositionField>& rGaps,
 
     for(; citer != m_ThreatsOnBoard.m_RecognizedThreats[threatIndex].end(); ++citer)
     {
-        const ThreatFinder::ThreatLocation& rThreatLocation = *citer;
+        const ThreatFinder::ThreatLocation & rThreatLocation = *citer;
 
         // Go thru each threats' gaps.
         for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_EMPTY_SPACES; ++i)
@@ -127,7 +127,7 @@ void BoardScore::GetGapsUnique(std::vector<Board::PositionField>& rGaps,
 }
 
 /// Gets gaps that are common to more than one threat (extended included).
-void BoardScore::GetGapsDuplicated(std::vector<Board::PositionField>& rGaps,
+void BoardScore::GetGapsDuplicated(std::vector<Board::PositionField> & rGaps,
                                    const ThreatFinder::KindOfThreats threatKind) const
 {
     std::vector<Board::PositionField> nonUniqueGaps;
@@ -160,7 +160,7 @@ void BoardScore::GetGapsDuplicated(std::vector<Board::PositionField>& rGaps,
 }
 
 /// Gets all extend gaps belongs to provided threat.
-void BoardScore::GetExGaps(std::vector<Board::PositionField>& exGaps,
+void BoardScore::GetExGaps(std::vector<Board::PositionField> & exGaps,
                            const ThreatFinder::KindOfThreats threatKind) const
 {
     const uint32_t threatIndex = static_cast<uint32_t>(threatKind);
@@ -171,7 +171,7 @@ void BoardScore::GetExGaps(std::vector<Board::PositionField>& exGaps,
 
     for(; citer != m_ThreatsOnBoard.m_RecognizedThreats[threatIndex].end(); ++citer)
     {
-        const ThreatFinder::ThreatLocation& rThreatLocation = *citer;
+        const ThreatFinder::ThreatLocation & rThreatLocation = *citer;
 
         const Board::PositionXY xy1 = rThreatLocation.m_ThreatDetails.m_ExtGaps[0];
         const Board::PositionXY xy2 = rThreatLocation.m_ThreatDetails.m_ExtGaps[1];
@@ -207,7 +207,7 @@ uint32_t BoardScore::GetCommonFieldNumber(const ThreatFinder::KindOfThreats thre
         // Go thru each threat.
         for(; citer != m_ThreatsOnBoard.m_RecognizedThreats[threatIndex].end(); ++citer)
         {
-            const ThreatFinder::ThreatLocation& rThreatLocation = *citer;
+            const ThreatFinder::ThreatLocation & rThreatLocation = *citer;
 
             // Go thru each threat's element.
             for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
@@ -243,7 +243,7 @@ uint32_t BoardScore::GetCommonFieldNumber(const ThreatFinder::KindOfThreats thre
         // 1. Put each elements of threat B to vector list.
         for(; citerB != m_ThreatsOnBoard.m_RecognizedThreats[threatIndexB].end(); ++citerB)
         {
-            const ThreatFinder::ThreatLocation& rThreatLocation = *citerB;
+            const ThreatFinder::ThreatLocation & rThreatLocation = *citerB;
 
             // Go thru each threat's element.
             for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
@@ -267,7 +267,7 @@ uint32_t BoardScore::GetCommonFieldNumber(const ThreatFinder::KindOfThreats thre
         // 2. Go thru each threats
         for(; citerA != m_ThreatsOnBoard.m_RecognizedThreats[threatIndexA].end(); ++citerA)
         {
-            const ThreatFinder::ThreatLocation& rThreatLocation = *citerA;
+            const ThreatFinder::ThreatLocation & rThreatLocation = *citerA;
 
             // Go thru each threat's element and check how many threat threatKindB has in common.
             for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
@@ -311,7 +311,7 @@ uint32_t BoardScore::RemoveThreats(const Board::PositionXY xy)
 
             // Indicates which part of threat (first / last) GetThreatElementPromotion shall take.
             // Indexes are associate with Trend enum VERTICAL= 0 etc. True means first
-            bool GetThreatElementPromotionIndicator[4] = {true, true, true, true};
+            bool GetThreatElementPromotionIndicator[4] = { true, true, true, true };
 
             for(; citer != m_ThreatsOnBoard.m_RecognizedThreats[i].end();)
             {
@@ -325,8 +325,8 @@ uint32_t BoardScore::RemoveThreats(const Board::PositionXY xy)
                     {
                         // Get info required for reupadate threat. Must be able to keep up to 3 parts like: xxoxx or
                         // (rare situation) x.x..x.
-                        Board::PositionXY threatElements[MAX_THREAT_PARTS] = {XY_OUT_OF_BOARD, XY_OUT_OF_BOARD,
-                                                                              XY_OUT_OF_BOARD};
+                        Board::PositionXY threatElements[MAX_THREAT_PARTS] = { XY_OUT_OF_BOARD, XY_OUT_OF_BOARD,
+                                                                               XY_OUT_OF_BOARD };
 
                         GetThreatElementDismissal(threatLocation, m_player, &threatElements[0]);
                         const ThreatFinder::KindOfThreats currentThreat = Score::m_ThreatScore[i].threatKind;
@@ -340,8 +340,8 @@ uint32_t BoardScore::RemoveThreats(const Board::PositionXY xy)
                             if(XY_OUT_OF_BOARD != xyThreatElement)
                             {
                                 // Ask Spotter to find out what is going on there.
-                                const Spotter::RegionToInvestigate regionToInvestigate{xyThreatElement, currentThreat,
-                                                                                       currentTrend};
+                                const Spotter::RegionToInvestigate regionToInvestigate{ xyThreatElement, currentThreat,
+                                                                                        currentTrend };
                                 m_Spotter.AddToExecute(regionToInvestigate);
                             }
                         }
@@ -361,8 +361,8 @@ uint32_t BoardScore::RemoveThreats(const Board::PositionXY xy)
                         GetThreatElementPromotionIndicator[index] = false;
 
                         // Ask Spotter to find out what is going on there.
-                        const Spotter::RegionToInvestigate regionToInvestigate{xyThreatElement, currentThreat,
-                                                                               currentTrend};
+                        const Spotter::RegionToInvestigate regionToInvestigate{ xyThreatElement, currentThreat,
+                                                                                currentTrend };
                         m_Spotter.AddToExecute(regionToInvestigate);
                     }
 
@@ -401,7 +401,7 @@ void BoardScore::ResetInstance()
 }
 
 /// Adds a new threat location.
-bool BoardScore::AddThreats(const ThreatFinder::ThreatLocation& rTreatLocation, const uint32_t kindOfThreat,
+bool BoardScore::AddThreats(const ThreatFinder::ThreatLocation & rTreatLocation, const uint32_t kindOfThreat,
                             const uint32_t multiplier)
 {
     bool retVal = false;
@@ -410,7 +410,7 @@ bool BoardScore::AddThreats(const ThreatFinder::ThreatLocation& rTreatLocation, 
     if(m_ThreatsOnBoard.m_NumberRecognizedThreat[kindOfThreat] < Score::MAX_TRACKED_THREATS)
     {
         // Get list of threats:
-        std::list<ThreatFinder::ThreatLocation>& rThreatList = m_ThreatsOnBoard.m_RecognizedThreats[kindOfThreat];
+        std::list<ThreatFinder::ThreatLocation> & rThreatList = m_ThreatsOnBoard.m_RecognizedThreats[kindOfThreat];
 
         // Add the new.
         rThreatList.push_back(rTreatLocation);
@@ -436,7 +436,7 @@ bool BoardScore::AddThreats(const ThreatFinder::ThreatLocation& rTreatLocation, 
 }
 
 /// Provide threat list.
-const std::list<ThreatFinder::ThreatLocation>& BoardScore::GetThreatList(
+const std::list<ThreatFinder::ThreatLocation> & BoardScore::GetThreatList(
     const ThreatFinder::KindOfThreats threatKind) const
 {
     const uint32_t index = static_cast<uint32_t>(threatKind);
@@ -444,7 +444,7 @@ const std::list<ThreatFinder::ThreatLocation>& BoardScore::GetThreatList(
 }
 
 /// Check if provided position is part of provided threat.
-bool BoardScore::IsPartOfThreat(const ThreatFinder::ThreatLocation& rThreatLocation, const Board::PositionXY xy) const
+bool BoardScore::IsPartOfThreat(const ThreatFinder::ThreatLocation & rThreatLocation, const Board::PositionXY xy) const
 {
     bool retVal = false;
 
@@ -510,7 +510,7 @@ bool BoardScore::IsPartOfThreat(const ThreatFinder::ThreatLocation& rThreatLocat
 }
 
 /// In provided threat, search for any, non empty move, belongs to 'player' move.
-void BoardScore::GetThreatElementDismissal(const ThreatFinder::ThreatLocation& rThreatLocation,
+void BoardScore::GetThreatElementDismissal(const ThreatFinder::ThreatLocation & rThreatLocation,
                                            const Board::Player player,
                                            Board::PositionXY threatElements[MAX_THREAT_PARTS]) const
 {
@@ -580,8 +580,8 @@ void BoardScore::GetThreatElementDismissal(const ThreatFinder::ThreatLocation& r
 }
 
 /// In provided threat, search for any, non empty move, belongs to 'player' move.
-void BoardScore::GetThreatElementPromotion(const ThreatFinder::ThreatLocation& rThreatLocation,
-                                           Board::PositionXY& threatElement, const bool isTheFist) const
+void BoardScore::GetThreatElementPromotion(const ThreatFinder::ThreatLocation & rThreatLocation,
+                                           Board::PositionXY & threatElement, const bool isTheFist) const
 {
     bool isFound = false;
 

@@ -56,7 +56,7 @@ const Board::PositionXY XY_OUT_OF_BOARD =
 
 /// Configure base game parameter.
 void GomokuGame::Init(const uint32_t size, const Board::Player humanColor, const TwoPlayersGame::Level level,
-                      const bool isRandomize, const uint32_t maxTime, std::istream& inStream, std::ostream& outStream)
+                      const bool isRandomize, const uint32_t maxTime, std::istream & inStream, std::ostream & outStream)
 {
     srand(time(NULL));
 
@@ -121,7 +121,7 @@ void GomokuGame::Init(const uint32_t size, const Board::Player humanColor, const
 /// Starts game.
 void GomokuGame::Play()
 {
-    static Score* const pScore = Score::GetInstance();
+    static Score * const pScore = Score::GetInstance();
 
     // Keeps human move read from input stream.
     Board::PositionXY humanMove = XY_OUT_OF_BOARD;
@@ -153,264 +153,264 @@ void GomokuGame::Play()
     {
         switch(playStateMachine)
         {
-        case START: {
-            assert(m_pSearchAlgorithm);
-            assert(m_Level != LEVEL_NONE);
-            assert(NULL != pInputStream);
-            assert(NULL != pOutputStream);
+            case START: {
+                assert(m_pSearchAlgorithm);
+                assert(m_Level != LEVEL_NONE);
+                assert(NULL != pInputStream);
+                assert(NULL != pOutputStream);
 
-            m_pSearchAlgorithm->SetInitialPlayer(m_ComputerColor);
-            m_pSearchAlgorithm->SetBoardScore(*m_pBoardScoreCpu, *m_pBoardScoreHuman);
+                m_pSearchAlgorithm->SetInitialPlayer(m_ComputerColor);
+                m_pSearchAlgorithm->SetBoardScore(*m_pBoardScoreCpu, *m_pBoardScoreHuman);
 
-            playStateMachineShadow = CHECK_WINNER;
-            if(Board::Player::PLAYER_A == m_ComputerColor)
-            {
-                // Don't display empty board when cpu starts.
-                playStateMachine = CHECK_WINNER;
+                playStateMachineShadow = CHECK_WINNER;
+                if(Board::Player::PLAYER_A == m_ComputerColor)
+                {
+                    // Don't display empty board when cpu starts.
+                    playStateMachine = CHECK_WINNER;
+                }
+                else
+                {
+                    playStateMachine = DISPLAY;
+                }
             }
-            else
-            {
-                playStateMachine = DISPLAY;
-            }
-        }
-        break;
+            break;
 
-        case CPU_WHITE_FIRST_MOVE: {
-            // Put the first move on center of the board.
-            const Board::PositionXY firstMove(m_pBoard->GetSize() / 2, m_pBoard->GetSize() / 2);
-            cpuMove = firstMove;
-            m_pBoard->PutMove(firstMove, m_ComputerColor);
-            pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
-            pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
+            case CPU_WHITE_FIRST_MOVE: {
+                // Put the first move on center of the board.
+                const Board::PositionXY firstMove(m_pBoard->GetSize() / 2, m_pBoard->GetSize() / 2);
+                cpuMove = firstMove;
+                m_pBoard->PutMove(firstMove, m_ComputerColor);
+                pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
+                pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
 
-            isComputerMove = false;
-
-            playStateMachineShadow = CHECK_WINNER;
-            playStateMachine       = DISPLAY;
-        }
-        break;
-
-        case CPU_WHITE_OPEN_BOOK_MOVE: {
-            assert(Board::PLAYER_A == m_ComputerColor);
-
-            cpuMove = OpenBook::GetBestThirdWhiteMove(*m_pBoard);
-
-            if(XY_OUT_OF_BOARD == cpuMove)
-            {
-#warning "Don't use AI. Rand one of the following spot. Implemment it in opening book"
-                // game is neither direct nor indirect.
-                //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-                // 0 |. . . . . . . . . . . . . . .|
-                // 1 |. . . . . . . . . . . . . . .|
-                // 2 |. . . . . . . . . . . . . . .|
-                // 3 |. . . . . . . . . . . . . . .|
-                // 4 |. . . . . c . c . . . . . . .|
-                // 5 |. . . . c . . . c . . . . . .|
-                // 6 |. . . . . . x . . . . . . . .|
-                // 7 |. . . . c . . . c . . . . . .|
-                // 8 |. . . . . c . c . . . . . . .|
-                // 9 |. . . . . . . . . . . . . . .|
-                SearchTreeAlgorithmIf::PriorityQueueScore nBestMoves(1);
-                cpuMove = m_pSearchAlgorithm->FindBestMove(nBestMoves);
-            }
-
-            m_pBoard->PutMove(cpuMove, m_ComputerColor);
-
-            pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
-            pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
-
-            isComputerMove = false;
-
-            playStateMachineShadow = CHECK_WINNER;
-            playStateMachine       = DISPLAY;
-        }
-        break;
-
-        case CPU_BLACK_OPEN_BOOK_MOVE: {
-            assert(Board::PLAYER_B == m_ComputerColor);
-
-            cpuMove = OpenBook::GetBestSecondBlackMove(*m_pBoard);
-
-            m_pBoard->PutMove(cpuMove, m_ComputerColor);
-
-            pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
-            pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
-
-            isComputerMove = false;
-
-            playStateMachineShadow = CHECK_WINNER;
-            playStateMachine       = DISPLAY;
-        }
-        break;
-
-        case CPU_AI_MOVE: {
-            cpuMove = GetBestMove();
-
-            m_pBoard->PutMove(cpuMove, m_ComputerColor);
-
-            pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
-            pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
-
-            isComputerMove = false;
-
-            playStateMachineShadow = CHECK_WINNER;
-            playStateMachine       = DISPLAY;
-        }
-        break;
-
-        case HUMAN_MOVE: {
-            humanMove              = GetUserMove();
-            playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
-            playStateMachine       = HUMAN_VALIDATION_MOVE;
-        }
-        break;
-
-        case HUMAN_VALIDATION_MOVE: {
-            if(ValidateMove(humanMove))
-            {
-                m_pBoard->PutMove(humanMove, m_HumanColor);
-                pScore->UpdateScore(*m_pBoardScoreCpu, humanMove);
-                pScore->UpdateScore(*m_pBoardScoreHuman, humanMove);
-                humanMove = XY_OUT_OF_BOARD;
-
-                isComputerMove = true;
+                isComputerMove = false;
 
                 playStateMachineShadow = CHECK_WINNER;
                 playStateMachine       = DISPLAY;
             }
-            else
-            {
-                *pOutputStream << INVALID_MOVE_MSG << TERMINATOR_MSG;
+            break;
 
+            case CPU_WHITE_OPEN_BOOK_MOVE: {
+                assert(Board::PLAYER_A == m_ComputerColor);
+
+                cpuMove = OpenBook::GetBestThirdWhiteMove(*m_pBoard);
+
+                if(XY_OUT_OF_BOARD == cpuMove)
+                {
+#warning "Don't use AI. Rand one of the following spot. Implemment it in opening book"
+                    // game is neither direct nor indirect.
+                    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                    // 0 |. . . . . . . . . . . . . . .|
+                    // 1 |. . . . . . . . . . . . . . .|
+                    // 2 |. . . . . . . . . . . . . . .|
+                    // 3 |. . . . . . . . . . . . . . .|
+                    // 4 |. . . . . c . c . . . . . . .|
+                    // 5 |. . . . c . . . c . . . . . .|
+                    // 6 |. . . . . . x . . . . . . . .|
+                    // 7 |. . . . c . . . c . . . . . .|
+                    // 8 |. . . . . c . c . . . . . . .|
+                    // 9 |. . . . . . . . . . . . . . .|
+                    SearchTreeAlgorithmIf::PriorityQueueScore nBestMoves(1);
+                    cpuMove = m_pSearchAlgorithm->FindBestMove(nBestMoves);
+                }
+
+                m_pBoard->PutMove(cpuMove, m_ComputerColor);
+
+                pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
+                pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
+
+                isComputerMove = false;
+
+                playStateMachineShadow = CHECK_WINNER;
+                playStateMachine       = DISPLAY;
+            }
+            break;
+
+            case CPU_BLACK_OPEN_BOOK_MOVE: {
+                assert(Board::PLAYER_B == m_ComputerColor);
+
+                cpuMove = OpenBook::GetBestSecondBlackMove(*m_pBoard);
+
+                m_pBoard->PutMove(cpuMove, m_ComputerColor);
+
+                pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
+                pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
+
+                isComputerMove = false;
+
+                playStateMachineShadow = CHECK_WINNER;
+                playStateMachine       = DISPLAY;
+            }
+            break;
+
+            case CPU_AI_MOVE: {
+                cpuMove = GetBestMove();
+
+                m_pBoard->PutMove(cpuMove, m_ComputerColor);
+
+                pScore->UpdateScore(*m_pBoardScoreCpu, cpuMove);
+                pScore->UpdateScore(*m_pBoardScoreHuman, cpuMove);
+
+                isComputerMove = false;
+
+                playStateMachineShadow = CHECK_WINNER;
+                playStateMachine       = DISPLAY;
+            }
+            break;
+
+            case HUMAN_MOVE: {
+                humanMove              = GetUserMove();
                 playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
-                playStateMachine       = HUMAN_MOVE;
+                playStateMachine       = HUMAN_VALIDATION_MOVE;
             }
+            break;
 
-            pOutputStream->flush();
-        }
-        break;
-
-        case CHECK_WINNER: {
-            bool isCpuWhiteOpening = (isComputerMove && (2 == m_pBoard->GetMoveNumber()));
-            bool isCpuBlackOpening = (isComputerMove && (1 == m_pBoard->GetMoveNumber()));
-            bool isCpuFirstMove    = (isComputerMove && (0 == m_pBoard->GetMoveNumber()));
-
-            if(WinnerCheck(m_ComputerColor))
-            {
-                *pOutputStream << LOOSER_MSG;
-                const ThreatFinder::ThreatLocation& rThreatLocation =
-                    m_pBoardScoreCpu->GetThreatList(ThreatFinder::THREAT_WINNER).front();
-                for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
+            case HUMAN_VALIDATION_MOVE: {
+                if(ValidateMove(humanMove))
                 {
-                    const Board::PositionXY rXy = rThreatLocation.m_ThreatDetails.m_MyPawns[i];
-                    *pOutputStream << WINNER_MOVIES_MARK << rXy;
-                }
+                    m_pBoard->PutMove(humanMove, m_HumanColor);
+                    pScore->UpdateScore(*m_pBoardScoreCpu, humanMove);
+                    pScore->UpdateScore(*m_pBoardScoreHuman, humanMove);
+                    humanMove = XY_OUT_OF_BOARD;
 
-                playStateMachine       = GAME_OVER;
-                playStateMachineShadow = GAME_OVER;
-            }
-            else if(WinnerCheck(m_HumanColor))
-            {
-                *pOutputStream << WINNER_MSG;
-                const ThreatFinder::ThreatLocation& rThreatLocation =
-                    m_pBoardScoreHuman->GetThreatList(ThreatFinder::THREAT_WINNER).front();
-                for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
-                {
-                    const Board::PositionXY rXy = rThreatLocation.m_ThreatDetails.m_MyPawns[i];
-                    *pOutputStream << WINNER_MOVIES_MARK << rXy;
-                }
+                    isComputerMove = true;
 
-                playStateMachine       = GAME_OVER;
-                playStateMachineShadow = GAME_OVER;
-            }
-            else if(Stalemate())
-            {
-                *pOutputStream << STALEMATE_MSG;
-
-                playStateMachine       = GAME_OVER;
-                playStateMachineShadow = GAME_OVER;
-            }
-            else if(isCpuWhiteOpening)
-            {
-                playStateMachine = CPU_WHITE_OPEN_BOOK_MOVE;
-                playStateMachine = CPU_AI_MOVE;
-            }
-            else if(isCpuBlackOpening)
-            {
-                // playStateMachine = CPU_BLACK_OPEN_BOOK_MOVE;
-                playStateMachine = CPU_AI_MOVE;
-            }
-            else if(isCpuFirstMove)
-            {
-                playStateMachine = CPU_WHITE_FIRST_MOVE;
-            }
-            else if(isComputerMove)
-            {
-                playStateMachine = CPU_AI_MOVE;
-            }
-            else
-            {
-                playStateMachine = HUMAN_MOVE;
-            }
-
-            *pOutputStream << TERMINATOR_MSG;
-            pOutputStream->flush();
-
-            playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
-        }
-        break;
-
-        case DISPLAY: {
-            *pOutputStream << *m_pBoard;
-
-            Board::PositionXY lastMove = XY_OUT_OF_BOARD;
-
-            if(m_pBoard->GetLastMove(lastMove))
-            {
-                const bool isComputerMovePrint = !isComputerMove;
-
-                if(isComputerMovePrint)
-                {
-                    *pOutputStream << LAST_CPU_MOVE_MSG << lastMove;
+                    playStateMachineShadow = CHECK_WINNER;
+                    playStateMachine       = DISPLAY;
                 }
                 else
                 {
-                    *pOutputStream << LAST_HUMAN_MOVE_MSG << lastMove;
+                    *pOutputStream << INVALID_MOVE_MSG << TERMINATOR_MSG;
+
+                    playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+                    playStateMachine       = HUMAN_MOVE;
                 }
 
-                // Log the move.
-                m_Logger.AddEntryToRecord(lastMove);
+                pOutputStream->flush();
             }
+            break;
 
-            pOutputStream->flush();
+            case CHECK_WINNER: {
+                bool isCpuWhiteOpening = (isComputerMove && (2 == m_pBoard->GetMoveNumber()));
+                bool isCpuBlackOpening = (isComputerMove && (1 == m_pBoard->GetMoveNumber()));
+                bool isCpuFirstMove    = (isComputerMove && (0 == m_pBoard->GetMoveNumber()));
 
-            playStateMachine = playStateMachineShadow;
-        }
-        break;
+                if(WinnerCheck(m_ComputerColor))
+                {
+                    *pOutputStream << LOOSER_MSG;
+                    const ThreatFinder::ThreatLocation & rThreatLocation =
+                        m_pBoardScoreCpu->GetThreatList(ThreatFinder::THREAT_WINNER).front();
+                    for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
+                    {
+                        const Board::PositionXY rXy = rThreatLocation.m_ThreatDetails.m_MyPawns[i];
+                        *pOutputStream << WINNER_MOVIES_MARK << rXy;
+                    }
 
-        case GAME_OVER: {
-            isEnd = EndGame();
-            if(isEnd)
-            {
-                // Bye bye.
-            }
-            else
-            {
-                // Switch players color
-                Board::Player tmp = m_ComputerColor;
-                m_ComputerColor   = m_HumanColor;
-                m_HumanColor      = tmp;
-                isComputerMove    = (Board::PLAYER_A == m_ComputerColor) ? true : false;
+                    playStateMachine       = GAME_OVER;
+                    playStateMachineShadow = GAME_OVER;
+                }
+                else if(WinnerCheck(m_HumanColor))
+                {
+                    *pOutputStream << WINNER_MSG;
+                    const ThreatFinder::ThreatLocation & rThreatLocation =
+                        m_pBoardScoreHuman->GetThreatList(ThreatFinder::THREAT_WINNER).front();
+                    for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::MAX_MY_PAWNS; ++i)
+                    {
+                        const Board::PositionXY rXy = rThreatLocation.m_ThreatDetails.m_MyPawns[i];
+                        *pOutputStream << WINNER_MOVIES_MARK << rXy;
+                    }
 
-                RestartGame();
-                playStateMachine       = START;
+                    playStateMachine       = GAME_OVER;
+                    playStateMachineShadow = GAME_OVER;
+                }
+                else if(Stalemate())
+                {
+                    *pOutputStream << STALEMATE_MSG;
+
+                    playStateMachine       = GAME_OVER;
+                    playStateMachineShadow = GAME_OVER;
+                }
+                else if(isCpuWhiteOpening)
+                {
+                    playStateMachine = CPU_WHITE_OPEN_BOOK_MOVE;
+                    playStateMachine = CPU_AI_MOVE;
+                }
+                else if(isCpuBlackOpening)
+                {
+                    // playStateMachine = CPU_BLACK_OPEN_BOOK_MOVE;
+                    playStateMachine = CPU_AI_MOVE;
+                }
+                else if(isCpuFirstMove)
+                {
+                    playStateMachine = CPU_WHITE_FIRST_MOVE;
+                }
+                else if(isComputerMove)
+                {
+                    playStateMachine = CPU_AI_MOVE;
+                }
+                else
+                {
+                    playStateMachine = HUMAN_MOVE;
+                }
+
+                *pOutputStream << TERMINATOR_MSG;
+                pOutputStream->flush();
+
                 playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
             }
-        }
-        break;
+            break;
 
-        default:
-            assert(false);
+            case DISPLAY: {
+                *pOutputStream << *m_pBoard;
+
+                Board::PositionXY lastMove = XY_OUT_OF_BOARD;
+
+                if(m_pBoard->GetLastMove(lastMove))
+                {
+                    const bool isComputerMovePrint = !isComputerMove;
+
+                    if(isComputerMovePrint)
+                    {
+                        *pOutputStream << LAST_CPU_MOVE_MSG << lastMove;
+                    }
+                    else
+                    {
+                        *pOutputStream << LAST_HUMAN_MOVE_MSG << lastMove;
+                    }
+
+                    // Log the move.
+                    m_Logger.AddEntryToRecord(lastMove);
+                }
+
+                pOutputStream->flush();
+
+                playStateMachine = playStateMachineShadow;
+            }
+            break;
+
+            case GAME_OVER: {
+                isEnd = EndGame();
+                if(isEnd)
+                {
+                    // Bye bye.
+                }
+                else
+                {
+                    // Switch players color
+                    Board::Player tmp = m_ComputerColor;
+                    m_ComputerColor   = m_HumanColor;
+                    m_HumanColor      = tmp;
+                    isComputerMove    = (Board::PLAYER_A == m_ComputerColor) ? true : false;
+
+                    RestartGame();
+                    playStateMachine       = START;
+                    playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+                }
+            }
+            break;
+
+            default:
+                assert(false);
         }
     }
 }
@@ -422,7 +422,7 @@ bool GomokuGame::EndGame()
     std::string frontEndData = std::string();
 
 #if defined(GUI_GOMOKU_GAME)
-    static_cast<GomokuInputStream*>(pInputStream)->WaitForData();
+    static_cast<GomokuInputStream *>(pInputStream)->WaitForData();
 #endif
 
     *pInputStream >> frontEndData;
@@ -471,7 +471,7 @@ Board::PositionXY GomokuGame::GetUserMove() const
         y = 0;
 
 #if defined(GUI_GOMOKU_GAME)
-        static_cast<GomokuInputStream*>(pInputStream)->WaitForData();
+        static_cast<GomokuInputStream *>(pInputStream)->WaitForData();
 #endif
 
         *pInputStream >> x;
@@ -507,7 +507,7 @@ Board::PositionXY GomokuGame::GetUserMove() const
 }
 
 /// Check if provided move can be applied on board.
-bool GomokuGame::ValidateMove(const Board::PositionXY& rXy) const
+bool GomokuGame::ValidateMove(const Board::PositionXY & rXy) const
 {
     bool retVal = false;
 
@@ -558,29 +558,29 @@ void GomokuGame::SetSearchAlgorithm(const Level level)
 {
     switch(level)
     {
-    case BEGINNER: {
-        const uint32_t beginnerDepth = 2U;
-        m_pSearchAlgorithm           = MinMax::GetInstance();
-        m_pSearchAlgorithm->SetDeep(beginnerDepth);
-    }
-    break;
+        case BEGINNER: {
+            const uint32_t beginnerDepth = 2U;
+            m_pSearchAlgorithm           = MinMax::GetInstance();
+            m_pSearchAlgorithm->SetDeep(beginnerDepth);
+        }
+        break;
 
-    case INTERMEDIATE: {
-        const uint32_t intermediateDepth = 4U;
-        m_pSearchAlgorithm               = MinMax::GetInstance();
-        m_pSearchAlgorithm->SetDeep(intermediateDepth);
-    }
-    break;
+        case INTERMEDIATE: {
+            const uint32_t intermediateDepth = 4U;
+            m_pSearchAlgorithm               = MinMax::GetInstance();
+            m_pSearchAlgorithm->SetDeep(intermediateDepth);
+        }
+        break;
 
-    case ADVANCED: {
-        const uint32_t advancedDepth = 4U;
-        m_pSearchAlgorithm           = AlphaBeta::GetInstance();
-        m_pSearchAlgorithm->SetDeep(advancedDepth);
-    }
-    break;
+        case ADVANCED: {
+            const uint32_t advancedDepth = 4U;
+            m_pSearchAlgorithm           = AlphaBeta::GetInstance();
+            m_pSearchAlgorithm->SetDeep(advancedDepth);
+        }
+        break;
 
-    default:
-        assert(false);
+        default:
+            assert(false);
     }
 
     assert(m_pSearchAlgorithm);
@@ -665,10 +665,10 @@ Board::PositionXY GomokuGame::GetBestMove()
 }
 
 /// Provide initial candidates at specified depth.
-void GomokuGame::GetInitCandidates(SearchTreeAlgorithmIf::PriorityQueueScore& rInitCandidates,
+void GomokuGame::GetInitCandidates(SearchTreeAlgorithmIf::PriorityQueueScore & rInitCandidates,
                                    const uint32_t initDepht) const
 {
-    static MinMax* pMinMax = MinMax::GetInstance();
+    static MinMax * pMinMax = MinMax::GetInstance();
     pMinMax->SetDeep(initDepht);
 
     // Allocate 60% capacity for CPU and 40% for Human.
@@ -717,7 +717,7 @@ void GomokuGame::GetInitCandidates(SearchTreeAlgorithmIf::PriorityQueueScore& rI
 }
 
 /// Provide randomized move.
-Board::PositionXY GomokuGame::RandomizeBestMove(const SearchTreeAlgorithmIf::PriorityQueueScore& nBestMoves,
+Board::PositionXY GomokuGame::RandomizeBestMove(const SearchTreeAlgorithmIf::PriorityQueueScore & nBestMoves,
                                                 const uint32_t diversityPercent) const
 {
     assert(diversityPercent < 100);

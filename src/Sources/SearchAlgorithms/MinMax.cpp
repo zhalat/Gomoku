@@ -13,16 +13,17 @@
 static bool LogStart = false;
 
 /// Converts vector xy to vector fieldPosition.
-static void VctrXy2VctrPosition(const vector<Board::PositionXY>& rVctrXy, vector<Board::PositionField>& rVctrPos,
+static void VctrXy2VctrPosition(const vector<Board::PositionXY> & rVctrXy, vector<Board::PositionField> & rVctrPos,
                                 const uint32_t size);
 
-MinMax* MinMax::GetInstance()
+MinMax * MinMax::GetInstance()
 {
-    static MinMax minMax{SearchTreeAlgorithmIf::DEFAULT_DEPTH, "MinMax"};
+    static MinMax minMax{ SearchTreeAlgorithmIf::DEFAULT_DEPTH, "MinMax" };
     return &minMax;
 }
 
-Board::PositionXY MinMax::FindBestMove(PriorityQueueScore& rBestMove, const vector<Board::PositionXY>& rInitCandidates)
+Board::PositionXY MinMax::FindBestMove(PriorityQueueScore & rBestMove,
+                                       const vector<Board::PositionXY> & rInitCandidates)
 {
     using namespace std;
 
@@ -101,15 +102,15 @@ Board::PositionXY MinMax::FindBestMove(PriorityQueueScore& rBestMove, const vect
     return retVal.m_move;
 }
 
-SearchTreeAlgorithmIf::ScoreForMove MinMax::GameTreeBrowsing(VectorUniqueType& rCandidates,
-                                                             PriorityQueueScore& bestMoves,
-                                                             vector<Board::PositionXY>& treeTracker,
+SearchTreeAlgorithmIf::ScoreForMove MinMax::GameTreeBrowsing(VectorUniqueType & rCandidates,
+                                                             PriorityQueueScore & bestMoves,
+                                                             vector<Board::PositionXY> & treeTracker,
                                                              const uint32_t deep)
 {
     uint32_t logger = 0;
 
     // Get singleton instance only once.
-    static Score& rScore = *Score::GetInstance();
+    static Score & rScore = *Score::GetInstance();
 
     // Player who has right to put move now.
     const Board::Player currentPlayerMove = WhoIsCurrentMove();
@@ -303,7 +304,7 @@ vector<Board::PositionField> MinMax::GenerateCand() const
     //	|. . . . . . . . . . . . . . .|
 
     vector<graph::Node> neighborhood;
-    const Board& board = *m_pBoard;
+    const Board & board = *m_pBoard;
 
     // Get neighborhoods:
     const auto citr = board.GetIterator();
@@ -362,12 +363,12 @@ vector<Board::PositionField> MinMax::GenerateCand() const
     return retVal;
 }
 
-MinMax::VectorUniqueType MinMax::UpdateCand(const VectorUniqueType& rCandidates, uint32_t position) const
+MinMax::VectorUniqueType MinMax::UpdateCand(const VectorUniqueType & rCandidates, uint32_t position) const
 {
-    const Board& board = *m_pBoardCopy;
+    const Board & board = *m_pBoardCopy;
 
     // Get neighbors of current position.
-    const Board::Neighbours& neighbours = board.GetNeighborhood(static_cast<Board::PositionField>(position));
+    const Board::Neighbours & neighbours = board.GetNeighborhood(static_cast<Board::PositionField>(position));
 
     VectorUniqueType neighborhood = rCandidates;
 
@@ -409,7 +410,7 @@ MinMax::VectorUniqueType MinMax::UpdateCand(const VectorUniqueType& rCandidates,
 #if defined(DEBBUG_MODE)
     // Keep order. It helps for investigation while debbuging.
     vector<Board::PositionField> order;
-    IteratorIf<uint32_t>* pIterator = neighborhood.GetIterator();
+    IteratorIf<uint32_t> * pIterator = neighborhood.GetIterator();
 
     for(pIterator->SetToBase(); pIterator->HasNext();)
     {
@@ -480,7 +481,7 @@ void MinMax::RemoveSnapshot(uint32_t depth)
     m_SnapshotContainerHuman[depth] = NULL;
 }
 
-static void VctrXy2VctrPosition(const vector<Board::PositionXY>& rVctrXy, vector<Board::PositionField>& rVctrPos,
+static void VctrXy2VctrPosition(const vector<Board::PositionXY> & rVctrXy, vector<Board::PositionField> & rVctrPos,
                                 const uint32_t boardSize)
 {
     for(auto cit = rVctrXy.begin(); cit != rVctrXy.end(); ++cit)

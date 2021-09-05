@@ -33,10 +33,10 @@
 
 /// Tells how many pawns/gaps/asterixes this thrat has.
 const std::unordered_map<ThreatFinder::ThreatAtom, int, std::hash<int>> Threat2CaseB::ATOM_NUMBER_2B = {
-    {ThreatFinder::MY_PAWN, 2},
-    {ThreatFinder::ENEMY_PAWN, 0},
-    {ThreatFinder::GAP, -1},     // it depends. .xx...* or  *...xx...*
-    {ThreatFinder::ASTERIX, -1}  // it depends.
+    { ThreatFinder::MY_PAWN, 2 },
+    { ThreatFinder::ENEMY_PAWN, 0 },
+    { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+    { ThreatFinder::ASTERIX, -1 }  // it depends.
 };
 
 /// Threat-mask for X player.
@@ -47,11 +47,11 @@ const ThreatFinder::ThreatPattern Threat2CaseB::m_ThreatPatternX[] = {
     // ox..x.*
     // ox...x*
     //{ 0x403C0102, 0 },
-    {0x201E4001, 1},
-    {0x100F4020, 2},
-    {0x08174020, 3},
-    {0x041B4020, 4},
-    {0x021D4020, 5},
+    { 0x201E4001, 1 },
+    { 0x100F4020, 2 },
+    { 0x08174020, 3 },
+    { 0x041B4020, 4 },
+    { 0x021D4020, 5 },
     //{ 0x011E4020, 6 },
 
     // Finds:
@@ -60,11 +60,11 @@ const ThreatFinder::ThreatPattern Threat2CaseB::m_ThreatPatternX[] = {
     // *..x.xo
     // *...xxo
     //{ 0x011E4020, 0 },
-    {0x400F2010, 1},
-    {0x40271008, 2},
-    {0x40330804, 3},
-    {0x40390402, 4},
-    {0x403C0201, 5},
+    { 0x400F2010, 1 },
+    { 0x40271008, 2 },
+    { 0x40330804, 3 },
+    { 0x40390402, 4 },
+    { 0x403C0201, 5 },
     //{ 0x403C0102, 6 }
 };
 
@@ -76,11 +76,11 @@ const ThreatFinder::ThreatPattern Threat2CaseB::m_ThreatPatternO[] = {
     // xo..o.*
     // xo...o*
     //{ 0x403C0201, 0 },
-    {0x201E0140, 1},
-    {0x100F2040, 2},
-    {0x08172040, 3},
-    {0x041B2040, 4},
-    {0x021D2040, 5},
+    { 0x201E0140, 1 },
+    { 0x100F2040, 2 },
+    { 0x08172040, 3 },
+    { 0x041B2040, 4 },
+    { 0x021D2040, 5 },
     //{ 0x011E2040, 6 },
 
     // Finds:
@@ -89,11 +89,11 @@ const ThreatFinder::ThreatPattern Threat2CaseB::m_ThreatPatternO[] = {
     // *..o.ox
     // *...oox
     //{ 0x011E2040, 0 },
-    {0x400F1020, 1},
-    {0x40270810, 2},
-    {0x40330408, 3},
-    {0x40390204, 4},
-    {0x403C0102, 5},
+    { 0x400F1020, 1 },
+    { 0x40270810, 2 },
+    { 0x40330408, 3 },
+    { 0x40390204, 4 },
+    { 0x403C0102, 5 },
     //{ 0x403C0201, 6 }
 };
 
@@ -102,7 +102,7 @@ const uint32_t Threat2CaseB::m_ThreatPatternElements = NUMELEM(m_ThreatPatternX)
 
 /// Define all points of view. Those are taken from m_ThreatPattern.
 /// For both player is the same.
-const uint32_t Threat2CaseB::m_PointsView[] = {1, 2, 3, 4, 5};
+const uint32_t Threat2CaseB::m_PointsView[] = { 1, 2, 3, 4, 5 };
 
 Threat2CaseB::Threat2CaseB() : ThreatFinder(PATTERN_LENGHT, m_PointsView, NUMELEM(m_PointsView), ATOM_NUMBER_2B)
 {
@@ -276,7 +276,7 @@ bool Threat2CaseB::CheckThreatSymmetric(const uint32_t pretendThreat, const uint
 
 /// Gets threat up details after threat has been found.
 void Threat2CaseB::GetThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
-                                      ThreatUpDetails& rThreatUpDetails) const
+                                      ThreatUpDetails & rThreatUpDetails) const
 {
     const uint32_t stepForward      = PATTERN_LENGHT - m_ThreatDownDetails.m_PointOfView - 1;
     const uint32_t stepBackward     = m_ThreatDownDetails.m_PointOfView;

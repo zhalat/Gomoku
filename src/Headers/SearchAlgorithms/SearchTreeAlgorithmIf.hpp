@@ -73,14 +73,14 @@ class SearchTreeAlgorithmIf
             m_move  = Board::PositionXY(Board::PositionXY::INVALID_FIELD, Board::PositionXY::INVALID_FIELD);
         }
 
-        bool operator<(const ScoreForMove& rX) const
+        bool operator<(const ScoreForMove & rX) const
         {
             const bool isGrather = (this->m_score < rX.m_score);
 
             return isGrather;
         }
 
-        bool operator>(const ScoreForMove& rX) const
+        bool operator>(const ScoreForMove & rX) const
         {
             const bool isLess = (this->m_score > rX.m_score);
 
@@ -101,7 +101,7 @@ class SearchTreeAlgorithmIf
     /// @par Full Description
     /// Set board for analyze, by creating copy of provided board score.
     ///////////////////////////////////////////////////////////////////////
-    virtual void SetBoardScore(const BoardScore& rBoardScoreCpu, const BoardScore& rBoardScoreHuman)
+    virtual void SetBoardScore(const BoardScore & rBoardScoreCpu, const BoardScore & rBoardScoreHuman)
     {
         m_pBoardScoreCpu   = &rBoardScoreCpu;
         m_pBoardScoreHuman = &rBoardScoreHuman;
@@ -128,8 +128,8 @@ class SearchTreeAlgorithmIf
     /// @retval Best move.
     ///////////////////////////////////////////////////////////////////////
     virtual Board::PositionXY FindBestMove(
-        PriorityQueueScore& rBestMove,
-        const vector<Board::PositionXY>& rInitCandidates = vector<Board::PositionXY>()) = 0;
+        PriorityQueueScore & rBestMove,
+        const vector<Board::PositionXY> & rInitCandidates = vector<Board::PositionXY>()) = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: SearchTreeAlgorithmIf::GenerateCand
@@ -183,7 +183,7 @@ class SearchTreeAlgorithmIf
     ///
     /// @retval Algorithm's name.
     ///////////////////////////////////////////////////////////////////////
-    const char* const GetName() const { return m_pName; }
+    const char * const GetName() const { return m_pName; }
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: SearchTreeAlgorithmIf::SwitchPlayer
@@ -261,7 +261,7 @@ class SearchTreeAlgorithmIf
     bool IsTimerElapsed() const {};
 
     /// Constructor.
-    SearchTreeAlgorithmIf(const uint32_t deep, const char* const pName) :
+    SearchTreeAlgorithmIf(const uint32_t deep, const char * const pName) :
         m_DeepSearch(deep),
         m_CurrentPlayerMove(Board::PLAYER_EMPTY),
         m_pBoard(NULL),
@@ -288,18 +288,18 @@ class SearchTreeAlgorithmIf
     Board::Player m_CurrentPlayerMove;
 
     // BoardScore state.
-    const Board* m_pBoard;
-    const BoardScore* m_pBoardScoreCpu;
-    const BoardScore* m_pBoardScoreHuman;
+    const Board * m_pBoard;
+    const BoardScore * m_pBoardScoreCpu;
+    const BoardScore * m_pBoardScoreHuman;
 
     // Evaluation board state.
-    StateEvaluationIf* m_pStateEvaluationIf;
+    StateEvaluationIf * m_pStateEvaluationIf;
 
     // Timer.
     uint32_t m_Timer;
 
     // Algorithm's name.
-    const char* const m_pName;
+    const char * const m_pName;
 };
 
 #endif /* SEARCH_ALGO_HPP_ */
