@@ -18,17 +18,17 @@
 // Singleton remover.
 void MinMaxSingletonRemove()
 {
-    MinMax* pMinMax = MinMax::GetInstance();
+    MinMax * pMinMax = MinMax::GetInstance();
     pMinMax->~MinMax();
 }
 
 void ScoreSingletonRemove()
 {
-    Score* pScore = Score::GetInstance();
+    Score * pScore = Score::GetInstance();
     pScore->~Score();
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char * argv[])
 {
     srand(time(NULL));
 
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 
     // Retrieve and valid passed arguments.
     const uint32_t boardSize = static_cast<uint32_t>(atoi(*(++argv)));
-    const char* pHumanColor  = *(++argv);
+    const char * pHumanColor = *(++argv);
     const uint32_t gameLevel = static_cast<uint32_t>(atoi(*(++argv)));
     const bool isRandomize   = static_cast<bool>(atoi(*(++argv)));
     const uint32_t maxTime   = static_cast<uint32_t>(atoi(*(++argv)));

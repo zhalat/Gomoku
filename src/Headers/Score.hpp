@@ -22,7 +22,7 @@ class Score
     struct ThreatScore
     {
         const ThreatFinder::KindOfThreats threatKind;
-        ThreatFinder* const m_pThreat;
+        ThreatFinder * const m_pThreat;
         const uint32_t m_Score;
     };
 
@@ -77,7 +77,7 @@ class Score
     ///
     /// @return pointer to Score instance.
     /////////////////////////////////////////////////////////////////////////////
-    static Score* GetInstance();
+    static Score * GetInstance();
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Score::UpdateScore
@@ -92,7 +92,7 @@ class Score
     /// @param boardScore Board score needs to be updated.
     /// @param xy List of new moves.
     ///////////////////////////////////////////////////////////////////////
-    void UpdateScore(BoardScore& boardScore, const vector<Board::PositionXY>& xyList,
+    void UpdateScore(BoardScore & boardScore, const vector<Board::PositionXY> & xyList,
                      const uint32_t multiplier = ThreatFinder::ThreatLocation::DEFAULT_MULTIPLIER);
 
     ///////////////////////////////////////////////////////////////////////
@@ -107,15 +107,15 @@ class Score
     /// @param boardScore Board score needs to be updated.
     /// @param xy A new move.
     ///////////////////////////////////////////////////////////////////////
-    void UpdateScore(BoardScore& boardScore, const Board::PositionXY xy,
+    void UpdateScore(BoardScore & boardScore, const Board::PositionXY xy,
                      const uint32_t multiplier = ThreatFinder::ThreatLocation::DEFAULT_MULTIPLIER);
     virtual ~Score() = default;
 
    private:
-    Score(const Score&) = delete;
-    Score& operator=(const Score&) = delete;
-    Score()                        = default;
-    void SetBoard(const Board& rBoard);
+    Score(const Score &) = delete;
+    Score & operator=(const Score &) = delete;
+    Score()                          = default;
+    void SetBoard(const Board & rBoard);
 };
 
 /***************************************************************************

@@ -12,7 +12,7 @@ class VectorLightIterator : public IteratorIf<uint32_t>
     virtual uint32_t GetIndex() const;
     virtual void SetToBase();
 
-    VectorLightIterator(const uint32_t (&rDataArray)[VectorLight::VECTOR_SIZE], const uint32_t& rCursor,
+    VectorLightIterator(const uint32_t (&rDataArray)[VectorLight::VECTOR_SIZE], const uint32_t & rCursor,
                         const uint32_t emptyVal) :
         m_rDataArray(rDataArray), m_rCursor(rCursor), m_Cntr(0), m_ReleasedSpace(emptyVal)
     {
@@ -23,7 +23,7 @@ class VectorLightIterator : public IteratorIf<uint32_t>
 
    private:
     const uint32_t (&m_rDataArray)[VectorLight::VECTOR_SIZE];
-    const uint32_t& m_rCursor;
+    const uint32_t & m_rCursor;
     uint32_t m_Cntr;
     const uint32_t m_ReleasedSpace;
 };

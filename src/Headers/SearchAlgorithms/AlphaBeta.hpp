@@ -40,7 +40,8 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     /// @retval Best move.
     ///////////////////////////////////////////////////////////////////////
     virtual Board::PositionXY FindBestMove(
-        PriorityQueueScore& rBestMove, const vector<Board::PositionXY>& rInitCandidates = vector<Board::PositionXY>());
+        PriorityQueueScore & rBestMove,
+        const vector<Board::PositionXY> & rInitCandidates = vector<Board::PositionXY>());
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: SearchTreeAlgorithmIf::GenerateCand
@@ -65,7 +66,7 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     ///
     /// @return pointer to AlphaBeta instance.
     /////////////////////////////////////////////////////////////////////////////
-    static AlphaBeta* GetInstance();
+    static AlphaBeta * GetInstance();
 
     /// Only for unit test. DO NOT USE IT.
     void BoardScoreCopyInitUT() { BoardScoreCopy(); }
@@ -95,7 +96,7 @@ class AlphaBeta : public SearchTreeAlgorithmIf
 
    private:
     /// Constructor.
-    AlphaBeta(const uint32_t deep, const char* const pName) :
+    AlphaBeta(const uint32_t deep, const char * const pName) :
         SearchTreeAlgorithmIf(deep, pName), m_pBoardScoreCpuCopy(NULL), m_pBoardScoreHumanCopy(NULL), m_pBoardCopy(NULL)
     {
         memset(m_SnapshotContainerCpu, 0, sizeof(m_SnapshotContainerCpu));
@@ -105,10 +106,10 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     }
 
     /// Private copy constructor - forbid copying.
-    AlphaBeta(const AlphaBeta&) : SearchTreeAlgorithmIf(0, NULL) { assert(false); }
+    AlphaBeta(const AlphaBeta &) : SearchTreeAlgorithmIf(0, NULL) { assert(false); }
 
     /// Private assign operator - forbid copying.
-    AlphaBeta& operator=(const AlphaBeta&) { assert(false); }
+    AlphaBeta & operator=(const AlphaBeta &) { assert(false); }
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: AlphaBeta::UpdateCand
@@ -125,7 +126,7 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     ///
     /// @retval Updated candidate list.
     ///////////////////////////////////////////////////////////////////////
-    VectorUniqueType UpdateCand(const VectorUniqueType& rCandidates, const uint32_t position) const;
+    VectorUniqueType UpdateCand(const VectorUniqueType & rCandidates, const uint32_t position) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: AlphaBeta::GameTreeBrowsing
@@ -145,9 +146,9 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     ///
     /// @retval The best move.
     ///////////////////////////////////////////////////////////////////////
-    ScoreForMove GameTreeBrowsing(VectorUniqueType& rCandidates, PriorityQueueScore& rBestMovesPriorityQueue,
-                                  vector<Board::PositionXY>& rTreeTracker, int alpha, int beta, bool isMaximizingPlayer,
-                                  const uint32_t deep = 0);
+    ScoreForMove GameTreeBrowsing(VectorUniqueType & rCandidates, PriorityQueueScore & rBestMovesPriorityQueue,
+                                  vector<Board::PositionXY> & rTreeTracker, int alpha, int beta,
+                                  bool isMaximizingPlayer, const uint32_t deep = 0);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: AlphaBeta::UpdateCand4ExtendGaps
@@ -160,7 +161,7 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     /// @param rCandidates Initial movements candidate list.
     ///
     ///////////////////////////////////////////////////////////////////////
-    void UpdateCand4ExtendGaps(VectorUniqueType& rCandidates) const;
+    void UpdateCand4ExtendGaps(VectorUniqueType & rCandidates) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: AlphaBeta::UpdateCand4ThreeListGaps
@@ -173,7 +174,7 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     /// @param rCandidates Initial movements candidate list.
     ///
     ///////////////////////////////////////////////////////////////////////
-    void UpdateCand4ThreeListGaps(VectorUniqueType& rCandidates) const;
+    void UpdateCand4ThreeListGaps(VectorUniqueType & rCandidates) const;
 
     /// Do deep copy of Board Score(m_pBoardScore) in order not using original board.
     void BoardScoreCopy();
@@ -184,13 +185,13 @@ class AlphaBeta : public SearchTreeAlgorithmIf
     void RemoveSnapshot(uint32_t depth);
 
     // BoardScore state - copy.
-    BoardScore* m_pBoardScoreCpuCopy;
-    BoardScore* m_pBoardScoreHumanCopy;
-    Board* m_pBoardCopy;
+    BoardScore * m_pBoardScoreCpuCopy;
+    BoardScore * m_pBoardScoreHumanCopy;
+    Board * m_pBoardCopy;
 
     // For managing snapshots.
-    BoardScore* m_SnapshotContainerCpu[SearchTreeAlgorithmIf::DEPTH_MAX];
-    BoardScore* m_SnapshotContainerHuman[SearchTreeAlgorithmIf::DEPTH_MAX];
+    BoardScore * m_SnapshotContainerCpu[SearchTreeAlgorithmIf::DEPTH_MAX];
+    BoardScore * m_SnapshotContainerHuman[SearchTreeAlgorithmIf::DEPTH_MAX];
 
     // For debbugging. Record game tree.
     Logger m_Logger;

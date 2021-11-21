@@ -50,7 +50,7 @@ class VectorLight
     ///
     /// @retval  Iterator for collection.
     ///////////////////////////////////////////////////////////////////////
-    virtual IteratorIf<uint32_t>* GetIterator() const;
+    virtual IteratorIf<uint32_t> * GetIterator() const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: VectorLight::IsPresent
@@ -114,9 +114,9 @@ class VectorLight
     void Clear();
 
     VectorLight(const uint32_t initVal);
-    VectorLight(const VectorLight& rVectorLight);
+    VectorLight(const VectorLight & rVectorLight);
     virtual ~VectorLight();
-    VectorLight& operator=(const std::vector<Board::PositionField>& rStlVector);
+    VectorLight & operator=(const std::vector<Board::PositionField> & rStlVector);
 
    private:
     const uint32_t m_InitVal;
@@ -125,7 +125,7 @@ class VectorLight
     uint32_t m_MarkArray[VECTOR_SIZE];
     uint32_t m_Cursor;
     uint32_t m_NumberOfElement;
-    IteratorIf<uint32_t>* m_pIterator;
+    IteratorIf<uint32_t> * m_pIterator;
 
 #warning "Such dependency should be removed."
     friend class TEST_VectorLightTest_InitTest_Test;

@@ -7,21 +7,21 @@ template<typename T>
 class Singleton
 {
    public:
-    static T& getInstance() noexcept(std::is_nothrow_constructible<T>::value)
+    static T & getInstance() noexcept(std::is_nothrow_constructible<T>::value)
     {
         static T instance;
         return instance;
     }
 
     // thread local instance
-    static thread_local T& getThreadLocalInstance() noexcept(std::is_nothrow_constructible<T>::value)
+    static thread_local T & getThreadLocalInstance() noexcept(std::is_nothrow_constructible<T>::value)
     {
         static T instance;
         return instance;
     }
 
    protected:
-    Singleton(const Singleton&) = delete;
-    Singleton& operator=(const Singleton&) = delete;
-    Singleton() noexcept                   = default;
+    Singleton(const Singleton &) = delete;
+    Singleton & operator=(const Singleton &) = delete;
+    Singleton() noexcept                     = default;
 };

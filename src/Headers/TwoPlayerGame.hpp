@@ -47,20 +47,20 @@ class TwoPlayersGame
 {
    public:
     // BackEnd -> GUI.
-    static const constexpr char* TERMINATOR_MSG        = "\n##\n";
-    static const constexpr char* WINNER_MSG            = "\n--->>Game over. You won.\n";
-    static const constexpr char* LOOSER_MSG            = "\n--->>Game over. Computer won.\n";
-    static const constexpr char* STALEMATE_MSG         = "\n--->>Game over. Stalemate.\n";
-    static const constexpr char* YOUR_MOVE_MSG         = "\n--->>Your move:\n";
-    static const constexpr char* LAST_CPU_MOVE_MSG     = "\n--->>Last cpu move:\n";
-    static const constexpr char* LAST_HUMAN_MOVE_MSG   = "\n--->>Last human move:\n";
-    static const constexpr char* INVALID_MOVE_MSG      = "\n!--->>Invalid move.\n";
-    static const constexpr char* INVALID_PARAMETER_MSG = "\n!--->>Invalid parameter.\n";
-    static const constexpr char* CHOOSING_COLOR_MSG    = "\n--->>Choose your color: x or o.\n";
-    static const constexpr char* WINNER_MOVIES_MARK    = "w";
+    static const constexpr char * TERMINATOR_MSG        = "\n##\n";
+    static const constexpr char * WINNER_MSG            = "\n--->>Game over. You won.\n";
+    static const constexpr char * LOOSER_MSG            = "\n--->>Game over. Computer won.\n";
+    static const constexpr char * STALEMATE_MSG         = "\n--->>Game over. Stalemate.\n";
+    static const constexpr char * YOUR_MOVE_MSG         = "\n--->>Your move:\n";
+    static const constexpr char * LAST_CPU_MOVE_MSG     = "\n--->>Last cpu move:\n";
+    static const constexpr char * LAST_HUMAN_MOVE_MSG   = "\n--->>Last human move:\n";
+    static const constexpr char * INVALID_MOVE_MSG      = "\n!--->>Invalid move.\n";
+    static const constexpr char * INVALID_PARAMETER_MSG = "\n!--->>Invalid parameter.\n";
+    static const constexpr char * CHOOSING_COLOR_MSG    = "\n--->>Choose your color: x or o.\n";
+    static const constexpr char * WINNER_MOVIES_MARK    = "w";
 
     // GUI -> BackEnd.
-    static const constexpr char* NEW_GAME = "--->>NewGame.";
+    static const constexpr char * NEW_GAME = "--->>NewGame.";
 
     enum Level
     {
@@ -90,8 +90,8 @@ class TwoPlayersGame
     /// @param outStream  Output stream.
     ///////////////////////////////////////////////////////////////////////
     virtual void Init(const uint32_t size, const Board::Player humanColor, const TwoPlayersGame::Level level,
-                      const bool isRandomize, const uint32_t maxTime = 0, std::istream& inStream = std::cin,
-                      std::ostream& outStream = std::cout) = 0;
+                      const bool isRandomize, const uint32_t maxTime = 0, std::istream & inStream = std::cin,
+                      std::ostream & outStream = std::cout) = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: TwoPlayersGame::Play
@@ -150,7 +150,7 @@ class TwoPlayersGame
     ///
     /// @retval True if move is valid, false otherwise.
     /////////////////////////////////////////////////////////////////////////////
-    virtual bool ValidateMove(const Board::PositionXY& rXy) const = 0;
+    virtual bool ValidateMove(const Board::PositionXY & rXy) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: TwoPlayersGame::WinnerCheck
@@ -215,18 +215,18 @@ class TwoPlayersGame
 
    protected:
     // Board.
-    Board* m_pBoard;
+    Board * m_pBoard;
 
     // Pointers to human and computer score.
-    BoardScore* m_pBoardScoreCpu;
-    BoardScore* m_pBoardScoreHuman;
+    BoardScore * m_pBoardScoreCpu;
+    BoardScore * m_pBoardScoreHuman;
 
     // Computer/Human player color.
     Board::Player m_ComputerColor;
     Board::Player m_HumanColor;
 
     // Algorithm for searching best move.
-    SearchTreeAlgorithmIf* m_pSearchAlgorithm;
+    SearchTreeAlgorithmIf * m_pSearchAlgorithm;
 
     // Board size.
     uint32_t m_Size;

@@ -164,7 +164,7 @@ class GomokuBoard
     /// @param  xy  Row/column position.
     /// @retval   True if success, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool GetLastMove(PositionXY& xy) const;
+    virtual bool GetLastMove(PositionXY & xy) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetFirstMove
@@ -177,7 +177,7 @@ class GomokuBoard
     /// @param  xy  Row/column position.
     /// @retval   True if success, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool GetFirstMove(PositionXY& xy) const;
+    virtual bool GetFirstMove(PositionXY & xy) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetMoveNumber
@@ -325,7 +325,7 @@ class GomokuBoard
     /// @param  direction Direction to be taken into account.
     /// @param  steps Number of steps. Default 1 step.
     ///////////////////////////////////////////////////////////////////////
-    virtual void GoDirection(PositionXY& xy, const Direction direction, const uint32_t steps = 1) const;
+    virtual void GoDirection(PositionXY & xy, const Direction direction, const uint32_t steps = 1) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: GomokuBoard::Clone
@@ -337,7 +337,7 @@ class GomokuBoard
     ///
     /// @retval Reference to clone of current state of Board.
     ///////////////////////////////////////////////////////////////////////
-    virtual Board& Clone() const;
+    virtual Board & Clone() const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetNeighborhood
@@ -352,7 +352,7 @@ class GomokuBoard
     ///
     /// @retval Reference to container where neighbours are ketp.
     ///////////////////////////////////////////////////////////////////////
-    virtual const Neighbours& GetNeighborhood(const PositionField field) const;
+    virtual const Neighbours & GetNeighborhood(const PositionField field) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetNeighborhood
@@ -389,7 +389,7 @@ class GomokuBoard
     ///
     /// @param rObserver An observer object.
     /////////////////////////////////////////////////////////////////////////////
-    virtual void RegisterObserver(const Observer::ObserverIf& rObserver);
+    virtual void RegisterObserver(const Observer::ObserverIf & rObserver);
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: ObserverSubjectIf::RemoveObserver
@@ -401,7 +401,7 @@ class GomokuBoard
     ///
     /// @return True if registration successful, false otherwise.
     /////////////////////////////////////////////////////////////////////////////
-    virtual bool RemoveObserver(const Observer::ObserverIf& rObserver);
+    virtual bool RemoveObserver(const Observer::ObserverIf & rObserver);
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: ObserverSubjectIf::Announce
@@ -427,7 +427,7 @@ class GomokuBoard
     GomokuBoard(uint32_t size);
 
     /// Copy constructor
-    GomokuBoard(const GomokuBoard& rBoard);
+    GomokuBoard(const GomokuBoard & rBoard);
 
     /// Destructor.
     virtual ~GomokuBoard(void)

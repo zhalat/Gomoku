@@ -121,42 +121,42 @@ class Board
         // Converter PositionField2PositionXY.
         PositionXY(const uint32_t boardSize, const PositionField field);
 
-        bool operator==(const PositionXY& xy) const
+        bool operator==(const PositionXY & xy) const
         {
             const bool isEqual = ((this->m_x == xy.m_x) && (this->m_y == xy.m_y));
 
             return isEqual;
         }
 
-        bool operator!=(const PositionXY& xy) const
+        bool operator!=(const PositionXY & xy) const
         {
             const bool isNotEqual = !(*this == xy);
 
             return isNotEqual;
         }
 
-        bool operator<(const PositionXY& xy) const
+        bool operator<(const PositionXY & xy) const
         {
             const bool isGrather = ((this->m_x < xy.m_x) || ((this->m_x == xy.m_x) && (this->m_y < xy.m_y)));
 
             return isGrather;
         }
 
-        bool operator>(const PositionXY& xy) const
+        bool operator>(const PositionXY & xy) const
         {
             const bool isLower = ((this->m_x > xy.m_x) || ((this->m_x == xy.m_x) && (this->m_y > xy.m_y)));
 
             return isLower;
         }
 
-        bool operator<=(const PositionXY& xy) const
+        bool operator<=(const PositionXY & xy) const
         {
             const bool isLowerOrEqual = ((*this < xy) || (*this == xy));
 
             return isLowerOrEqual;
         }
 
-        bool operator>=(const PositionXY& xy) const
+        bool operator>=(const PositionXY & xy) const
         {
             const bool isLowerOrEqual = ((*this > xy) || (*this == xy));
 
@@ -176,7 +176,7 @@ class Board
         PositionField(uint32_t field = 0) : m_field(field) {}
 
         // Converter: PositionXY2PositionField.
-        PositionField(const uint32_t boardSize, const PositionXY& xy) { this->m_field = boardSize * xy.m_x + xy.m_y; }
+        PositionField(const uint32_t boardSize, const PositionXY & xy) { this->m_field = boardSize * xy.m_x + xy.m_y; }
 
         // Converter: PositionField2Node. Usefull in unit tests.
         operator graph::Node() const { return m_field; }
@@ -210,7 +210,7 @@ class Board
     static constexpr int32_t NO_NEIGHBOR_FOUND       = -2;
     static constexpr int32_t OPPONENT_NEIGHBOR_FOUND = -1;
 
-    inline static Player String2Player(const char* pString)
+    inline static Player String2Player(const char * pString)
     {
         assert(pString);
 
@@ -236,9 +236,9 @@ class Board
         return retVal;
     };
 
-    inline static const char* Player2String(const Player player)
+    inline static const char * Player2String(const Player player)
     {
-        const char* retVal = NULL;
+        const char * retVal = NULL;
 
         if(PLAYER_A == player)
         {
@@ -358,7 +358,7 @@ class Board
     /// @param  xy  Row/column position.
     /// @retval   True if success, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool GetLastMove(PositionXY& xy) const = 0;
+    virtual bool GetLastMove(PositionXY & xy) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetFirstMove
@@ -371,7 +371,7 @@ class Board
     /// @param  xy  Row/column position.
     /// @retval   True if success, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool GetFirstMove(PositionXY& xy) const = 0;
+    virtual bool GetFirstMove(PositionXY & xy) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetMoveNumber
@@ -519,7 +519,7 @@ class Board
     /// @param  direction Direction to be taken into account.
     /// @param  steps Number of steps. Default 1 step.
     ///////////////////////////////////////////////////////////////////////
-    virtual void GoDirection(PositionXY& xy, const Direction direction, const uint32_t steps = 1) const = 0;
+    virtual void GoDirection(PositionXY & xy, const Direction direction, const uint32_t steps = 1) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::Clone
@@ -531,7 +531,7 @@ class Board
     ///
     /// @retval Pointer to clone of current state of Board.
     ///////////////////////////////////////////////////////////////////////
-    virtual Board& Clone() const = 0;
+    virtual Board & Clone() const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetNeighborhood
@@ -548,7 +548,7 @@ class Board
     ///
     /// @retval Reference to container where neighbours are ketp.
     ///////////////////////////////////////////////////////////////////////
-    virtual const Neighbours& GetNeighborhood(const PositionField field) const = 0;
+    virtual const Neighbours & GetNeighborhood(const PositionField field) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::GetNeighborhood
@@ -599,7 +599,7 @@ class Board
     ///
     /// @retval  Iterator for board.
     ///////////////////////////////////////////////////////////////////////
-    virtual IteratorIf<graph::Node>* GetIterator() const { return m_pIterator; }
+    virtual IteratorIf<graph::Node> * GetIterator() const { return m_pIterator; }
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Board::OppositePlayer
@@ -655,13 +655,13 @@ class Board
     vector<PositionXY> m_MoveHistory;
 
     // Handler for board structure.
-    graph::Graph* m_pBoardStructure;
+    graph::Graph * m_pBoardStructure;
 
     // Handler to iterator.
-    IteratorIf<graph::Node>* m_pIterator;
+    IteratorIf<graph::Node> * m_pIterator;
 
     // Neighborhood of each fields for quick access.
-    Neighbours* m_pNeighbours;
+    Neighbours * m_pNeighbours;
 
    private:
     ///////////////////////////////////////////////////////////////////////
@@ -674,7 +674,7 @@ class Board
     ///
     /// @param   Number of white marks to print.
     ///////////////////////////////////////////////////////////////////////
-    static void PrintWhiteMark(std::ostream& _stream, const uint32_t i)
+    static void PrintWhiteMark(std::ostream & _stream, const uint32_t i)
     {
         for(uint32_t j = 0; j < i; ++j)
         {
@@ -683,7 +683,7 @@ class Board
     }
 
     /// ------ Friends.
-    friend std::ostream& operator<<(std::ostream& _stream, const Board& rBoard)
+    friend std::ostream & operator<<(std::ostream & _stream, const Board & rBoard)
     {
         // Number of tens of board size.
         const uint32_t T = rBoard.GetSize() / 10;
@@ -810,7 +810,7 @@ class Board
         return _stream;
     }
 
-    friend std::ostream& operator<<(std::ostream& _stream, const PositionXY& rPositionXY)
+    friend std::ostream & operator<<(std::ostream & _stream, const PositionXY & rPositionXY)
     {
         _stream << "(" << rPositionXY.m_x << ", " << rPositionXY.m_y << ")" << endl;
         return _stream;

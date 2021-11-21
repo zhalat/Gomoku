@@ -93,7 +93,7 @@ class Threat2CaseC : public ThreatFinder
     /// @retval Threat up details.
     ///////////////////////////////////////////////////////////////////////
     virtual void GetThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
-                                    ThreatUpDetails& rThreatUpDetails) const;
+                                    ThreatUpDetails & rThreatUpDetails) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: ThreatFinder::IsBreakWhenFirstFound
@@ -126,10 +126,10 @@ class Threat2CaseC : public ThreatFinder
 
    private:
     /// Private copy constructor - forbid copying.
-    Threat2CaseC(const Threat2CaseC&);
+    Threat2CaseC(const Threat2CaseC &);
 
     /// Private assignment operator - forbid copying.
-    Threat2CaseC& operator=(const Threat2CaseC&);
+    Threat2CaseC & operator=(const Threat2CaseC &);
 
     /// Threat pattern for X player.
     static const ThreatPattern m_ThreatPatternX[];

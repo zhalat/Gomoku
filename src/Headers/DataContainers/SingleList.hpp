@@ -10,8 +10,8 @@ class Node
 {
    public:
     parNode m_Data;
-    Node* m_pNext;
-    Node(parNode input, Node* ptr = NULL)
+    Node * m_pNext;
+    Node(parNode input, Node * ptr = NULL)
     {
         m_Data  = input;
         m_pNext = ptr;
@@ -30,7 +30,7 @@ class SingleList
     bool IsEmpty() const;
     bool IsPresent(const parList data) const;
     uint32_t Size() const;
-    IteratorIf<parList>* GetIterator() const;
+    IteratorIf<parList> * GetIterator() const;
 
     SingleList() : m_pHead(NULL), m_pTail(NULL), m_pIterator(NULL)
     {
@@ -43,13 +43,13 @@ class SingleList
 
    private:
     // Prevent either copying or assigning (>= C++11).
-    SingleList(const SingleList&) = delete;
-    SingleList& operator=(const SingleList&) = delete;
+    SingleList(const SingleList &) = delete;
+    SingleList & operator=(const SingleList &) = delete;
 
-    Node<parList>* m_pHead;
-    Node<parList>* m_pTail;
+    Node<parList> * m_pHead;
+    Node<parList> * m_pTail;
 
-    IteratorIf<parList>* m_pIterator;
+    IteratorIf<parList> * m_pIterator;
 };
 
 template<class parList>
@@ -57,7 +57,7 @@ SingleList<parList>::~SingleList()
 {
     if(!IsEmpty())
     {
-        Node<parList>* ptr = m_pHead;
+        Node<parList> * ptr = m_pHead;
         for(; NULL != ptr;)
         {
             ptr = m_pHead->m_pNext;
@@ -101,9 +101,9 @@ void SingleList<parList>::AddToHead(parList data)
     }
     else
     {
-        Node<parList>* ptr = new Node<parList>(data, NULL);
-        ptr->m_pNext       = m_pHead;
-        m_pHead            = ptr;
+        Node<parList> * ptr = new Node<parList>(data, NULL);
+        ptr->m_pNext        = m_pHead;
+        m_pHead             = ptr;
     }
 }
 
@@ -125,7 +125,7 @@ parList SingleList<parList>::RemoveFromTail()
         }
         else
         {
-            Node<parList>* ptr;
+            Node<parList> * ptr;
             for(ptr = m_pHead; ptr->m_pNext != m_pTail; ptr = ptr->m_pNext)
             {
                 // nothing to do.
@@ -158,8 +158,8 @@ parList SingleList<parList>::RemoveFromHead()
         }
         else
         {
-            tempElement        = m_pHead->m_Data;
-            Node<parList>* ptr = m_pHead->m_pNext;
+            tempElement         = m_pHead->m_Data;
+            Node<parList> * ptr = m_pHead->m_pNext;
             delete m_pHead;
             m_pHead = ptr;
         }
@@ -170,7 +170,7 @@ parList SingleList<parList>::RemoveFromHead()
 template<class parList>
 bool SingleList<parList>::IsPresent(parList data) const
 {
-    Node<parList>* ptr;
+    Node<parList> * ptr;
     for(ptr = m_pHead; NULL != ptr; ptr = ptr->m_pNext)
     {
         if(ptr->m_Data == data)
@@ -189,7 +189,7 @@ uint32_t SingleList<parList>::Size() const
         // One element is for sure, even if pHead == pTail
         ++retVal;
 
-        for(Node<parList>* ptr = m_pHead; ptr != m_pTail; ptr = ptr->m_pNext)
+        for(Node<parList> * ptr = m_pHead; ptr != m_pTail; ptr = ptr->m_pNext)
         {
             ++retVal;
         }
@@ -210,8 +210,8 @@ parList SingleList<parList>::RemoveNode(parList data)
     }
     else if(IsPresent(data))
     {
-        Node<parList>* ptr       = NULL;
-        Node<parList>* ptrShadow = m_pHead;
+        Node<parList> * ptr       = NULL;
+        Node<parList> * ptrShadow = m_pHead;
 
         for(ptr = m_pHead; NULL != ptr; ptr = ptr->m_pNext)
         {
@@ -241,9 +241,9 @@ parList SingleList<parList>::RemoveNode(parList data)
 }
 
 template<class parList>
-IteratorIf<parList>* SingleList<parList>::GetIterator() const
+IteratorIf<parList> * SingleList<parList>::GetIterator() const
 {
-    IteratorIf<parList>* retVal = NULL;
+    IteratorIf<parList> * retVal = NULL;
 
     // Don't give handle for iteratr while it is in use by another.
     if(!m_pIterator->IsInUse())

@@ -71,8 +71,8 @@ class GomokuGame : public TwoPlayersGame
     /// @param outStream   Output stream. std::cout is default.
     ///////////////////////////////////////////////////////////////////////
     virtual void Init(const uint32_t size, const Board::Player humanColor, const TwoPlayersGame::Level level,
-                      const bool isRandomize, const uint32_t maxTime = 0, std::istream& inStream = std::cin,
-                      std::ostream& outStream = std::cout);
+                      const bool isRandomize, const uint32_t maxTime = 0, std::istream & inStream = std::cin,
+                      std::ostream & outStream = std::cout);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: GomokuGame::Play
@@ -131,7 +131,7 @@ class GomokuGame : public TwoPlayersGame
     ///
     /// @retval True if move is valid, false otherwise.
     /////////////////////////////////////////////////////////////////////////////
-    virtual bool ValidateMove(const Board::PositionXY& rXy) const;
+    virtual bool ValidateMove(const Board::PositionXY & rXy) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: TwoPlayersGame::WinnerCheck
@@ -197,7 +197,7 @@ class GomokuGame : public TwoPlayersGame
     /// @param rInitCandidates Initial best candidates.
     /// @param initDepht       Depth to search in the tree.
     ///////////////////////////////////////////////////////////////////////
-    void GetInitCandidates(SearchTreeAlgorithmIf::PriorityQueueScore& rInitCandidates, const uint32_t initDepht) const;
+    void GetInitCandidates(SearchTreeAlgorithmIf::PriorityQueueScore & rInitCandidates, const uint32_t initDepht) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: GomokuGame::RandomizeBestMove
@@ -210,12 +210,12 @@ class GomokuGame : public TwoPlayersGame
     /// @param nBestMoves 		Initial best candidates.
     /// @param diversityPercent Says how much % can be weaker comparing to top.
     ///////////////////////////////////////////////////////////////////////
-    Board::PositionXY RandomizeBestMove(const SearchTreeAlgorithmIf::PriorityQueueScore& nBestMoves,
+    Board::PositionXY RandomizeBestMove(const SearchTreeAlgorithmIf::PriorityQueueScore & nBestMoves,
                                         const uint32_t diversityPercent) const;
 
     // Stream from/to data to be read/write.
-    std::istream* pInputStream;
-    std::ostream* pOutputStream;
+    std::istream * pInputStream;
+    std::ostream * pOutputStream;
 
     // Record game.
     Logger m_Logger;

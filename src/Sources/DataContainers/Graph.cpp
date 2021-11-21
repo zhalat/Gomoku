@@ -24,7 +24,7 @@ Graph::Graph(Node size) : size(size)
     if(0 == size)
         throw "Invalid parameter - size can't be 0";
 
-    ppEdgeMatrix = new EdgeVal*[size];
+    ppEdgeMatrix = new EdgeVal *[size];
     for(Node i = 0; i < size; i++)
         ppEdgeMatrix[i] = new EdgeVal[size];
     pNodeValue = new NodeVal[size];
@@ -49,14 +49,14 @@ Graph::Graph(Node size) : size(size)
  * @param    graph to be copied
  * @retval    none
  */
-Graph::Graph(const Graph& _g)
+Graph::Graph(const Graph & _g)
 {
     ppEdgeMatrix = NULL;
     pNodeValue   = NULL;
     this->size   = _g.size;
     this->Ed     = _g.Ed;
 
-    ppEdgeMatrix = new EdgeVal*[size];
+    ppEdgeMatrix = new EdgeVal *[size];
     for(Node i = 0; i < size; i++)
     {
         ppEdgeMatrix[i] = new EdgeVal[size];
@@ -245,7 +245,7 @@ bool Graph::Set_edge_value(Node x, Node y, EdgeVal a)
  * @brief    Get iterator.
  * @retval   Pointer to iterator.
  */
-IteratorIf<graph::Node>* Graph::GetIterator() const
+IteratorIf<graph::Node> * Graph::GetIterator() const
 {
     return m_pIterator;
 }

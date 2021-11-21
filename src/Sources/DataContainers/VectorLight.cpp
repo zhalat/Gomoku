@@ -46,7 +46,7 @@ void VectorLight::Insert(const uint32_t val)
 }
 
 /// Get iterator.
-IteratorIf<uint32_t>* VectorLight::GetIterator() const
+IteratorIf<uint32_t> * VectorLight::GetIterator() const
 {
     return m_pIterator;
 }
@@ -103,7 +103,7 @@ void VectorLight::Clear()
 }
 
 /// Conversion operator from std::vector class.
-VectorLight& VectorLight::operator=(const vector<Board::PositionField>& rStlVector)
+VectorLight & VectorLight::operator=(const vector<Board::PositionField> & rStlVector)
 {
     // Be sure container size if large enough.
     assert(rStlVector.size() <= VECTOR_SIZE);
@@ -130,7 +130,7 @@ VectorLight::VectorLight(const uint32_t initVal) : m_InitVal(initVal)
 }
 
 /// Copy constructor.
-VectorLight::VectorLight(const VectorLight& VectorLight) : m_InitVal(VectorLight.m_InitVal)
+VectorLight::VectorLight(const VectorLight & VectorLight) : m_InitVal(VectorLight.m_InitVal)
 {
     memcpy(m_Array, VectorLight.m_Array, sizeof(m_Array));
     memcpy(m_MarkArray, VectorLight.m_MarkArray, sizeof(VectorLight.m_MarkArray));

@@ -61,7 +61,7 @@ class StateEvaluationIf
     ///
     /// @retval True if game over, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool IsWinner(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const = 0;
+    virtual bool IsWinner(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::IsLooser
@@ -78,7 +78,7 @@ class StateEvaluationIf
     ///
     /// @retval True if game over, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool IsLooser(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const = 0;
+    virtual bool IsLooser(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ImpliciteWinner
@@ -95,7 +95,7 @@ class StateEvaluationIf
     ///
     /// @retval True if implicit winner was found.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const = 0;
+    virtual bool ImpliciteWinner(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ImpliciteLooser
@@ -112,7 +112,7 @@ class StateEvaluationIf
     ///
     /// @retval True if implicit winner was found.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const = 0;
+    virtual bool ImpliciteLooser(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::RegularEval
@@ -128,7 +128,7 @@ class StateEvaluationIf
     ///
     /// @retval True if bonus was added to score, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool RegularEval(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove, int& rStateScore) const = 0;
+    virtual bool RegularEval(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove, int & rStateScore) const = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ExtendWinnerThreatMove
@@ -145,8 +145,8 @@ class StateEvaluationIf
     ///
     /// @retval True if existing winner threat was found.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ExtendWinnerThreatMove(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                        int& rStateScore) const = 0;
+    virtual bool ExtendWinnerThreatMove(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                        int & rStateScore) const = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::ExtendWinnerActionMove
@@ -163,8 +163,8 @@ class StateEvaluationIf
     ///
     /// @retval True if extending action move was found, false otherwise.
     /////////////////////////////////////////////////////////////////////////////////////
-    virtual bool ExtendWinnerActionMove(const bool isMaxPlayer, Board::PositionXY& rBuildUpMove,
-                                        int& rStateScore) const = 0;
+    virtual bool ExtendWinnerActionMove(const bool isMaxPlayer, Board::PositionXY & rBuildUpMove,
+                                        int & rStateScore) const = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: StateEvaluationIf::SetBoards
@@ -177,7 +177,7 @@ class StateEvaluationIf
     /// @par Full Description
     /// Set boards for evaluation.
     ///////////////////////////////////////////////////////////////////////
-    virtual void SetBoards(const BoardScore& rBoardScoreCpu, const BoardScore& rBoardScoreHuman) = 0;
+    virtual void SetBoards(const BoardScore & rBoardScoreCpu, const BoardScore & rBoardScoreHuman) = 0;
 };
 
 #endif /* STATE_EVAL_HPP_ */

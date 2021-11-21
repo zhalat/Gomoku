@@ -32,7 +32,7 @@
 // <none>
 
 // Constructor.
-Spotter::Spotter(BoardScore& rBoardScore) : m_rBoardScore(rBoardScore), m_RegionToInvestigate()
+Spotter::Spotter(BoardScore & rBoardScore) : m_rBoardScore(rBoardScore), m_RegionToInvestigate()
 {
     assert(m_RegionToInvestigate.IsEmpty());
 }
@@ -53,7 +53,7 @@ void Spotter::Execute(const Board::PositionXY xy, const bool isOpponentMove, con
     uint32_t trendMark = 0;
 
     // Go thru all threats marked to be executing their blood relation threats.
-    IteratorIf<RegionToInvestigate>* const pIteratorIfToExecute = m_RegionToInvestigate.GetIterator();
+    IteratorIf<RegionToInvestigate> * const pIteratorIfToExecute = m_RegionToInvestigate.GetIterator();
     assert(pIteratorIfToExecute);
 
     for(; pIteratorIfToExecute->HasNext();)
@@ -62,7 +62,7 @@ void Spotter::Execute(const Board::PositionXY xy, const bool isOpponentMove, con
         const uint32_t threatBloodAssociationIndex    = static_cast<uint32_t>(regionToInvestigate.m_ThreatKind);
 
         // Get handle to dismissal/promotion threat container.
-        const ThreatFinder::KindOfThreats* pThreatChanging{};
+        const ThreatFinder::KindOfThreats * pThreatChanging{};
         if(isOpponentMove)
         {
             // Opponent's move can mitigate my threats.

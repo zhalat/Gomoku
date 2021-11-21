@@ -19,7 +19,7 @@ class SingleListIterator : public IteratorIf<parList>
     virtual bool IsInUse();
 
     // Constructor.
-    SingleListIterator(Node<parList>** ppHead, Node<parList>** ppTail) :
+    SingleListIterator(Node<parList> ** ppHead, Node<parList> ** ppTail) :
         m_ppHead(ppHead), m_ppTail(ppTail), m_ppCursor(ppHead), m_Cntr(0)
     {
         // Nothing to do.
@@ -36,12 +36,12 @@ class SingleListIterator : public IteratorIf<parList>
 
    private:
     // Prevent either copying or assigning (>= C++11).
-    SingleListIterator(const SingleListIterator&) = delete;
-    SingleListIterator& operator=(const SingleListIterator&) = delete;
+    SingleListIterator(const SingleListIterator &) = delete;
+    SingleListIterator & operator=(const SingleListIterator &) = delete;
 
-    Node<parList>** m_ppHead;
-    Node<parList>** m_ppTail;
-    Node<parList>** m_ppCursor;
+    Node<parList> ** m_ppHead;
+    Node<parList> ** m_ppTail;
+    Node<parList> ** m_ppCursor;
     uint32_t m_Cntr;
 };
 

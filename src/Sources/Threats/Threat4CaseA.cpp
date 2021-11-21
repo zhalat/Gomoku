@@ -33,10 +33,10 @@
 
 /// Tells how many pawns/gaps/asterixes this thrat has.
 const std::unordered_map<ThreatFinder::ThreatAtom, int, std::hash<int>> Threat4CaseA::ATOM_NUMBER_4A = {
-    {ThreatFinder::MY_PAWN, 2},
-    {ThreatFinder::ENEMY_PAWN, 0},
-    {ThreatFinder::GAP, -1},     // it depends. .xx...* or  *...xx...*
-    {ThreatFinder::ASTERIX, -1}  // it depends.
+    { ThreatFinder::MY_PAWN, 2 },
+    { ThreatFinder::ENEMY_PAWN, 0 },
+    { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+    { ThreatFinder::ASTERIX, -1 }  // it depends.
 };
 
 /// Threat-mask for X player.
@@ -44,10 +44,10 @@ const ThreatFinder::ThreatPattern Threat4CaseA::m_ThreatPatternX[] = {
     // Finds:
     // .XXXX.
     //{ 0x00210000, 0 },
-    {0x00300000, 1},
-    {0x00280000, 2},
-    {0x00240000, 3},
-    {0x00220000, 4},
+    { 0x00300000, 1 },
+    { 0x00280000, 2 },
+    { 0x00240000, 3 },
+    { 0x00220000, 4 },
     //{ 0x00210000, 5 },
 };
 
@@ -56,10 +56,10 @@ const ThreatFinder::ThreatPattern Threat4CaseA::m_ThreatPatternO[] = {
     // Finds:
     // .OOOO.
     //{ 0x00210000, 0 },
-    {0x00300000, 1},
-    {0x00280000, 2},
-    {0x00240000, 3},
-    {0x00220000, 4},
+    { 0x00300000, 1 },
+    { 0x00280000, 2 },
+    { 0x00240000, 3 },
+    { 0x00220000, 4 },
     //{ 0x00210000, 5 },
 };
 
@@ -68,7 +68,7 @@ const uint32_t Threat4CaseA::m_ThreatPatternElements = NUMELEM(m_ThreatPatternX)
 
 /// Define all points of view. Those are taken from m_ThreatPattern.
 /// For both player is the same.
-const uint32_t Threat4CaseA::m_PointsView[] = {1, 2, 3, 4};
+const uint32_t Threat4CaseA::m_PointsView[] = { 1, 2, 3, 4 };
 
 Threat4CaseA::Threat4CaseA() : ThreatFinder(PATTERN_LENGHT, m_PointsView, NUMELEM(m_PointsView), ATOM_NUMBER_4A)
 {
@@ -139,7 +139,7 @@ bool Threat4CaseA::CheckThreat(const uint32_t pretendThreat, const uint32_t poin
 
 /// Gets threat up details after threat has been found.
 void Threat4CaseA::GetThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
-                                      ThreatUpDetails& rThreatUpDetails) const
+                                      ThreatUpDetails & rThreatUpDetails) const
 {
     const uint32_t stepForward      = PATTERN_LENGHT - m_ThreatDownDetails.m_PointOfView - 1;
     const uint32_t stepBackward     = m_ThreatDownDetails.m_PointOfView;

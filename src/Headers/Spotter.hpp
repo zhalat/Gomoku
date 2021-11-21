@@ -91,17 +91,17 @@ class Spotter
     void ResetInstance();
 
     // Constructor.
-    Spotter(BoardScore& rBoardScore);
+    Spotter(BoardScore & rBoardScore);
 
     // Destructor.
     virtual ~Spotter();
 
    private:
     // Prevent either copying or assigning (>= C++11).
-    Spotter(const Spotter& rSpotter) = delete;
-    Spotter& operator=(const Spotter& rSpotter) = delete;
+    Spotter(const Spotter & rSpotter) = delete;
+    Spotter & operator=(const Spotter & rSpotter) = delete;
 
-    BoardScore& m_rBoardScore;
+    BoardScore & m_rBoardScore;
     SingleList<RegionToInvestigate> m_RegionToInvestigate;
 };
 

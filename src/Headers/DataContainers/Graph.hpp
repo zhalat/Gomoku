@@ -39,7 +39,7 @@ class Graph
     ;
 
     Graph(unsigned int size);
-    Graph(const Graph& _g);
+    Graph(const Graph & _g);
     virtual ~Graph(void);
     bool AddEdge(Node x, Node y, EdgeVal a);
     bool DeleteEdge(Node x, Node y);
@@ -50,20 +50,20 @@ class Graph
     void Set_node_value(Node k, NodeVal a);
     EdgeVal Get_edge_value(Node x, Node y);
     bool Set_edge_value(Node x, Node y, EdgeVal a);
-    IteratorIf<graph::Node>* GetIterator() const;
+    IteratorIf<graph::Node> * GetIterator() const;
     void ResetInstance();
 
    private:
-    EdgeVal** ppEdgeMatrix;
-    NodeVal* pNodeValue;
+    EdgeVal ** ppEdgeMatrix;
+    NodeVal * pNodeValue;
     unsigned int Ed;
     unsigned int size;
 
     // Handler to iterator.
-    IteratorIf<graph::Node>* m_pIterator;
+    IteratorIf<graph::Node> * m_pIterator;
 
     //----My friends-----------------------------------------------------------:
-    friend ostream& operator<<(ostream& _stream, Graph& _graph)
+    friend ostream & operator<<(ostream & _stream, Graph & _graph)
     {
         vector<Node> vlist;
         for(Node i = 0; i < _graph.size; i++)

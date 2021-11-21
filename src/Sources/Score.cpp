@@ -31,34 +31,34 @@ static Threat2CaseB threat2CaseB;
 static Threat2CaseC threat2CaseC;
 
 const Score::ThreatScore Score::m_ThreatScore[] = {
-    /*0 */ {ThreatFinder::THREAT_WINNER, &threatWinner, THREAT_WINNER_SCORE},
-    /*1 */ {ThreatFinder::THREAT_4_CASE_A, &threat4CaseA, THREAT_4_CASE_A_SCORE},
-    /*2 */ {ThreatFinder::THREAT_4_CASE_AA, &threat4CaseAA, THREAT_4_CASE_AA_SCORE},
-    /*3 */ {ThreatFinder::THREAT_4_CASE_B, &threat4CaseB, THREAT_4_CASE_B_SCORE},
-    /*4 */ {ThreatFinder::THREAT_4_CASE_C, &threat4CaseC, THREAT_4_CASE_C_SCORE},
-    /*5 */ {ThreatFinder::THREAT_3_CASE_A, &threat3CaseA, THREAT_3_CASE_A_SCORE},
-    /*6 */ {ThreatFinder::THREAT_3_CASE_AA, &threat3CaseAA, THREAT_3_CASE_AA_SCORE},
-    /*7 */ {ThreatFinder::THREAT_3_CASE_B, &threat3CaseB, THREAT_3_CASE_B_SCORE},
-    /*8 */ {ThreatFinder::THREAT_3_CASE_C, &threat3CaseC, THREAT_3_CASE_C_SCORE},
-    /*9 */ {ThreatFinder::THREAT_2_CASE_A, &threat2CaseA, THREAT_2_CASE_A_SCORE},
-    /*10 */ {ThreatFinder::THREAT_2_CASE_AA, &threat2CaseAA, THREAT_2_CASE_AA_SCORE},
-    /*11*/ {ThreatFinder::THREAT_2_CASE_B, &threat2CaseB, THREAT_2_CASE_B_SCORE},
-    /*12*/ {ThreatFinder::THREAT_2_CASE_C, &threat2CaseC, THREAT_2_CASE_C_SCORE},
+    /*0 */ { ThreatFinder::THREAT_WINNER, &threatWinner, THREAT_WINNER_SCORE },
+    /*1 */ { ThreatFinder::THREAT_4_CASE_A, &threat4CaseA, THREAT_4_CASE_A_SCORE },
+    /*2 */ { ThreatFinder::THREAT_4_CASE_AA, &threat4CaseAA, THREAT_4_CASE_AA_SCORE },
+    /*3 */ { ThreatFinder::THREAT_4_CASE_B, &threat4CaseB, THREAT_4_CASE_B_SCORE },
+    /*4 */ { ThreatFinder::THREAT_4_CASE_C, &threat4CaseC, THREAT_4_CASE_C_SCORE },
+    /*5 */ { ThreatFinder::THREAT_3_CASE_A, &threat3CaseA, THREAT_3_CASE_A_SCORE },
+    /*6 */ { ThreatFinder::THREAT_3_CASE_AA, &threat3CaseAA, THREAT_3_CASE_AA_SCORE },
+    /*7 */ { ThreatFinder::THREAT_3_CASE_B, &threat3CaseB, THREAT_3_CASE_B_SCORE },
+    /*8 */ { ThreatFinder::THREAT_3_CASE_C, &threat3CaseC, THREAT_3_CASE_C_SCORE },
+    /*9 */ { ThreatFinder::THREAT_2_CASE_A, &threat2CaseA, THREAT_2_CASE_A_SCORE },
+    /*10 */ { ThreatFinder::THREAT_2_CASE_AA, &threat2CaseAA, THREAT_2_CASE_AA_SCORE },
+    /*11*/ { ThreatFinder::THREAT_2_CASE_B, &threat2CaseB, THREAT_2_CASE_B_SCORE },
+    /*12*/ { ThreatFinder::THREAT_2_CASE_C, &threat2CaseC, THREAT_2_CASE_C_SCORE },
 };
 
-Score* Score::GetInstance()
+Score * Score::GetInstance()
 {
     static Score score{};
     return &score;
 }
 
-void Score::UpdateScore(BoardScore& boardScore, const vector<Board::PositionXY>& xyList, const uint32_t multiplier)
+void Score::UpdateScore(BoardScore & boardScore, const vector<Board::PositionXY> & xyList, const uint32_t multiplier)
 {
     // Each threats (see content of m_ThreatScore) need to be provided with board first, such that
     // have board to analyze.
     SetBoard(boardScore.GetBoard());
 
-    for(auto const& xy : xyList)
+    for(auto const & xy : xyList)
     {
         const bool isOpponentMove = (boardScore.GetBoard().GetMove(xy) != boardScore.GetPlayer());
 
@@ -72,7 +72,7 @@ void Score::UpdateScore(BoardScore& boardScore, const vector<Board::PositionXY>&
     }
 }
 
-void Score::UpdateScore(BoardScore& boardScore, const Board::PositionXY xy, const uint32_t multiplier)
+void Score::UpdateScore(BoardScore & boardScore, const Board::PositionXY xy, const uint32_t multiplier)
 {
     assert(multiplier > 0);
 
@@ -90,7 +90,7 @@ void Score::UpdateScore(BoardScore& boardScore, const Board::PositionXY xy, cons
     boardScore.GetSpotter().Execute(xy, isOpponentMove, multiplier);
 }
 
-void Score::SetBoard(const Board& rBoard)
+void Score::SetBoard(const Board & rBoard)
 {
     for(uint32_t i = 0; i < NUMELEM(m_ThreatScore); ++i)
     {

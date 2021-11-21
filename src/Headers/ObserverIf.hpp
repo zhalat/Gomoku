@@ -65,7 +65,7 @@ class ObserverIf
 class ObserverSubjectIf
 {
    protected:
-    std::vector<const ObserverIf*> m_ObserverClient;
+    std::vector<const ObserverIf *> m_ObserverClient;
 
    public:
     /////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ class ObserverSubjectIf
     ///
     /// @param rObserver An observer object.
     /////////////////////////////////////////////////////////////////////////////
-    virtual void RegisterObserver(const ObserverIf& rObserver) = 0;
+    virtual void RegisterObserver(const ObserverIf & rObserver) = 0;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: RemoveObserver
@@ -90,7 +90,7 @@ class ObserverSubjectIf
     ///
     /// @return True if registration successful, false otherwise.
     /////////////////////////////////////////////////////////////////////////////
-    virtual bool RemoveObserver(const ObserverIf& rObserver) = 0;
+    virtual bool RemoveObserver(const ObserverIf & rObserver) = 0;
 
     /////////////////////////////////////////////////////////////////////////////
     // METHOD NAME: Announce

@@ -101,14 +101,14 @@ class BoardIterator : public IteratorIf<graph::Node>
     }
 
     // Constructor.
-    BoardIterator(graph::Graph& rGraph) : m_rGraph(rGraph)
+    BoardIterator(graph::Graph & rGraph) : m_rGraph(rGraph)
     {
         // Nothing to do.
     }
 
    private:
     // Element collection.
-    const graph::Graph& m_rGraph;
+    const graph::Graph & m_rGraph;
 };
 
 #endif /* BOARD_ITERATOR_ */

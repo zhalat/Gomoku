@@ -45,10 +45,10 @@
 class Logger
 {
    public:
-    static const char* LOG_GAME_RECORD_FILE_NAME;
-    static const char* LOG_MINMAX_TREE_RECORD_FILE_NAME;
-    static const char* LOG_MINMAX_BOARD_RECORD_FILE_NAME;
-    static const char* LOG_SEPARATOR;
+    static const char * LOG_GAME_RECORD_FILE_NAME;
+    static const char * LOG_MINMAX_TREE_RECORD_FILE_NAME;
+    static const char * LOG_MINMAX_BOARD_RECORD_FILE_NAME;
+    static const char * LOG_SEPARATOR;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::IsRecordExist
@@ -62,7 +62,7 @@ class Logger
     ///
     /// @return True if file exists, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    bool IsRecordExist(const char* filePath) const;
+    bool IsRecordExist(const char * filePath) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::NewRecord
@@ -74,7 +74,7 @@ class Logger
     ///
     /// @param filePath Path to file.
     ///////////////////////////////////////////////////////////////////////
-    void NewRecord(const char* filePath);
+    void NewRecord(const char * filePath);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::AddEntryToRecord
@@ -100,7 +100,8 @@ class Logger
     /// @param column Indexing.
     /// @param score  Estimated board game score.
     ///////////////////////////////////////////////////////////////////////
-    void AddEntryToRecord(const uint32_t row, const uint32_t column, const SearchTreeAlgorithmIf::ScoreForMove& rScore);
+    void AddEntryToRecord(const uint32_t row, const uint32_t column,
+                          const SearchTreeAlgorithmIf::ScoreForMove & rScore);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::AddEntryToRecord
@@ -114,7 +115,7 @@ class Logger
     /// @param column 	   Indexing.
     /// @param boardScore  Board state.
     ///////////////////////////////////////////////////////////////////////
-    void AddEntryToRecord(const uint32_t row, const uint32_t column, const BoardScore& rBoardScore);
+    void AddEntryToRecord(const uint32_t row, const uint32_t column, const BoardScore & rBoardScore);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::AddEntryToRecord
@@ -128,7 +129,7 @@ class Logger
     /// @param column 	   Indexing.
     /// @param boardScore  Board state.
     ///////////////////////////////////////////////////////////////////////
-    void AddEntryToRecord(const uint32_t row, const uint32_t column, const Board& rBoard);
+    void AddEntryToRecord(const uint32_t row, const uint32_t column, const Board & rBoard);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::FirstPlayer
@@ -141,7 +142,7 @@ class Logger
     /// @param filePath Path to file.
     /// @param isCpuStart True if human starts game, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    void FirstPlayer(const char* filePath, const bool isCpuStart);
+    void FirstPlayer(const char * filePath, const bool isCpuStart);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::ClearRecord
@@ -153,7 +154,7 @@ class Logger
     ///
     /// @param filePath Path to file.
     ///////////////////////////////////////////////////////////////////////
-    void ClearRecord(const char* filePath);
+    void ClearRecord(const char * filePath);
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: Logger::RemoveRecord
@@ -165,7 +166,7 @@ class Logger
     ///
     /// @param filePath Path to file.
     ///////////////////////////////////////////////////////////////////////
-    void RemoveRecord(const char* filePath);
+    void RemoveRecord(const char * filePath);
 
    private:
 };

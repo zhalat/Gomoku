@@ -29,20 +29,20 @@
 // FORWARD REFERENCES
 // <none>
 
-const char* Logger::LOG_GAME_RECORD_FILE_NAME         = "GameRecord.txt";
-const char* Logger::LOG_MINMAX_TREE_RECORD_FILE_NAME  = "MinMaxTreeRecord.txt";
-const char* Logger::LOG_MINMAX_BOARD_RECORD_FILE_NAME = "MinMaxBoardRecord.txt";
-const char* Logger::LOG_SEPARATOR                     = "--";
+const char * Logger::LOG_GAME_RECORD_FILE_NAME         = "GameRecord.txt";
+const char * Logger::LOG_MINMAX_TREE_RECORD_FILE_NAME  = "MinMaxTreeRecord.txt";
+const char * Logger::LOG_MINMAX_BOARD_RECORD_FILE_NAME = "MinMaxBoardRecord.txt";
+const char * Logger::LOG_SEPARATOR                     = "--";
 
 /// Checks if file exists.
-bool Logger::IsRecordExist(const char* filePath) const
+bool Logger::IsRecordExist(const char * filePath) const
 {
     std::ifstream file(filePath);
     return file.good();
 }
 
 /// Create a new file.
-void Logger::NewRecord(const char* filePath)
+void Logger::NewRecord(const char * filePath)
 {
     try
     {
@@ -76,7 +76,7 @@ void Logger::AddEntryToRecord(const Board::PositionXY move)
 
 /// Logs score being associated with row/column indexing.
 void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column,
-                              const SearchTreeAlgorithmIf::ScoreForMove& rScore)
+                              const SearchTreeAlgorithmIf::ScoreForMove & rScore)
 {
     if(IsRecordExist(LOG_MINMAX_TREE_RECORD_FILE_NAME))
     {
@@ -98,7 +98,7 @@ void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column,
 }
 
 /// Logs board score being associated with row/column indexing.
-void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column, const BoardScore& rBoardScore)
+void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column, const BoardScore & rBoardScore)
 {
     if(IsRecordExist(LOG_MINMAX_BOARD_RECORD_FILE_NAME))
     {
@@ -116,7 +116,7 @@ void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column, const B
 }
 
 /// Logs board being associated with row/column indexing.
-void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column, const Board& rBoard)
+void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column, const Board & rBoard)
 {
     if(IsRecordExist(LOG_MINMAX_BOARD_RECORD_FILE_NAME))
     {
@@ -136,7 +136,7 @@ void Logger::AddEntryToRecord(const uint32_t row, const uint32_t column, const B
 }
 
 /// Logs info who starts the game.
-void Logger::FirstPlayer(const char* filePath, const bool isCpuStart)
+void Logger::FirstPlayer(const char * filePath, const bool isCpuStart)
 {
     if(IsRecordExist(filePath))
     {
@@ -162,7 +162,7 @@ void Logger::FirstPlayer(const char* filePath, const bool isCpuStart)
 }
 
 /// Clear a record.
-void Logger::ClearRecord(const char* filePath)
+void Logger::ClearRecord(const char * filePath)
 {
     if(IsRecordExist(filePath))
     {
@@ -178,7 +178,7 @@ void Logger::ClearRecord(const char* filePath)
 }
 
 /// Remove a record.
-void Logger::RemoveRecord(const char* filePath)
+void Logger::RemoveRecord(const char * filePath)
 {
     if(remove(filePath) != 0)
     {

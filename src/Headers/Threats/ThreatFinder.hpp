@@ -124,14 +124,14 @@ class ThreatFinder
         FoundFlags m_FoundFlags;
         Board::Player m_PlayerPerspective;
 
-        ThreatDownDetails() : m_HexCode(0), m_PointOfView(0), m_FoundFlags{0}, m_PlayerPerspective(Board::PLAYER_NONE)
+        ThreatDownDetails() : m_HexCode(0), m_PointOfView(0), m_FoundFlags{ 0 }, m_PlayerPerspective(Board::PLAYER_NONE)
         {}
 
         void ClearAll()
         {
             m_HexCode           = 0;
             m_PointOfView       = 0;
-            m_FoundFlags        = {0};
+            m_FoundFlags        = { 0 };
             m_PlayerPerspective = Board::PLAYER_NONE;
         }
     };
@@ -225,7 +225,7 @@ class ThreatFinder
     ///
     /// @retval True if threat was found, false otherwise.
     ///////////////////////////////////////////////////////////////////////
-    virtual bool FindThreatPattern(const Board::PositionXY& initialPosition, const Trend trend,
+    virtual bool FindThreatPattern(const Board::PositionXY & initialPosition, const Trend trend,
                                    const Board::Player playerPerspective) final;
 
     ///////////////////////////////////////////////////////////////////////
@@ -238,7 +238,7 @@ class ThreatFinder
     ///
     /// @retval Reference to gomoku board.
     ///////////////////////////////////////////////////////////////////////
-    const GomokuBoard& GetGomokuBoard() const
+    const GomokuBoard & GetGomokuBoard() const
     {
         assert(NULL != m_pGomokuBoard);
         return *m_pGomokuBoard;
@@ -254,7 +254,7 @@ class ThreatFinder
     ///
     /// @param pBoard Pointer to gomoku board.
     ///////////////////////////////////////////////////////////////////////
-    void SetBoard(const Board* pBoard) { m_pGomokuBoard = static_cast<const GomokuBoard*>(pBoard); }
+    void SetBoard(const Board * pBoard) { m_pGomokuBoard = static_cast<const GomokuBoard *>(pBoard); }
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: ThreatFinder::GetThreatFields
@@ -266,9 +266,9 @@ class ThreatFinder
     ///
     /// @param  threatLocation  Array where begin-field and end-field of threat will be stored.
     ///////////////////////////////////////////////////////////////////////
-    void GetThreatFields(ThreatLocation& rThreatLocation) const;
+    void GetThreatFields(ThreatLocation & rThreatLocation) const;
 
-    ThreatFinder(const uint32_t patternLenght, const uint32_t* pPointsView, const uint32_t pointsViewSize,
+    ThreatFinder(const uint32_t patternLenght, const uint32_t * pPointsView, const uint32_t pointsViewSize,
                  const std::unordered_map<ThreatFinder::ThreatAtom, int, std::hash<int>> atomNumber) :
         m_pGomokuBoard(NULL),
         m_PatternLenght(patternLenght),
@@ -322,7 +322,7 @@ class ThreatFinder
     /// @retval Threat up details.
     ///////////////////////////////////////////////////////////////////////
     virtual void GetThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
-                                    ThreatUpDetails& rThreatUpDetails) const = 0;
+                                    ThreatUpDetails & rThreatUpDetails) const = 0;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: ThreatFinder::StandarizePOV
@@ -371,7 +371,7 @@ class ThreatFinder
     ///
     /// @retval True if possible false if out of the board.
     ///////////////////////////////////////////////////////////////////////
-    bool MakeStepOnTrend(const bool isReversion, Board::PositionXY& currentXYPosition, const Trend trend) const;
+    bool MakeStepOnTrend(const bool isReversion, Board::PositionXY & currentXYPosition, const Trend trend) const;
 
     ///////////////////////////////////////////////////////////////////////
     // METHOD NAME: ThreatFinder::IsBreakWhenFirstFound
@@ -397,17 +397,17 @@ class ThreatFinder
 
    private:
     /// Private copy constructor - forbid copying.
-    ThreatFinder(const ThreatFinder&);
+    ThreatFinder(const ThreatFinder &);
 
     /// Private assign operator - forbid copying.
-    ThreatFinder& operator=(const ThreatFinder&);
+    ThreatFinder & operator=(const ThreatFinder &);
 
     /// Board for threat searching.
-    const GomokuBoard* m_pGomokuBoard;
+    const GomokuBoard * m_pGomokuBoard;
 
     /// Some feature describing pattern threat.
     const uint32_t m_PatternLenght;
-    const uint32_t* m_pPointsView;
+    const uint32_t * m_pPointsView;
     const uint32_t m_PointsViewSize;
 
     // Keeps threat location on a board.
