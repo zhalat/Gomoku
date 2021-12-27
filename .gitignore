@@ -4,3 +4,4 @@
 /src/.clang-format
 Doxygen/*
 .idea/*
+.vscode/*
