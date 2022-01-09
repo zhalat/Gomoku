@@ -1,8 +1,8 @@
 #if !defined(GRAPH_ITERATOR_)
 #define GRAPH_ITERATOR_
 
+#include <Graph.h>         // For Graph definitions.
 #include "IteratorIf.hpp"  // For IteratorIf definitions.
-#include "Graph.hpp"       // For Graph definitions.
 
 class GraphIterator : public IteratorIf<graph::Node>
 {

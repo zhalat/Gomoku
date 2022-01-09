@@ -27,12 +27,12 @@
 #include <iostream>  // For cout.
 #include <stdio.h>   // For sprintf().
 #include <assert.h>  // For assert.
+#include <Graph.h>   // For Graph declaration.
 
 // C PROJECT INCLUDES
 #include <string.h>  // For memset()
 
 // C++ PROJECT INCLUDES
-#include "Graph.hpp"       // For Graph declaration.
 #include "IteratorIf.hpp"  // For BoardIterator declaration.
 
 // FORWARD REFERENCES

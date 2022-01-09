@@ -1,95 +1,83 @@
-/*
- * Graph.cpp
- *
- *  Created on: Apr 1, 2014
- *      Author: ginar
- */
+
 #include <string.h>
-#include "Graph.hpp"
+#include <cassert>
+#include "Graph.h"
 #include "GraphIterator.hpp"
 
 using namespace graph;
-using std::vector;
 
 /*
- * @brief    Constructor for graph. Node its connected with itself
- * @param    size of graph
- * @retval    none
+ * @brief    Constructor for graph. Node it's connected with itself
+ * @param    size Number of graph's node
  */
-Graph::Graph(Node size) : size(size)
+Graph::Graph(Node size) : m_size(size)
 {
-    ppEdgeMatrix = NULL;
-    pNodeValue   = NULL;
+    m_ppEdgeMatrix = NULL;
+    m_pNodeValue   = NULL;
 
     if(0 == size)
-        throw "Invalid parameter - size can't be 0";
+        throw InvalidGraphSizeExcept();
 
-    ppEdgeMatrix = new EdgeVal *[size];
+    m_ppEdgeMatrix = new EdgeVal *[size];
     for(Node i = 0; i < size; i++)
-        ppEdgeMatrix[i] = new EdgeVal[size];
-    pNodeValue = new NodeVal[size];
+        m_ppEdgeMatrix[i] = new EdgeVal[size];
+    m_pNodeValue = new NodeVal[size];
 
     for(Node i = 0; i < size; i++)
     {
-        pNodeValue[i] = NodeValueInit;
+        m_pNodeValue[i] = k_nodeInitVal;
         for(Node j = 0; j < size; j++)
             if(i == j)
-                ppEdgeMatrix[i][j] = 0;
+                m_ppEdgeMatrix[i][j] = k_edgeConnectVal;
             else
-                ppEdgeMatrix[i][j] = EdgeInit;
+                m_ppEdgeMatrix[i][j] = k_edgeDisconnectVal;
     }
-    Ed = 0;
+    m_edgeCntr = 0;
 
     // Create iterator for graph.
-    m_pIterator = new GraphIterator(pNodeValue, size);
+    m_pIterator = new GraphIterator(m_pNodeValue, size);
 }
 
 /*
  * @brief    Copy constructor for graph.
  * @param    graph to be copied
- * @retval    none
  */
-Graph::Graph(const Graph & _g)
+Graph::Graph(const Graph & graph)
 {
-    ppEdgeMatrix = NULL;
-    pNodeValue   = NULL;
-    this->size   = _g.size;
-    this->Ed     = _g.Ed;
+    m_ppEdgeMatrix   = NULL;
+    m_pNodeValue     = NULL;
+    this->m_size     = graph.m_size;
+    this->m_edgeCntr = graph.m_edgeCntr;
 
-    ppEdgeMatrix = new EdgeVal *[size];
-    for(Node i = 0; i < size; i++)
+    m_ppEdgeMatrix = new EdgeVal *[m_size];
+    for(Node i = 0; i < m_size; i++)
     {
-        ppEdgeMatrix[i] = new EdgeVal[size];
-        memcpy(&ppEdgeMatrix[i][0], &_g.ppEdgeMatrix[i][0], this->size * sizeof(EdgeVal));
+        m_ppEdgeMatrix[i] = new EdgeVal[m_size];
+        memcpy(&m_ppEdgeMatrix[i][0], &graph.m_ppEdgeMatrix[i][0], this->m_size * sizeof(EdgeVal));
     }
 
-    pNodeValue = new NodeVal[size];
-    memcpy(&pNodeValue[0], &_g.pNodeValue[0], this->size * sizeof(NodeVal));
+    m_pNodeValue = new NodeVal[m_size];
+    memcpy(&m_pNodeValue[0], &graph.m_pNodeValue[0], this->m_size * sizeof(NodeVal));
 
     // Create iterator for graph.
-    m_pIterator = new GraphIterator(pNodeValue, size);
+    m_pIterator = new GraphIterator(m_pNodeValue, m_size);
 }
 
-/*
- * @brief    Delete
- * @param    none
- * @retval    none
- */
 Graph::~Graph()
 {
     // delete node table
-    delete[] pNodeValue;
-    pNodeValue = NULL;
+    delete[] m_pNodeValue;
+    m_pNodeValue = NULL;
 
     // delete connection table
-    if(ppEdgeMatrix != NULL)
+    if(m_ppEdgeMatrix != NULL)
     {
-        for(Node i = 0; i < size; i++)
-            delete[] ppEdgeMatrix[i];
+        for(Node i = 0; i < m_size; i++)
+            delete[] m_ppEdgeMatrix[i];
     }
-    delete[] ppEdgeMatrix;
-    ppEdgeMatrix = NULL;
-    Ed           = 0;
+    delete[] m_ppEdgeMatrix;
+    m_ppEdgeMatrix = NULL;
+    m_edgeCntr     = 0;
 
     // Delete iterator.
     delete m_pIterator;
@@ -98,88 +86,87 @@ Graph::~Graph()
 
 /*
  * @brief    Add new edge only if doesn't exist. Increment nr of edges
- * @param    x - location of node
- * @param    y - location of node
+ * @param    nodeX node x to be connected
+ * @param    nodeY node y to be connected
  * @retval   true-added successfully; false-failure
  */
-bool Graph::AddEdge(Node x, Node y, EdgeVal a)
+bool Graph::addEdge(Node nodeX, Node nodeY, EdgeVal val)
 {
     // Argument validation.
-    if((x >= size) || (y >= size) || (x == y))
+    if((nodeX >= m_size) || (nodeY >= m_size) || (nodeX == nodeY))
         return false;
     // See if the edge already exists.
-    if(ppEdgeMatrix[x][y] != EdgeInit)
+    if(m_ppEdgeMatrix[nodeX][nodeY] != k_edgeDisconnectVal)
         return false;
 
-    ppEdgeMatrix[x][y] = a;
-    ppEdgeMatrix[y][x] = a;
-    Ed++;
+    m_ppEdgeMatrix[nodeX][nodeY] = val;
+    m_ppEdgeMatrix[nodeY][nodeX] = val;
+    m_edgeCntr++;
     return true;
 }
 
 /*
  * @brief    Delete edge only if exists. Decrement nr of edges
- * @param    x - location of node
- * @param    y - location of node
+ * @param    nodeX node x to be disconnected
+ * @param    nodeY node y to be disconnected
  * @retval    true-deleted successfully; false-failure
  */
-bool Graph::DeleteEdge(Node x, Node y)
+bool Graph::deleteEdge(Node nodeX, Node nodeY)
 {
     // Argument validation.
-    if((x >= size) || (y >= size) || (x == y))
+    if((nodeX >= m_size) || (nodeY >= m_size) || (nodeX == nodeY))
         return false;
     // See if the edge  exists.
-    if(ppEdgeMatrix[x][y] == EdgeInit)
+    if(m_ppEdgeMatrix[nodeX][nodeY] == k_edgeDisconnectVal)
         return false;
 
-    ppEdgeMatrix[x][y] = EdgeInit;
-    ppEdgeMatrix[y][x] = EdgeInit;
-    Ed--;
+    m_ppEdgeMatrix[nodeX][nodeY] = k_edgeDisconnectVal;
+    m_ppEdgeMatrix[nodeY][nodeX] = k_edgeDisconnectVal;
+    m_edgeCntr--;
     return true;
 }
 
 /*
  * @brief    Tests whether there is an edge from node x to node y.
- * @param    x - location of node
- * @param    y - location of node
+ * @param    nodeX node x to be checked
+ * @param    nodeX node y to be checked
  * @retval    true-there's connection; false-theren's connection
  */
-bool Graph::Adjacent(Node x, Node y)
+bool Graph::adjacent(Node nodeX, Node nodeY) const
 {
     // Argument validation.
-    if((x >= size) || (y >= size))
+    if((nodeX >= m_size) || (nodeY >= m_size))
         return false;
     // See if the edge  exists.
-    if(ppEdgeMatrix[x][y] != EdgeInit)
+    if(m_ppEdgeMatrix[nodeX][nodeY] != k_edgeDisconnectVal)
         return true;
     else
         return false;
 }
 
 /*
- * @brief    Return actual edge number.
- * @param    none
- * @retval    Amount of actual edge
+ * @brief    Get active edge number.
+ * @retval   Number of active edges
  */
-unsigned int Graph::E(void)
+unsigned int Graph::getEdgeCntr() const
 {
-    return Ed;
+    return m_edgeCntr;
 }
 
 /*
- * @brief    Return lists k node such that there is an edge from k to kx.
+ * @brief    Return list of nodes heaving connection to given node
  * @param    node
- * @retval    vector list of connection
+ * @retval   list of nodes connected to node
  */
-vector<Node> Graph::Neighbors(Node k)
+vector<Node> Graph::getNeighbors(Node node) const
 {
     vector<Node> vlist;
     // browse thru each nodes to check connections
-    for(Node i = 0; i < size; i++)
+    for(Node i = 0; i < m_size; i++)
     {
-        if(i == k)
+        if(i == node)
             continue;
-        else if(ppEdgeMatrix[k][i] != EdgeInit)
+        else if(m_ppEdgeMatrix[node][i] != k_edgeDisconnectVal)
         {
             vlist.push_back(i);
         }
@@ -190,53 +177,53 @@ vector<Node> Graph::Neighbors(Node k)
 /*
  * @brief    Return nodes' value.
  * @param    node
- * @retval    nodes' value or
+ * @retval   value assigned to node
  */
-NodeVal Graph::Get_node_value(Node k)
+NodeVal Graph::getNodeValue(Node node) const
 {
-    return pNodeValue[k];
+    return m_pNodeValue[node];
 }
 
 /*
  * @brief    Set nodes' value.
- * @param    node
- * @param    value to node be set
- * @retval    none
+ * @param    node Node to be set
+ * @param    value of node be set
  */
-void Graph::Set_node_value(Node k, NodeVal a)
+void Graph::setNodeValue(Node node, NodeVal value)
 {
-    // Argument validation.
-    if(k < size)
-        pNodeValue[k] = a;
+    assert(node < m_size);
+    m_pNodeValue[node] = value;
 }
 
 /*
  * @brief    Get edge between node x and node y.
- * @param    x- node
- * @param    y- node
- * @retval    none
+ * @param    nodeX
+ * @param    nodeY
  */
-EdgeVal Graph::Get_edge_value(Node x, Node y)
+EdgeVal Graph::getEdgeValue(Node nodeX, Node nodeY) const
 {
-    return ppEdgeMatrix[x][y];
+    return m_ppEdgeMatrix[nodeX][nodeY];
 }
 
 /*
  * @brief    Set edge between node x and node y.
- * @param    x- node
- * @param    y- node
- * * @param    a- EdgeVal
- * @retval    true- set successfully, false - fail
+ * @param    nodeX
+ * @param    nodeY
+ * @param    value edge value
+ * @retval   true- set successfully, false - fail
  */
-bool Graph::Set_edge_value(Node x, Node y, EdgeVal a)
+bool Graph::setEdgeValue(Node nodeX, Node nodeY, EdgeVal value)
 {
-    // Argument validation.
-    if((x >= size) || (y >= size))
+    if((nodeX >= m_size) || (nodeY >= m_size))
         return false;
+    else if(nodeX == nodeY)
+    {
+        return false;
+    }
     else
     {
-        ppEdgeMatrix[x][y] = a;
-        ppEdgeMatrix[y][x] = a;
+        m_ppEdgeMatrix[nodeX][nodeY] = value;
+        m_ppEdgeMatrix[nodeY][nodeX] = value;
     }
     return true;
 }
@@ -245,7 +232,7 @@ bool Graph::Set_edge_value(Node x, Node y, EdgeVal a)
  * @brief    Get iterator.
  * @retval   Pointer to iterator.
  */
-IteratorIf<graph::Node> * Graph::GetIterator() const
+auto Graph::getIterator() const
 {
     return m_pIterator;
 }
@@ -254,38 +241,16 @@ IteratorIf<graph::Node> * Graph::GetIterator() const
  * @brief    Revert to initial state.
  * @retval   none.
  */
-void Graph::ResetInstance()
+void Graph::reset()
 {
-    m_pIterator->SetToBase();
-
-    for(Node i = 0; i < size; i++)
+    for(Node i = 0; i < m_size; i++)
     {
-        pNodeValue[i] = NodeValueInit;
-        for(Node j = 0; j < size; j++)
+        m_pNodeValue[i] = k_nodeInitVal;
+        for(Node j = 0; j < m_size; j++)
             if(i == j)
-                ppEdgeMatrix[i][j] = 0;
+                m_ppEdgeMatrix[i][j] = 0;
             else
-                ppEdgeMatrix[i][j] = EdgeInit;
+                m_ppEdgeMatrix[i][j] = k_edgeDisconnectVal;
     }
-    Ed = 0;
+    m_edgeCntr = 0;
 }
-
-/***************************************************************************
- *   Copyright (C) 2018 by Zbigniew Halat                                  *
- *   zby.halat@gmail.com                                                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.           *
- ***************************************************************************/

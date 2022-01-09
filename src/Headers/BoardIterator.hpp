@@ -28,8 +28,8 @@
 // <none>
 
 // C++ PROJECT INCLUDES
+#include <Graph.h>         // For Graph declaration.
 #include "IteratorIf.hpp"  // For IteratorIf declaration.
-#include "Graph.hpp"       // For Graph declaration.
 
 // FORWARD REFERENCES
 // <none>

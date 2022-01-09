@@ -59,82 +59,82 @@ GomokuBoard::GomokuBoard(uint32_t size)
             // Left-up corner.
             if(0 == i && 0 == j)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size + 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size + 1, Graph::k_edgeConnectVal);
             }
             // Right-up corner.
             else if(0 == i && (size - 1) == j)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size - 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size - 1, Graph::k_edgeConnectVal);
             }
             // Left-down corner.
             else if((size - 1) == i && 0 == j)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * (i - 1) + j, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * (i - 1) + j + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * (i - 1) + j, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * (i - 1) + j + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + 1, Graph::k_edgeConnectVal);
             }
             // Right-down corner.
             else if((size - 1) == i && (size - 1) == j)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - 1, Graph::k_edgeConnectVal);
             }
             // North
             else if(0 == i)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + 1, Graph::k_edgeConnectVal);
             }
             // South
             else if((size - 1) == i)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + 1, Graph::k_edgeConnectVal);
             }
             // West
             else if(0 == j)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size, Graph::k_edgeConnectVal);
             }
             // East
             else if((size - 1) == j)
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size, Graph::k_edgeConnectVal);
             }
             // Rest in the middle
             else
             {
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - size + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size + 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j + size - 1, Graph::EdgeConnect);
-                m_pBoardStructure->AddEdge(size * i + j, size * i + j - 1, Graph::EdgeConnect);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - size + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size + 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j + size - 1, Graph::k_edgeConnectVal);
+                m_pBoardStructure->addEdge(size * i + j, size * i + j - 1, Graph::k_edgeConnectVal);
             }
 
             // Set board's fields as not occupied (NONE).
-            m_pBoardStructure->Set_node_value(size * i + j, static_cast<NodeVal>(PLAYER_EMPTY));
+            m_pBoardStructure->setNodeValue(size * i + j, static_cast<NodeVal>(PLAYER_EMPTY));
         }
     }
 
@@ -153,7 +153,7 @@ GomokuBoard::GomokuBoard(uint32_t size)
 
         uint32_t index = 0;
 
-        const vector<Node> neighboursList = m_pBoardStructure->Neighbors(static_cast<Node>(i));
+        const vector<Node> neighboursList = m_pBoardStructure->getNeighbors(static_cast<Node>(i));
         assert(neighboursList.size() <= MAX_NEIGHBOURS);
         for(vector<Node>::const_iterator cit = neighboursList.begin(); cit != neighboursList.end(); ++cit)
         {
@@ -200,10 +200,10 @@ bool GomokuBoard::PutMove(const PositionXY xy, const Player player)
     {
         retVal = false;
     }
-    else if(PLAYER_EMPTY == m_pBoardStructure->Get_node_value(field))
+    else if(PLAYER_EMPTY == m_pBoardStructure->getNodeValue(field))
     {
         // Put current move on board.
-        m_pBoardStructure->Set_node_value(field, static_cast<graph::NodeVal>(player));
+        m_pBoardStructure->setNodeValue(field, static_cast<graph::NodeVal>(player));
 
         // Save position of this move.
         m_MoveHistory.push_back(xy);
@@ -226,10 +226,10 @@ bool GomokuBoard::PutMove(const PositionField field, const Player player)
     {
         retVal = false;
     }
-    else if(PLAYER_EMPTY == m_pBoardStructure->Get_node_value(field))
+    else if(PLAYER_EMPTY == m_pBoardStructure->getNodeValue(field))
     {
         // Put current move on board & notify observers.
-        m_pBoardStructure->Set_node_value(field, static_cast<graph::NodeVal>(player));
+        m_pBoardStructure->setNodeValue(field, static_cast<graph::NodeVal>(player));
         Announce();
 
         // Save position of this move.
@@ -259,7 +259,7 @@ Board::Player GomokuBoard::GetMove(const PositionXY xy) const
     PositionField field(this->GetSize(), xy);
 
     // Check to whom given field belongs to.
-    retVal = static_cast<Player>(m_pBoardStructure->Get_node_value(field));
+    retVal = static_cast<Player>(m_pBoardStructure->getNodeValue(field));
 
     return retVal;
 }
@@ -273,7 +273,7 @@ Board::Player GomokuBoard::GetMove(const PositionField field) const
     Player retVal = PLAYER_EMPTY;
 
     // Check to whom given field belongs to.
-    retVal = static_cast<Player>(m_pBoardStructure->Get_node_value(field));
+    retVal = static_cast<Player>(m_pBoardStructure->getNodeValue(field));
 
     return retVal;
 }
@@ -288,9 +288,9 @@ bool GomokuBoard::RemoveMove(const PositionXY xy) const
     const PositionField field(this->GetSize(), xy);
 
     // Check if given position is free.
-    if(PLAYER_EMPTY != m_pBoardStructure->Get_node_value(field))
+    if(PLAYER_EMPTY != m_pBoardStructure->getNodeValue(field))
     {
-        m_pBoardStructure->Set_node_value(field, static_cast<graph::NodeVal>(PLAYER_EMPTY));
+        m_pBoardStructure->setNodeValue(field, static_cast<graph::NodeVal>(PLAYER_EMPTY));
         retVal = true;
     }
 
@@ -372,7 +372,7 @@ uint32_t GomokuBoard::VacantFields() const
             const PositionField field(this->GetSize(), xy);
 
             // Count vacant fields.
-            if(PLAYER_EMPTY == m_pBoardStructure->Get_node_value(field))
+            if(PLAYER_EMPTY == m_pBoardStructure->getNodeValue(field))
             {
                 ++retVal;
             }
@@ -633,7 +633,7 @@ vector<graph::Node> GomokuBoard::GetNeighborhood(const PositionXY xy) const
 {
 #warning "Should be retval reference & ??"
     PositionField field        = PositionField(this->GetSize(), xy);
-    vector<graph::Node> retVal = m_pBoardStructure->Neighbors(field);
+    vector<graph::Node> retVal = m_pBoardStructure->getNeighbors(field);
     return retVal;
 }
 
@@ -646,7 +646,7 @@ void GomokuBoard::ResetInstance()
         for(Node j = 0; j < m_Size; ++j)
         {
             // Set board's fields as not occupied (NONE).
-            m_pBoardStructure->Set_node_value(m_Size * i + j, static_cast<NodeVal>(PLAYER_EMPTY));
+            m_pBoardStructure->setNodeValue(m_Size * i + j, static_cast<NodeVal>(PLAYER_EMPTY));
         }
     }
 
