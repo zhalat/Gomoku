@@ -1,0 +1,42 @@
+CPU starts game.
+( 7, 7 )
+( 6, 8 )
+( 8, 8 )
+( 6, 6 )
+( 6, 9 )
+( 7, 9 )
+( 5, 7 )
+( 6, 7 )
+( 6, 4 )
+( 5, 8 )
+( 7, 6 )
+( 7, 8 )
+( 4, 8 )
+( 8, 9 )
+( 9, 10 )
+( 7, 10 )
+( 9, 8 )
+( 8, 7 )
+( 9, 9 )
+( 9, 11 )
+( 9, 6 )
+( 9, 7 )
+( 8, 10 )
+( 10, 10 )
+( 7, 11 )
+( 10, 8 )
+( 3, 7 )
+
+
+            m_CoefficientA = 1.5;
+            m_CoefficientB = 1;
+
+
+    	if( isMaximizingPlayer )
+    	{
+            bestMove.m_score = m_CoefficientA * (float)(m_pBoardScoreCpuCopy->GetScore())  -  static_cast<int>( m_pBoardScoreHumanCopy->GetScore() );
+    	}
+    	else
+    	{
+            bestMove.m_score = -static_cast<int>( m_CoefficientB *(float)(m_pBoardScoreHumanCopy->GetScore()) ) +  m_pBoardScoreCpuCopy->GetScore() ;
+    	}

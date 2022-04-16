@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Cell.qml</file>
+        <file>GoButton.qml</file>
+        <file>GomokuBoard.qml</file>
+        <file>Notification.qml</file>
+        <file>TopBar.qml</file>
+        <file>Score.qml</file>
+    </qresource>
+</RCC>
