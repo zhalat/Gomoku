@@ -1,0 +1,2 @@
+design/* filter=lfs diff=lfs merge=lfs -text
+legacy/trunk/Anomalies/* filter=lfs diff=lfs merge=lfs -text
