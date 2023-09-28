@@ -4,8 +4,8 @@ add_executable( gomoku-al
     main.cpp
     DataContainers/Graph.cpp
     DataContainers/GraphIterator.cpp
-        GomokuBoard.cpp
-        BoardIterator.cpp
+    GomokuBoard.cpp
+    BoardIterator.cpp
 )
                 
 target_include_directories(gomoku-al PUBLIC 

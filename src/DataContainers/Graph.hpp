@@ -1,19 +1,4 @@
-/*
- * Graph.hpp
- *
- *  Created on: 4 sty 2014
- *      Author: ginar
- *
- *    Class description:
- *        Graph - abstract data representation.
- *
- *    Interface:
- *
- * */
-
-#ifndef GRAPH_H_
-#define GRAPH_H_
-
+#pragma once
 #include <iostream>
 #include <vector>
 #include <climits>
@@ -36,7 +21,6 @@ class Graph
     static constexpr int EdgeInit      = UINT_MAX;  // means not connected;
     static constexpr int EdgeConnect   = 0x00;      // means connected;
     static constexpr int NodeValueInit = INT_MIN;
-    ;
 
     Graph(unsigned int size);
     Graph(const Graph & _g);
@@ -59,7 +43,6 @@ class Graph
     unsigned int Ed;
     unsigned int size;
 
-    // Handler to iterator.
     IteratorIf<graph::Node> * m_pIterator;
 
     //----My friends-----------------------------------------------------------:
@@ -78,25 +61,4 @@ class Graph
     }
 };
 
-}  // namespace graph
-#endif /* GRAPH_H_ */
-
-/***************************************************************************
- *   Copyright (C) 2018 by Zbigniew Halat                                  *
- *   zby.halat@gmail.com                                                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.           *
- ***************************************************************************/
+}

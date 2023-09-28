@@ -1,7 +1,6 @@
 */build/*
 /build*/*
-/cmake-build*/*
-/src/.clang-format
+cmake-*/
 Doxygen/*
-.idea/*
+.idea/
 .vscode/*

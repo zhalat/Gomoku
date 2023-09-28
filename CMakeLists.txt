@@ -18,12 +18,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 add_subdirectory(src)
 
-##Google tests
+#Google tests
 include(cmake/google-test.cmake)
-#
-##Cpp check
-#include(cmake/cppcheck.cmake)
-#
-##Code formatting
-#include(cmake/code_format/clang-format.cmake)
+#Cpp check
+include(cmake/cppcheck.cmake)
+#Code formatting
+include(cmake/code_format/clang-format.cmake)
 

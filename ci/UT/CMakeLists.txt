@@ -1,10 +1,10 @@
 ﻿cmake_minimum_required( VERSION 3.13 )
 
-add_executable( ci 
+add_executable( ci
     # Unit test
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
-    "GomokuBoardTest/GomokuBoardTest.cpp"
-   # "VectorUniqueTest/VectorUniqueTest.cpp"
+    "GomokuBoardTest.cpp"
+# "VectorUniqueTest/VectorUniqueTest.cpp"
 #    "SingleListTest/SingleListTest.cpp"
 #    "VectorLightTest/VectorLightTest.cpp"
 #    "ThreatsTests/Threat2CaseAATest/Threat2CaseAATest.cpp"
@@ -30,9 +30,9 @@ add_executable( ci
     # Unit under test
 
     "../../src/DataContainers/Graph.cpp"
-        "../../src/DataContainers/GraphIterator.cpp"
-        "../../src/GomokuBoard.cpp"
-        "../../src/BoardIterator.cpp"
+    "../../src/DataContainers/GraphIterator.cpp"
+    "../../src/GomokuBoard.cpp"
+    "../../src/BoardIterator.cpp"
     # Stubs
  )
 

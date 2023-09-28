@@ -1,38 +1,11 @@
-/////////////////////////////////////////////////////////////////////////////////////////
-/// @file GomokuBoard.hpp
-///
-/// GomokuBoard class implementation.
-///
-/// @par Full Description.
-/// Providing board for gomoku game.
-///
-/// @if REVISION_HISTORY_INCLUDED
-/// @par Edit History
-/// - zhalat 06-Jan-2015 Initial revision.
-/// - zhalat 26-Sep-2016 Quick access for field's neighbourhood.
-/// @endif
-///
-///    @ingroup.
-///
-/// @par non-Copyright (c) 2015 HalSoft
-///////////////////////////////////////////////////////////////////////////////////////////
-
-// SYSTEM INCLUDES
 #include <sstream>
 #include "string"
-#include <assert.h>  // For assert.
+#include <assert.h>
+#include "GomokuBoard.hpp"
+#include "BoardIterator.hpp"
 
-// C PROJECT INCLUDES
-// <none>
-
-// C++ PROJECT INCLUDES
-#include "GomokuBoard.hpp"    // GomokuBoard declaration.
-#include "BoardIterator.hpp"  // For BoardIterator declaration.
-
-// FORWARD REFERENCES
 using std::string;
 
-/// Constructor for GomokuBoard.
 GomokuBoard::GomokuBoard(uint32_t size)
 {
     // Prevent creating Gomoku board if MAX_GOMOKU_BOARD_SIZE exceeded or 0.
@@ -164,7 +137,6 @@ GomokuBoard::GomokuBoard(uint32_t size)
     }
 }
 
-/// Copy constructor.
 GomokuBoard::GomokuBoard(const GomokuBoard & rBoard)
 {
     m_Size = rBoard.m_Size;
@@ -186,7 +158,6 @@ GomokuBoard::GomokuBoard(const GomokuBoard & rBoard)
     // m_ObserverClient = rBoard.m_ObserverClient;
 }
 
-/// Put a move.
 bool GomokuBoard::PutMove(const PositionXY xy, const Player player)
 {
     bool retVal = false;
@@ -214,7 +185,6 @@ bool GomokuBoard::PutMove(const PositionXY xy, const Player player)
     return retVal;
 }
 
-/// Put a move.
 bool GomokuBoard::PutMove(const PositionField field, const Player player)
 {
     bool retVal = false;
@@ -242,7 +212,6 @@ bool GomokuBoard::PutMove(const PositionField field, const Player player)
     return retVal;
 }
 
-/// Returns player who occupies given position.
 Board::Player GomokuBoard::GetMove(const PositionXY xy) const
 {
     // Validate input parameters.
@@ -264,7 +233,6 @@ Board::Player GomokuBoard::GetMove(const PositionXY xy) const
     return retVal;
 }
 
-/// Returns player who occupies given field.
 Board::Player GomokuBoard::GetMove(const PositionField field) const
 {
     // Validate input parameters.
@@ -278,7 +246,6 @@ Board::Player GomokuBoard::GetMove(const PositionField field) const
     return retVal;
 }
 
-/// Removes move.
 bool GomokuBoard::RemoveMove(const PositionXY xy) const
 {
     assert(IsOnBoard(xy));
@@ -297,7 +264,6 @@ bool GomokuBoard::RemoveMove(const PositionXY xy) const
     return retVal;
 }
 
-/// Removes N last movies.
 bool GomokuBoard::RemoveNLastMove(const int n)
 {
     assert(n >= 0);
@@ -318,7 +284,6 @@ bool GomokuBoard::RemoveNLastMove(const int n)
     return retVal;
 }
 
-/// Last move being put into board.
 bool GomokuBoard::GetLastMove(PositionXY & xy) const
 {
     bool retVal = false;
@@ -334,7 +299,6 @@ bool GomokuBoard::GetLastMove(PositionXY & xy) const
     return retVal;
 }
 
-/// First move being put into board.
 bool GomokuBoard::GetFirstMove(PositionXY & xy) const
 {
     bool retVal = false;
@@ -350,13 +314,11 @@ bool GomokuBoard::GetFirstMove(PositionXY & xy) const
     return retVal;
 }
 
-/// Gets number of movies on the borad.
 uint32_t GomokuBoard::GetMoveNumber() const
 {
     return m_MoveHistory.size();
 }
 
-/// Compute amount of vacant fields.
 uint32_t GomokuBoard::VacantFields() const
 {
     using namespace graph;
@@ -382,7 +344,6 @@ uint32_t GomokuBoard::VacantFields() const
     return retVal;
 }
 
-/// Distance to an edge of board.
 uint32_t GomokuBoard::EdgeDistance(const PositionXY xy, const Direction direction) const
 {
     uint32_t retVal = 0;
@@ -409,7 +370,6 @@ uint32_t GomokuBoard::EdgeDistance(const PositionXY xy, const Direction directio
     return retVal;
 }
 
-/// Distance to neighbour.
 int32_t GomokuBoard::NeighbourDistance(const PositionXY xy, const Direction direction, const Player player) const
 {
     int32_t retVal = 0;
@@ -452,7 +412,6 @@ int32_t GomokuBoard::NeighbourDistance(const PositionXY xy, const Direction dire
     return retVal;
 }
 
-/// From given position, checks how many the same figure (X or O) are placed in a row.
 uint32_t GomokuBoard::InRow(const PositionXY xy, const Direction direction) const
 {
     int32_t retVal = 0;
@@ -495,7 +454,6 @@ uint32_t GomokuBoard::InRow(const PositionXY xy, const Direction direction) cons
     return retVal;
 }
 
-/// Checks if position is on the edge of board.
 Board::OnEdge GomokuBoard::IsOnEdge(const PositionXY xy) const
 {
     // Don't analyze sth which is out of board.
@@ -540,7 +498,6 @@ Board::OnEdge GomokuBoard::IsOnEdge(const PositionXY xy) const
     return retVal;
 }
 
-/// Checks if position is on board.
 bool GomokuBoard::IsOnBoard(const PositionXY xy) const
 {
     const bool isInputParamValid = (xy.m_x < m_Size) && (xy.m_y < m_Size);
@@ -553,7 +510,6 @@ bool GomokuBoard::IsOnBoard(const PositionField field) const
     return isInputParamValid;
 }
 
-/// Check if moving towards direction is possible.
 bool GomokuBoard::CanIGo(const PositionXY xy, const Direction direction) const
 {
     PositionXY tempXY = xy;
@@ -562,7 +518,6 @@ bool GomokuBoard::CanIGo(const PositionXY xy, const Direction direction) const
     return IsOnBoard(tempXY);
 }
 
-/// Go to one step toward direction.
 void GomokuBoard::GoDirection(PositionXY & xy, const Direction direction, const uint32_t steps) const
 {
     // Crawl towards the edge.
@@ -609,7 +564,6 @@ void GomokuBoard::GoDirection(PositionXY & xy, const Direction direction, const 
     }
 }
 
-/// Clone current state of Board.
 Board & GomokuBoard::Clone() const
 {
     Board * retVal = new GomokuBoard(*this);
@@ -618,7 +572,6 @@ Board & GomokuBoard::Clone() const
     return *retVal;
 }
 
-/// Gets the neighborhood of provided position.
 const Board::Neighbours & GomokuBoard::GetNeighborhood(const PositionField field) const
 {
     const uint32_t index = static_cast<uint32_t>(field);
@@ -628,7 +581,6 @@ const Board::Neighbours & GomokuBoard::GetNeighborhood(const PositionField field
     return retVal;
 }
 
-/// Gets the neighborhood of provided position.
 vector<graph::Node> GomokuBoard::GetNeighborhood(const PositionXY xy) const
 {
 #warning "Should be retval reference & ??"
@@ -637,7 +589,6 @@ vector<graph::Node> GomokuBoard::GetNeighborhood(const PositionXY xy) const
     return retVal;
 }
 
-/// Revert board to initial state.
 void GomokuBoard::ResetInstance()
 {
     using namespace graph;
@@ -655,13 +606,11 @@ void GomokuBoard::ResetInstance()
     m_pIterator->SetToBase();
 }
 
-/// Observer register.
 void GomokuBoard::RegisterObserver(const Observer::ObserverIf & rObserver)
 {
     m_ObserverClient.push_back(&rObserver);
 }
 
-/// Removing observer.
 bool GomokuBoard::RemoveObserver(const Observer::ObserverIf & rObserver)
 {
     bool retVal = false;
@@ -681,7 +630,6 @@ bool GomokuBoard::RemoveObserver(const Observer::ObserverIf & rObserver)
     return retVal;
 }
 
-/// Notify observers.
 void GomokuBoard::Announce() const
 {
     // Notify all observers.
@@ -691,23 +639,3 @@ void GomokuBoard::Announce() const
         (*cit)->Update();
     }
 }
-
-/***************************************************************************
- *   Copyright (C) 2018 by Zbigniew Halat                                  *
- *   zby.halat@gmail.com                                                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.           *
- ***************************************************************************/
