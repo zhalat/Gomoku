@@ -4,9 +4,9 @@ add_executable( ci
     # Unit test
     "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
     "GomokuBoardTest.cpp"
-# "VectorUniqueTest/VectorUniqueTest.cpp"
-#    "SingleListTest/SingleListTest.cpp"
-#    "VectorLightTest/VectorLightTest.cpp"
+    "VectorUniqueTest.cpp"
+    "SingleListTest.cpp"
+    "VectorLightTest.cpp"
 #    "ThreatsTests/Threat2CaseAATest/Threat2CaseAATest.cpp"
 #    "ThreatsTests/Threat2CaseATest/Threat2CaseATest.cpp"
 #    "ThreatsTests/Threat2CaseBTest/Threat2CaseBTest.cpp"
@@ -30,15 +30,14 @@ add_executable( ci
     # Unit under test
 
     "../../src/DataContainers/Graph.cpp"
-    "../../src/DataContainers/GraphIterator.cpp"
     "../../src/GomokuBoard.cpp"
-    "../../src/BoardIterator.cpp"
     # Stubs
  )
 
 target_include_directories(ci PUBLIC
     "${PROJECT_SOURCE_DIR}/src"
     "${PROJECT_SOURCE_DIR}/src/DataContainers"
+    "${PROJECT_SOURCE_DIR}/src/Interfaces"
     "${PROJECT_SOURCE_DIR}/src/Headers/SearchAlgorithms"
     "${PROJECT_SOURCE_DIR}/src/Headers/Threats"
  )

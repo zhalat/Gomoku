@@ -1,127 +1,138 @@
 #include <string.h>
-#include "Graph.hpp"
-#include "GraphIterator.hpp"
+#include "Graph.h"
+#include "GraphIterator.h"
 
 using namespace graph;
 using std::vector;
 
-Graph::Graph(Node size) : size(size)
+Graph::Graph(Node size) : m_size(size)
 {
-    ppEdgeMatrix = NULL;
-    pNodeValue   = NULL;
+    m_ppEdgeMatrix = NULL;
+    m_pNodeValue   = NULL;
 
     if(0 == size)
-        throw "Invalid parameter - size can't be 0";
+        throw "Invalid parameter - m_size can't be 0";
 
-    ppEdgeMatrix = new EdgeVal *[size];
+    m_ppEdgeMatrix = new EdgeVal *[size];
     for(Node i = 0; i < size; i++)
-        ppEdgeMatrix[i] = new EdgeVal[size];
-    pNodeValue = new NodeVal[size];
+        m_ppEdgeMatrix[i] = new EdgeVal[size];
+    m_pNodeValue = new NodeVal[size];
 
     for(Node i = 0; i < size; i++)
     {
-        pNodeValue[i] = NodeValueInit;
+        m_pNodeValue[i] = NodeValueInit;
         for(Node j = 0; j < size; j++)
             if(i == j)
-                ppEdgeMatrix[i][j] = 0;
+                m_ppEdgeMatrix[i][j] = 0;
             else
-                ppEdgeMatrix[i][j] = EdgeInit;
+                m_ppEdgeMatrix[i][j] = EdgeInit;
     }
-    Ed = 0;
+    m_edgeCntr = 0;
 
-    m_pIterator = new GraphIterator(pNodeValue, size);
+    m_pIterator = new GraphIterator(m_pNodeValue, size);
 }
 
-Graph::Graph(const Graph & _g)
+Graph::Graph(const Graph & g)
 {
-    ppEdgeMatrix = NULL;
-    pNodeValue   = NULL;
-    this->size   = _g.size;
-    this->Ed     = _g.Ed;
+    m_ppEdgeMatrix = NULL;
+    m_pNodeValue   = NULL;
+    this->m_size   = g.m_size;
+    this->m_edgeCntr     = g.m_edgeCntr;
 
-    ppEdgeMatrix = new EdgeVal *[size];
-    for(Node i = 0; i < size; i++)
+    m_ppEdgeMatrix = new EdgeVal *[m_size];
+    for(Node i = 0; i < m_size; i++)
     {
-        ppEdgeMatrix[i] = new EdgeVal[size];
-        memcpy(&ppEdgeMatrix[i][0], &_g.ppEdgeMatrix[i][0], this->size * sizeof(EdgeVal));
+        m_ppEdgeMatrix[i] = new EdgeVal[m_size];
+        memcpy(&m_ppEdgeMatrix[i][0], &g.m_ppEdgeMatrix[i][0], this->m_size * sizeof(EdgeVal));
     }
 
-    pNodeValue = new NodeVal[size];
-    memcpy(&pNodeValue[0], &_g.pNodeValue[0], this->size * sizeof(NodeVal));
+    m_pNodeValue = new NodeVal[m_size];
+    memcpy(&m_pNodeValue[0], &g.m_pNodeValue[0], this->m_size * sizeof(NodeVal));
 
-    m_pIterator = new GraphIterator(pNodeValue, size);
+    m_pIterator = new GraphIterator(m_pNodeValue, m_size);
+}
+
+Graph::Graph(Graph&& g)
+{
+    this->m_size   = g.m_size;
+    this->m_edgeCntr     = g.m_edgeCntr;
+    m_ppEdgeMatrix = g.m_ppEdgeMatrix;
+    m_pNodeValue = g.m_pNodeValue;
+
+    g.m_ppEdgeMatrix = nullptr;
+    g.m_pNodeValue = nullptr;
 }
 
 Graph::~Graph()
 {
-    delete[] pNodeValue;
-    pNodeValue = NULL;
+    delete[] m_pNodeValue;
+    m_pNodeValue = NULL;
 
-    if(ppEdgeMatrix != NULL)
+    if(m_ppEdgeMatrix != NULL)
     {
-        for(Node i = 0; i < size; i++)
-            delete[] ppEdgeMatrix[i];
+        for(Node i = 0; i < m_size; i++)
+            delete[] m_ppEdgeMatrix[i];
     }
-    delete[] ppEdgeMatrix;
-    ppEdgeMatrix = NULL;
-    Ed           = 0;
+    delete[] m_ppEdgeMatrix;
+    m_ppEdgeMatrix = NULL;
+    m_edgeCntr           = 0;
 
     delete m_pIterator;
     m_pIterator = NULL;
 }
 
-bool Graph::AddEdge(Node x, Node y, EdgeVal a)
+bool Graph::addEdge(Node x, Node y, EdgeVal a)
 {
-    if((x >= size) || (y >= size) || (x == y))
+    if((x >= m_size) || (y >= m_size) || (x == y))
         return false;
     // See if the edge already exists.
-    if(ppEdgeMatrix[x][y] != EdgeInit)
+    if(m_ppEdgeMatrix[x][y] != EdgeInit)
         return false;
 
-    ppEdgeMatrix[x][y] = a;
-    ppEdgeMatrix[y][x] = a;
-    Ed++;
+    m_ppEdgeMatrix[x][y] = a;
+    m_ppEdgeMatrix[y][x] = a;
+    m_edgeCntr++;
     return true;
 }
 
-bool Graph::DeleteEdge(Node x, Node y)
+bool Graph::deleteEdge(Node x, Node y)
 {
     // Argument validation.
-    if((x >= size) || (y >= size) || (x == y))
+    if((x >= m_size) || (y >= m_size) || (x == y))
         return false;
     // See if the edge  exists.
-    if(ppEdgeMatrix[x][y] == EdgeInit)
+    if(m_ppEdgeMatrix[x][y] == EdgeInit)
         return false;
 
-    ppEdgeMatrix[x][y] = EdgeInit;
-    ppEdgeMatrix[y][x] = EdgeInit;
-    Ed--;
+    m_ppEdgeMatrix[x][y] = EdgeInit;
+    m_ppEdgeMatrix[y][x] = EdgeInit;
+    m_edgeCntr--;
     return true;
 }
 
-bool Graph::Adjacent(Node x, Node y)
+bool Graph::adjacent(Node x, Node y) const
 {
-    if((x >= size) || (y >= size))
+    if((x >= m_size) || (y >= m_size))
         return false;
-    if(ppEdgeMatrix[x][y] != EdgeInit)
+    if(m_ppEdgeMatrix[x][y] != EdgeInit)
         return true;
     else
         return false;
 }
 
-unsigned int Graph::E(void)
+unsigned int Graph::getEdgeCntr() const
 {
-    return Ed;
+    return m_edgeCntr;
 }
 
-vector<Node> Graph::Neighbors(Node k)
+vector<Node> Graph::neighbors(Node k) const
 {
     vector<Node> vlist;
-    for(Node i = 0; i < size; i++)
+    for(Node i = 0; i < m_size; i++)
     {
         if(i == k)
             continue;
-        else if(ppEdgeMatrix[k][i] != EdgeInit)
+        else if(m_ppEdgeMatrix[k][i] != EdgeInit)
         {
             vlist.push_back(i);
         }
@@ -129,51 +140,51 @@ vector<Node> Graph::Neighbors(Node k)
     return vlist;
 }
 
-NodeVal Graph::Get_node_value(Node k)
+NodeVal Graph::getNodeValue(Node k) const
 {
-    return pNodeValue[k];
+    return m_pNodeValue[k];
 }
 
-void Graph::Set_node_value(Node k, NodeVal a)
+void Graph::setNodeValue(Node k, NodeVal a)
 {
-    if(k < size)
-        pNodeValue[k] = a;
+    if(k < m_size)
+        m_pNodeValue[k] = a;
 }
 
-EdgeVal Graph::Get_edge_value(Node x, Node y)
+EdgeVal Graph::getEdgeValue(Node x, Node y) const
 {
-    return ppEdgeMatrix[x][y];
+    return m_ppEdgeMatrix[x][y];
 }
 
-bool Graph::Set_edge_value(Node x, Node y, EdgeVal a)
+bool Graph::setEdgeValue(Node x, Node y, EdgeVal a)
 {
-    if((x >= size) || (y >= size))
+    if((x >= m_size) || (y >= m_size))
         return false;
     else
     {
-        ppEdgeMatrix[x][y] = a;
-        ppEdgeMatrix[y][x] = a;
+        m_ppEdgeMatrix[x][y] = a;
+        m_ppEdgeMatrix[y][x] = a;
     }
     return true;
 }
 
-IteratorIf<graph::Node> * Graph::GetIterator() const
+IIterator<graph::Node> * Graph::getIterator() const
 {
     return m_pIterator;
 }
 
-void Graph::ResetInstance()
+void Graph::resetInstance()
 {
-    m_pIterator->SetToBase();
+    m_pIterator->backToBegin();
 
-    for(Node i = 0; i < size; i++)
+    for(Node i = 0; i < m_size; i++)
     {
-        pNodeValue[i] = NodeValueInit;
-        for(Node j = 0; j < size; j++)
+        m_pNodeValue[i] = NodeValueInit;
+        for(Node j = 0; j < m_size; j++)
             if(i == j)
-                ppEdgeMatrix[i][j] = 0;
+                m_ppEdgeMatrix[i][j] = 0;
             else
-                ppEdgeMatrix[i][j] = EdgeInit;
+                m_ppEdgeMatrix[i][j] = EdgeInit;
     }
-    Ed = 0;
+    m_edgeCntr = 0;
 }

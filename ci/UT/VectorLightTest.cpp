@@ -1,109 +1,66 @@
-#include "VectorLight.hpp"
-#include "Board.hpp"
-//-------------------------------
-#include "CppUTest/TestHarness.h"
-#include "CppUTest/SimpleString.h"
-#include "CppUTest/PlatformSpecificFunctions.h"
-#include "CppUTest/TestMemoryAllocator.h"
-#include "CppUTest/MemoryLeakDetector.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include "VectorLight.h"
 
-TEST_GROUP(VectorLightTest)
+class VectorLightTest : public ::testing::Test
 {
-    void setup() { m_pVectorLight = new VectorLight(Board::PositionField::INVALID_FIELD); }
+public:
+    static constexpr uint32_t k_VECTOR_TEST_SIZE {25};
 
-    void teardown() { delete m_pVectorLight; }
-
-   public:
-    VectorLight* m_pVectorLight;
+    void SetUp() { m_pVectorLight = new VectorLight<k_VECTOR_TEST_SIZE>(0xFFFFFFFF); }
+    void TearDown() { delete m_pVectorLight; }
+    VectorLight<k_VECTOR_TEST_SIZE>* m_pVectorLight;
 };
 
-TEST(VectorLightTest, InitTest)
+TEST_F(VectorLightTest, InsertTest)
 {
-    const uint32_t data = 0x5;
+    uint32_t data[k_VECTOR_TEST_SIZE] = {0};
 
-    m_pVectorLight->Insert(data);
-
-    CHECK(data == m_pVectorLight->m_Array[0]);
-    CHECK(Board::PositionField::INVALID_FIELD == m_pVectorLight->m_Array[VectorLight::VECTOR_SIZE - 1]);
-
-    CHECK(Board::PositionField::INVALID_FIELD == m_pVectorLight->m_MarkArray[0]);
-    CHECK(Board::PositionField::INVALID_FIELD == m_pVectorLight->m_MarkArray[VectorLight::VECTOR_SIZE - 1]);
-
-    // Check the copy constructor.
-    VectorLight vectorLightCopy = *m_pVectorLight;
-
-    CHECK(data == vectorLightCopy.m_Array[0]);
-
-    CHECK(Board::PositionField::INVALID_FIELD == vectorLightCopy.m_MarkArray[0]);
-    CHECK(Board::PositionField::INVALID_FIELD == vectorLightCopy.m_MarkArray[VectorLight::VECTOR_SIZE - 1]);
-
-    // Check assign operator.
-    const Board::PositionField initialData[] = {3, 4, 5};
-
-    vector<Board::PositionField> vectorStl{initialData[0], initialData[1], initialData[2]};
-    VectorLight vectorLight(Board::PositionField::INVALID_FIELD);
-    vectorLight = vectorStl;
-
-    CHECK(vectorLight.GetNumberOfElements() == sizeof(initialData) / sizeof(initialData[0]));
-
-    IteratorIf<uint32_t>* pIterator = vectorLight.GetIterator();
-    uint32_t index                  = 0;
-    for(pIterator->SetToBase(); pIterator->HasNext(); ++index)
+    for(uint32_t i = 0; i < k_VECTOR_TEST_SIZE; ++i)
     {
-        CHECK(initialData[index] == pIterator->GetNext());
+        data[i] = i;
+        m_pVectorLight->insert(data[i]);
+    }
+
+    IIterator<uint32_t>* pIterator = m_pVectorLight->getIterator();
+
+    uint32_t index = 0;
+    for(pIterator->backToBegin(); pIterator->hasNext(); ++index)
+    {
+        ASSERT_EQ(data[index] , pIterator->getNext());
     }
 }
 
-TEST(VectorLightTest, InsertTest)
+TEST_F(VectorLightTest, HasNextTest)
 {
-    uint32_t data[VectorLight::VECTOR_SIZE] = {0};
+    IIterator<uint32_t>* iter1 = m_pVectorLight->getIterator();
+    ASSERT_FALSE( iter1->hasNext());
 
-    for(uint32_t i = 0; i < VectorLight::VECTOR_SIZE; ++i)
+    uint32_t data[k_VECTOR_TEST_SIZE] = {0};
+
+    for(uint32_t i = 0; i < k_VECTOR_TEST_SIZE; ++i)
     {
         data[i] = i;
-        m_pVectorLight->Insert(data[i]);
+        m_pVectorLight->insert(data[i]);
     }
 
-    IteratorIf<uint32_t>* pIterator = m_pVectorLight->GetIterator();
+    IIterator<uint32_t>* iter2 = m_pVectorLight->getIterator();
 
     uint32_t index = 0;
-    for(pIterator->SetToBase(); pIterator->HasNext(); ++index)
+    for(iter2->backToBegin(); iter2->hasNext(); ++index)
     {
-        CHECK(data[index] == pIterator->GetNext());
-    }
-}
-
-TEST(VectorLightTest, HasNextVectorLightIteratorTest)
-{
-    IteratorIf<uint32_t>* beginTest = m_pVectorLight->GetIterator();
-    CHECK(false == beginTest->HasNext());
-
-    uint32_t data[VectorLight::VECTOR_SIZE] = {0};
-
-    for(uint32_t i = 0; i < VectorLight::VECTOR_SIZE; ++i)
-    {
-        data[i] = i;
-        m_pVectorLight->Insert(data[i]);
-    }
-
-    IteratorIf<uint32_t>* pIterator = m_pVectorLight->GetIterator();
-
-    uint32_t index = 0;
-    for(pIterator->SetToBase(); pIterator->HasNext(); ++index)
-    {
-        if((VectorLight::VECTOR_SIZE) == index)
+        if(k_VECTOR_TEST_SIZE == index)
         {
-            CHECK(false == pIterator->HasNext());
+            ASSERT_TRUE(iter2->hasNext());
         }
         else
         {
-            CHECK(true == pIterator->HasNext());
-            pIterator->GetNext();
+            ASSERT_TRUE(iter2->hasNext());
+            iter2->getNext();
         }
     }
 }
-
-TEST(VectorLightTest, IsPresentTest)
+TEST_F(VectorLightTest, IsPresentTest)
 {
     const uint32_t dat1 = 0x4;
     const uint32_t dat2 = 0x6;
@@ -111,62 +68,62 @@ TEST(VectorLightTest, IsPresentTest)
     const uint32_t dat4 = 0x5;
 
     // Add some data into collection:
-    m_pVectorLight->Insert(dat1);
-    m_pVectorLight->Insert(dat2);
-    m_pVectorLight->Insert(dat3);
+    m_pVectorLight->insert(dat1);
+    m_pVectorLight->insert(dat2);
+    m_pVectorLight->insert(dat3);
 
     // Check if all data that have been added exist in collection:
-    CHECK(m_pVectorLight->IsPresent(dat1));
-    CHECK(m_pVectorLight->IsPresent(dat2));
-    CHECK(m_pVectorLight->IsPresent(dat3));
+    ASSERT_TRUE(m_pVectorLight->isPresent(dat1));
+    ASSERT_TRUE(m_pVectorLight->isPresent(dat2));
+    ASSERT_TRUE(m_pVectorLight->isPresent(dat3));
 
     // Check if data that has not been added, doesn't exist in collection.
-    CHECK(!m_pVectorLight->IsPresent(dat4));
+    ASSERT_TRUE(!m_pVectorLight->isPresent(dat4));
 
     // Add it now, and check it,
-    m_pVectorLight->Insert(dat4);
-    CHECK(m_pVectorLight->IsPresent(dat4));
+    m_pVectorLight->insert(dat4);
+    ASSERT_TRUE(m_pVectorLight->isPresent(dat4));
 }
 
-TEST(VectorLightTest, RemoveTest1)
+TEST_F(VectorLightTest, RemoveTest1)
 {
     const uint32_t data[] = {0x4, 0x6, 0x7, 0x5};
 
     // Add some data into collection:
-    m_pVectorLight->Insert(data[0]);
-    m_pVectorLight->Insert(data[1]);
-    m_pVectorLight->Insert(data[2]);
+    m_pVectorLight->insert(data[0]);
+    m_pVectorLight->insert(data[1]);
+    m_pVectorLight->insert(data[2]);
 
-    IteratorIf<uint32_t>* pIterator = m_pVectorLight->GetIterator();
+    IIterator<uint32_t>* pIterator = m_pVectorLight->getIterator();
 
     uint32_t index = 0;
-    for(pIterator->SetToBase(); pIterator->HasNext(); ++index)
+    for(pIterator->backToBegin(); pIterator->hasNext(); ++index)
     {
-        CHECK(data[index] == pIterator->GetNext());
+        ASSERT_TRUE(data[index] == pIterator->getNext());
     }
 
     // Try to remove not existing data.
-    CHECK(false == m_pVectorLight->Remove(data[3]));
+    ASSERT_TRUE(false == m_pVectorLight->remove(data[3]));
 
     // Try to remove existing data.
     const uint32_t removedData = data[1];
-    CHECK(true == m_pVectorLight->Remove(removedData));
+    ASSERT_TRUE(true == m_pVectorLight->remove(removedData));
 
     // Go thru all elements. Removed element shall be not avaliable.
-    for(pIterator->SetToBase(); pIterator->HasNext();)
+    for(pIterator->backToBegin(); pIterator->hasNext();)
     {
-        const uint32_t currentData = pIterator->GetNext();
-        CHECK(removedData != currentData);
+        const uint32_t currentData = pIterator->getNext();
+        ASSERT_TRUE(removedData != currentData);
     }
 }
 
-TEST(VectorLightTest, RemoveTest2)
+TEST_F(VectorLightTest, RemoveTest2)
 {
     const uint32_t data[] = {0x8, 0x1, 0x6, 0x3, 0x4, 0x5, 0x2, 0x7, 0x0};
 
     for(uint32_t i = 0; i < (sizeof(data) / sizeof(data[0])); ++i)
     {
-        m_pVectorLight->Insert(data[i]);
+        m_pVectorLight->insert(data[i]);
     }
 
     // Data to remove:
@@ -174,90 +131,90 @@ TEST(VectorLightTest, RemoveTest2)
     const uint32_t removeData2 = data[3];
     const uint32_t removeData3 = data[7];
     const uint32_t removeData4 = data[8];
-    CHECK(true == m_pVectorLight->Remove(removeData1));
-    CHECK(true == m_pVectorLight->Remove(removeData2));
-    CHECK(true == m_pVectorLight->Remove(removeData3));
-    CHECK(true == m_pVectorLight->Remove(removeData4));
+    ASSERT_TRUE(true == m_pVectorLight->remove(removeData1));
+    ASSERT_TRUE(true == m_pVectorLight->remove(removeData2));
+    ASSERT_TRUE(true == m_pVectorLight->remove(removeData3));
+    ASSERT_TRUE(true == m_pVectorLight->remove(removeData4));
 
     const uint32_t dataAfterRemove[] = {0x1, 0x6, 0x4, 0x5, 0x2};
 
     // Go thru all elements. Removed element shall not be avaliable.
-    IteratorIf<uint32_t>* pIterator = m_pVectorLight->GetIterator();
+    IIterator<uint32_t>* pIterator = m_pVectorLight->getIterator();
     uint32_t index                  = 0;
-    for(pIterator->SetToBase(); pIterator->HasNext(); ++index)
+    for(pIterator->backToBegin(); pIterator->hasNext(); ++index)
     {
-        const uint32_t currentData = pIterator->GetNext();
-        CHECK(dataAfterRemove[index] == currentData);
+        const uint32_t currentData = pIterator->getNext();
+        ASSERT_TRUE(dataAfterRemove[index] == currentData);
     }
 }
 
-TEST(VectorLightTest, IsSpaceTest)
+TEST_F(VectorLightTest, IsSpaceTest)
 {
     // An empty collection.
-    CHECK(true == m_pVectorLight->IsSpace());
+    ASSERT_TRUE(true == m_pVectorLight->isSpace());
 
-    for(uint32_t i = 0; i < (VectorLight::VECTOR_SIZE - 1); ++i)
+    for(uint32_t i = 0; i < (k_VECTOR_TEST_SIZE - 1); ++i)
     {
-        m_pVectorLight->Insert(i);
-        CHECK(true == m_pVectorLight->IsSpace());
+        m_pVectorLight->insert(i);
+        ASSERT_TRUE(true == m_pVectorLight->isSpace());
     }
 
     // Now collection has only one space.
-    CHECK(true == m_pVectorLight->IsSpace());
+    ASSERT_TRUE(true == m_pVectorLight->isSpace());
 
     // Even releasing data from collection vacant space does not change. Still one.
     const uint32_t dataToRemove = 0x01;
-    m_pVectorLight->Remove(dataToRemove);
-    CHECK(true == m_pVectorLight->IsSpace());
+    m_pVectorLight->remove(dataToRemove);
+    ASSERT_TRUE(true == m_pVectorLight->isSpace());
 
     // Add again data that has been removed.
-    m_pVectorLight->Insert(dataToRemove);
-    CHECK(false == m_pVectorLight->IsSpace());
+    m_pVectorLight->insert(dataToRemove);
+    ASSERT_TRUE(false == m_pVectorLight->isSpace());
 }
 
-TEST(VectorLightTest, GetNumberOfElementsTest)
+TEST_F(VectorLightTest, GetNumberOfElementsTest)
 {
     // An empty collection.
-    CHECK(0 == m_pVectorLight->GetNumberOfElements());
+    ASSERT_TRUE(0 == m_pVectorLight->getNumberOfElements());
 
     // Consecutively insert data and check number of element in collection.
-    for(uint32_t i = 0; i < VectorLight::VECTOR_SIZE; ++i)
+    for(uint32_t i = 0; i < k_VECTOR_TEST_SIZE; ++i)
     {
-        m_pVectorLight->Insert(i);
+        m_pVectorLight->insert(i);
 
         const uint32_t elementsInCollection = i + 1;
-        CHECK(elementsInCollection == m_pVectorLight->GetNumberOfElements());
+        ASSERT_TRUE(elementsInCollection == m_pVectorLight->getNumberOfElements());
     }
 
     // Consecutively remove data and check number of element in collection.
-    const uint32_t initialElements = m_pVectorLight->GetNumberOfElements();
+    const uint32_t initialElements = m_pVectorLight->getNumberOfElements();
 
-    for(uint32_t i = 0, remainedElements = initialElements; i < VectorLight::VECTOR_SIZE; ++i, --remainedElements)
+    for(uint32_t i = 0, remainedElements = initialElements; i < k_VECTOR_TEST_SIZE; ++i, --remainedElements)
     {
-        CHECK(remainedElements == m_pVectorLight->GetNumberOfElements());
-        m_pVectorLight->Remove(i);
+        ASSERT_TRUE(remainedElements == m_pVectorLight->getNumberOfElements());
+        m_pVectorLight->remove(i);
     }
 
     // Here all elements have been removed.
-    CHECK(0 == m_pVectorLight->GetNumberOfElements());
+    ASSERT_TRUE(0 == m_pVectorLight->getNumberOfElements());
 }
 
-TEST(VectorLightTest, ClearTest)
+TEST_F(VectorLightTest, ClearTest)
 {
     const uint32_t dat1 = 0x4;
     const uint32_t dat2 = 0x6;
     const uint32_t dat3 = 0x7;
 
     // Add some data into collection:
-    m_pVectorLight->Insert(dat1);
-    m_pVectorLight->Insert(dat2);
-    m_pVectorLight->Insert(dat3);
+    m_pVectorLight->insert(dat1);
+    m_pVectorLight->insert(dat2);
+    m_pVectorLight->insert(dat3);
 
-    // Clear all.
-    m_pVectorLight->Clear();
+    // clear all.
+    m_pVectorLight->clear();
 
-    IteratorIf<uint32_t>* pIterator = m_pVectorLight->GetIterator();
+    IIterator<uint32_t>* pIterator = m_pVectorLight->getIterator();
 
-    CHECK(0 == m_pVectorLight->GetNumberOfElements());
-    CHECK(false == pIterator->HasNext());
+    ASSERT_TRUE(0 == m_pVectorLight->getNumberOfElements());
+    ASSERT_TRUE(false == pIterator->hasNext());
 }

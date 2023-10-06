@@ -1,9 +1,7 @@
-#ifndef SINGLE_LIST
-#define SINGLE_LIST
+#pragma once
 
-#include <assert.h>  // For assert.
-#include <iostream>
-#include "SingleListIterator.hpp"
+#include <assert.h>
+#include "SingleListIterator.h"
 
 template<class parNode>
 class Node
@@ -22,40 +20,37 @@ template<class parList>
 class SingleList
 {
    public:
-    void AddToTail(const parList data);
-    void AddToHead(const parList data);
-    parList RemoveFromTail();
-    parList RemoveFromHead();
-    parList RemoveNode(const parList data);
-    bool IsEmpty() const;
-    bool IsPresent(const parList data) const;
-    uint32_t Size() const;
-    IteratorIf<parList> * GetIterator() const;
-
     SingleList() : m_pHead(NULL), m_pTail(NULL), m_pIterator(NULL)
     {
-        // Create iterator for this collection.
         m_pIterator = new SingleListIterator<parList>(&m_pHead, &m_pTail);
         assert(m_pIterator);
     }
-
-    virtual ~SingleList();
-
-   private:
-    // Prevent either copying or assigning (>= C++11).
+    SingleList(const SingleList &&) = delete;
     SingleList(const SingleList &) = delete;
     SingleList & operator=(const SingleList &) = delete;
+    SingleList & operator=(const SingleList &&) = delete;
+    virtual ~SingleList();
 
+    void addToTail(const parList data);
+    void addToHead(const parList data);
+    parList removeFromTail();
+    parList removeFromHead();
+    parList removeNode(const parList data);
+    bool isEmpty() const;
+    bool isPresent(const parList data) const;
+    uint32_t size() const;
+    IIterator<parList> * getIterator() const;
+
+   private:
     Node<parList> * m_pHead;
     Node<parList> * m_pTail;
-
-    IteratorIf<parList> * m_pIterator;
+    IIterator<parList> * m_pIterator;
 };
 
 template<class parList>
 SingleList<parList>::~SingleList()
 {
-    if(!IsEmpty())
+    if(!isEmpty())
     {
         Node<parList> * ptr = m_pHead;
         for(; NULL != ptr;)
@@ -71,7 +66,7 @@ SingleList<parList>::~SingleList()
 }
 
 template<class parList>
-bool SingleList<parList>::IsEmpty() const
+bool SingleList<parList>::isEmpty() const
 {
     if((NULL == m_pHead) && (NULL == m_pTail))
         return true;
@@ -80,9 +75,9 @@ bool SingleList<parList>::IsEmpty() const
 }
 
 template<class parList>
-void SingleList<parList>::AddToTail(parList data)
+void SingleList<parList>::addToTail(parList data)
 {
-    if(IsEmpty())
+    if(isEmpty())
     {
         m_pTail = m_pHead = new Node<parList>(data, NULL);
     }
@@ -93,9 +88,9 @@ void SingleList<parList>::AddToTail(parList data)
 }
 
 template<class parList>
-void SingleList<parList>::AddToHead(parList data)
+void SingleList<parList>::addToHead(parList data)
 {
-    if(IsEmpty())
+    if(isEmpty())
     {
         m_pTail = m_pHead = new Node<parList>(data, NULL);
     }
@@ -108,10 +103,10 @@ void SingleList<parList>::AddToHead(parList data)
 }
 
 template<class parList>
-parList SingleList<parList>::RemoveFromTail()
+parList SingleList<parList>::removeFromTail()
 {
     parList tempElement;
-    if(IsEmpty())
+    if(isEmpty())
     {
         assert(false);
     }
@@ -141,10 +136,10 @@ parList SingleList<parList>::RemoveFromTail()
 }
 
 template<class parList>
-parList SingleList<parList>::RemoveFromHead()
+parList SingleList<parList>::removeFromHead()
 {
     parList tempElement;
-    if(IsEmpty())
+    if(isEmpty())
     {
         assert(false);
     }
@@ -168,7 +163,7 @@ parList SingleList<parList>::RemoveFromHead()
 }
 
 template<class parList>
-bool SingleList<parList>::IsPresent(parList data) const
+bool SingleList<parList>::isPresent(parList data) const
 {
     Node<parList> * ptr;
     for(ptr = m_pHead; NULL != ptr; ptr = ptr->m_pNext)
@@ -180,11 +175,11 @@ bool SingleList<parList>::IsPresent(parList data) const
 }
 
 template<class parList>
-uint32_t SingleList<parList>::Size() const
+uint32_t SingleList<parList>::size() const
 {
     uint32_t retVal = 0;
 
-    if(!IsEmpty())
+    if(!isEmpty())
     {
         // One element is for sure, even if pHead == pTail
         ++retVal;
@@ -199,16 +194,16 @@ uint32_t SingleList<parList>::Size() const
 }
 
 template<class parList>
-parList SingleList<parList>::RemoveNode(parList data)
+parList SingleList<parList>::removeNode(parList data)
 {
     parList tempElement;
 
-    if(IsPresent(data) && (m_pTail == m_pHead))
+    if(isPresent(data) && (m_pTail == m_pHead))
     {
-        tempElement = RemoveFromHead();
+        tempElement = removeFromHead();
         m_pTail = m_pHead = NULL;
     }
-    else if(IsPresent(data))
+    else if(isPresent(data))
     {
         Node<parList> * ptr       = NULL;
         Node<parList> * ptrShadow = m_pHead;
@@ -217,7 +212,7 @@ parList SingleList<parList>::RemoveNode(parList data)
         {
             if((ptr->m_Data == data) && (ptr == m_pHead))
             {
-                tempElement = RemoveFromHead();
+                tempElement = removeFromHead();
                 break;
             }
             else if(ptr->m_Data == data)
@@ -241,12 +236,12 @@ parList SingleList<parList>::RemoveNode(parList data)
 }
 
 template<class parList>
-IteratorIf<parList> * SingleList<parList>::GetIterator() const
+IIterator<parList> * SingleList<parList>::getIterator() const
 {
-    IteratorIf<parList> * retVal = NULL;
+    IIterator<parList> * retVal = NULL;
 
-    // Don't give handle for iteratr while it is in use by another.
-    if(!m_pIterator->IsInUse())
+    // Don't give handler for iteratr while it is in use by another.
+    if(!m_pIterator->isInUse())
     {
         retVal = m_pIterator;
     }
@@ -258,24 +253,3 @@ IteratorIf<parList> * SingleList<parList>::GetIterator() const
     return retVal;
 }
 
-#endif  // SINGLE_LIST
-
-/***************************************************************************
- *   Copyright (C) 2018 by Zbigniew Halat                                  *
- *   zby.halat@gmail.com                                                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.           *
- ***************************************************************************/
