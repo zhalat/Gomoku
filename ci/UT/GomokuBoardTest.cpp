@@ -72,7 +72,7 @@ TEST_F(GomokuBoardTest, PutMoveTest)
     ASSERT_EQ(false, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerA));
 }
 
-TEST_F(GomokuBoardTest, GetMoveTest)
+TEST_F(GomokuBoardTest, getMoveTest)
 {
     // Define some positions.
     const Board::PositionXY xy1(0, 0);
@@ -279,7 +279,7 @@ TEST_F(GomokuBoardTest, IsOnEdgeTest)
     ASSERT_EQ(Board::EDGE_NONE, m_GomokuBoard->isOnEdge(xyEdgeInTheMiddle));
 }
 
-TEST_F(GomokuBoardTest, GoDirectionTest)
+TEST_F(GomokuBoardTest, goDirectionTest)
 {
     // Check position on corner.
     const Board::PositionXY xyCorner(0, 5);
