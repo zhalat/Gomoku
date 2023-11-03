@@ -172,8 +172,8 @@ class ThreatFinder
         uint8_t m_pointOfView;
     };
 
-    void setBoard(const Board * pBoard) { m_board = static_cast<const GomokuBoard *>(pBoard); }
-    const GomokuBoard & getGomokuBoard() const{ return *m_board;}
+    void setBoard(const Board * pBoard) { m_board = pBoard; }
+    const Board & getBoard() const{ return *m_board;}
     virtual bool findThreatPattern(const Board::PositionXY & initialPosition,
                                    const Trend trend,
                                    const Board::Player playerPerspective) final;
@@ -212,7 +212,7 @@ class ThreatFinder
     bool makeStepOnTrend(const bool isReversion, Board::PositionXY & currentXYPosition, const Trend trend) const;
 
    private:
-    const GomokuBoard * m_board;
+    const Board * m_board;
     const uint32_t m_patternLenght;
     const uint32_t * m_pointsView;
     const uint32_t m_pointsViewSize;

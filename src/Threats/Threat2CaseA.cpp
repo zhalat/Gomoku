@@ -1,5 +1,13 @@
 #include "Threat2CaseA.h"
 
+/// Tells how many pawns/gaps/asterixes this thrat has.
+const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> Threat2CaseA::k_ATOM_NUMBER_2A = {
+        { ThreatFinder::MY_PAWN, 2 },
+        { ThreatFinder::ENEMY_PAWN, 0 },
+        { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+        { ThreatFinder::ASTERIX, -1 }  // it depends.
+};
+
 /// Threat-mask for X player.
 const ThreatFinder::ThreatPattern Threat2CaseA::m_threatPatternX[] = {
     // Finds:
@@ -310,7 +318,7 @@ void Threat2CaseA::getThreatUpDetails(const Board::PositionXY initialPosition, c
     const uint8_t gapsHexCodeNorm    = standarizePov(gapsHexCode, m_threatDownDetails.m_pointOfView, k_PATTERN_LENGHT);
 
     Board::PositionXY initialPositionNorm = initialPosition;
-    getGomokuBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
+    getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
     getPieces(myPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_myPawns[0],
@@ -321,8 +329,8 @@ void Threat2CaseA::getThreatUpDetails(const Board::PositionXY initialPosition, c
     {
         // a. Get asterixes.
         Board::PositionXY initialPositionNormTmp = initialPositionNorm;
-        getGomokuBoard().goDirection(initialPositionNormTmp, directionForward, k_PATTERN_LENGHT - 1);
-        rThreatUpDetails.m_asterixes[0] = getGomokuBoard().isOnBoard(initialPositionNormTmp)
+        getBoard().goDirection(initialPositionNormTmp, directionForward, k_PATTERN_LENGHT - 1);
+        rThreatUpDetails.m_asterixes[0] = getBoard().isOnBoard(initialPositionNormTmp)
                                               ? initialPositionNormTmp
                                               : ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
 
@@ -335,9 +343,9 @@ void Threat2CaseA::getThreatUpDetails(const Board::PositionXY initialPosition, c
 
         // c. Get extension gap. It's two movies from the second X. Must not be gather than Gaps[3].
         Board::PositionXY pretendExtGap = rThreatUpDetails.m_myPawns[1];
-        getGomokuBoard().goDirection(pretendExtGap, directionForward, 2);
+        getBoard().goDirection(pretendExtGap, directionForward, 2);
         const bool ispretendExtGapOK =
-                (pretendExtGap <= rThreatUpDetails.m_gaps[3]) && (getGomokuBoard().isOnBoard(pretendExtGap));
+                (pretendExtGap <= rThreatUpDetails.m_gaps[3]) && (getBoard().isOnBoard(pretendExtGap));
         rThreatUpDetails.m_extGaps[0] =
             (ispretendExtGapOK) ? pretendExtGap : ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
 
@@ -352,7 +360,7 @@ void Threat2CaseA::getThreatUpDetails(const Board::PositionXY initialPosition, c
     if(m_threatDownDetails.m_foundFlags.m_isSymmetricFound)
     {
         // a. Get asterixes.
-        rThreatUpDetails.m_asterixes[1] = (true == getGomokuBoard().isOnBoard(initialPositionNorm))
+        rThreatUpDetails.m_asterixes[1] = (true == getBoard().isOnBoard(initialPositionNorm))
                                               ? initialPositionNorm
                                               : ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
 
@@ -366,10 +374,10 @@ void Threat2CaseA::getThreatUpDetails(const Board::PositionXY initialPosition, c
 
         // c. Get extension gap. It's two movies from the first X. Must not be lower than Gaps[0].
         Board::PositionXY pretendExtGap = rThreatUpDetails.m_myPawns[0];
-        getGomokuBoard().goDirection(pretendExtGap, directionBackward, 2);
+        getBoard().goDirection(pretendExtGap, directionBackward, 2);
         const bool ispretendExtGapOK =
                 (pretendExtGap >= rThreatUpDetails.m_gaps[ThreatFinder::ThreatUpDetails::k_MAX_EMPTY_SPACES / 2]) &&
-                (getGomokuBoard().isOnBoard(pretendExtGap));
+                (getBoard().isOnBoard(pretendExtGap));
         rThreatUpDetails.m_extGaps[1] =
             ispretendExtGapOK ? pretendExtGap : ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
 

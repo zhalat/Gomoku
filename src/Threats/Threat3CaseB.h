@@ -7,12 +7,7 @@ class Threat3CaseB final : public ThreatFinder
 {
    public:
     static constexpr uint32_t PATTERN_LENGHT = 7;
-    const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> k_ATOM_NUMBER_3B = {
-            { ThreatFinder::MY_PAWN, 2 },
-            { ThreatFinder::ENEMY_PAWN, 0 },
-            { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
-            { ThreatFinder::ASTERIX, -1 }  // it depends.
-    };
+    static const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> k_ATOM_NUMBER_3B;
 
     bool checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
                      const Board::Player playerPerspective) const override;

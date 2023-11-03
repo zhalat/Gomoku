@@ -1,5 +1,14 @@
 #include "Threat2CaseAA.h"
 
+/// Tells how many pawns/gaps/asterixes this thrat has.
+const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> Threat2CaseAA::k_ATOM_NUMBER_2AA =
+        {
+                { ThreatFinder::MY_PAWN, 2 },
+                { ThreatFinder::ENEMY_PAWN, 0 },
+                { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+                { ThreatFinder::ASTERIX, -1 }  // it depends.
+        };
+
 /// Threat-mask for X player.
 const ThreatFinder::ThreatPattern Threat2CaseAA::m_threatPatternX[] = {
     // Finds:
@@ -150,7 +159,7 @@ void Threat2CaseAA::getThreatUpDetails(const Board::PositionXY initialPosition, 
     const uint8_t asterixHexCodeNorm = standarizePov(asterixHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
     Board::PositionXY initialPositionNorm = initialPosition;
-    getGomokuBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
+    getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
     getPieces(myPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_myPawns[0],

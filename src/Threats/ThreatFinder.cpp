@@ -196,7 +196,7 @@ void ThreatFinder::getPieces(const uint8_t normHexCode, const Board::PositionXY 
         {
             assert(index < bufferSize);
             Board::PositionXY initialPositionNormTmp = initialPositionNorm;
-            getGomokuBoard().goDirection(initialPositionNormTmp, direction, i);
+            getBoard().goDirection(initialPositionNormTmp, direction, i);
             pBuffer[index++] = initialPositionNormTmp;
         }
         normHexCodeTmp = normHexCodeTmp >> 1;

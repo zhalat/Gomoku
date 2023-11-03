@@ -29,13 +29,8 @@ class Threat2CaseA final : public ThreatFinder
 {
    public:
     static constexpr uint32_t k_PATTERN_LENGHT = 7;
-    const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> k_ATOM_NUMBER_2A =
-            {
-                    { ThreatFinder::MY_PAWN, 2 },
-                    { ThreatFinder::ENEMY_PAWN, 0 },
-                    { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
-                    { ThreatFinder::ASTERIX, -1 }  // it depends.
-            };
+    static const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> k_ATOM_NUMBER_2A;
+
     bool checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
                      const Board::Player playerPerspective) const override;
     void getThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,

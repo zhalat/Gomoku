@@ -1,5 +1,13 @@
 #include "Threat2CaseB.h"
 
+const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> Threat2CaseB::k_ATOM_NUMBER_2B =
+        {
+                { ThreatFinder::MY_PAWN, 2 },
+                { ThreatFinder::ENEMY_PAWN, 0 },
+                { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+                { ThreatFinder::ASTERIX, -1 }  // it depends.
+        };
+
 /// Threat-mask for X player.
 const ThreatFinder::ThreatPattern Threat2CaseB::m_threatPatternX[] = {
     // Finds:
@@ -290,7 +298,7 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
     const uint8_t gapsHexCodeNorm = standarizePov(gapsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
     Board::PositionXY initialPositionNorm = initialPosition;
-    getGomokuBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
+    getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
     getPieces(myPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_myPawns[0],
@@ -307,7 +315,7 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
     if(m_threatDownDetails.m_foundFlags.m_isNormalFound)
     {
         rThreatUpDetails.m_enemyPawns[1] = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-        const bool isEnemyOnBoard        = getGomokuBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[0]);
+        const bool isEnemyOnBoard        = getBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[0]);
 
         // a. Adjust enemy/Get asterix.
         if(isEnemyOnBoard)
@@ -321,9 +329,9 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
         }
 
         endTmp = rThreatUpDetails.m_myPawns[0];
-        getGomokuBoard().goDirection(endTmp, directionForward, PATTERN_LENGHT - 2);
+        getBoard().goDirection(endTmp, directionForward, PATTERN_LENGHT - 2);
 
-        const bool isEndTmpOnBoard = getGomokuBoard().isOnBoard(endTmp);
+        const bool isEndTmpOnBoard = getBoard().isOnBoard(endTmp);
         if(isEndTmpOnBoard)
         {
             rThreatUpDetails.m_asterixes[0] = endTmp;
@@ -333,7 +341,7 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
             rThreatUpDetails.m_asterixes[0] = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
 
             // One step too far.
-            getGomokuBoard().goDirection(endTmp, directionBackward);
+            getBoard().goDirection(endTmp, directionBackward);
         }
 
         // b. We don't want to count asterix as a gap. Remove that bit.
@@ -361,9 +369,9 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
         // a. Adjust enemy/Get asterix.
         //   Enemy is one step further of the second myPawns.
         Board::PositionXY enemyTmp = rThreatUpDetails.m_myPawns[1];
-        getGomokuBoard().goDirection(enemyTmp, directionForward);
+        getBoard().goDirection(enemyTmp, directionForward);
 
-        const bool isEnemyOnBoard = getGomokuBoard().isOnBoard(enemyTmp);
+        const bool isEnemyOnBoard = getBoard().isOnBoard(enemyTmp);
         if(isEnemyOnBoard)
         {
             endTmp                           = enemyTmp;
@@ -378,9 +386,9 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
         }
 
         beginTmp = rThreatUpDetails.m_myPawns[1];
-        getGomokuBoard().goDirection(beginTmp, directionBackward, PATTERN_LENGHT - 2);
+        getBoard().goDirection(beginTmp, directionBackward, PATTERN_LENGHT - 2);
 
-        const bool isBeginTmpOnBoard = getGomokuBoard().isOnBoard(beginTmp);
+        const bool isBeginTmpOnBoard = getBoard().isOnBoard(beginTmp);
         if(isBeginTmpOnBoard)
         {
             rThreatUpDetails.m_asterixes[0] = beginTmp;
@@ -390,7 +398,7 @@ void Threat2CaseB::getThreatUpDetails(const Board::PositionXY initialPosition, c
             rThreatUpDetails.m_asterixes[0] = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
 
             // One step too far.
-            getGomokuBoard().goDirection(beginTmp, directionForward);
+            getBoard().goDirection(beginTmp, directionForward);
         }
 
         // b. We don't want to count asterix as a gap. Remove that bit.

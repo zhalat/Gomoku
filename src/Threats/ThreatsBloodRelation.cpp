@@ -1,5 +1,3 @@
-#include <assert.h>
-#include <algorithm>
 #include "ThreatFinder.h"
 #include "ThreatsBloodRelation.h"
 
