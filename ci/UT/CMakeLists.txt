@@ -21,7 +21,6 @@ add_executable( ci
     "Threat4CaseCTest.cpp"
     "ThreatWinnerTest.cpp"
     "SpotterTest.cpp"
-#    "ScoreTest/ScoreTest.cpp"
 #    "OpenBookTest/OpenBookTest.cpp"
 #    "BoardScoreTest/BoardScoreTest.cpp"
 #    "StateEvaluationTest/StateEvaluationTest.cpp"
