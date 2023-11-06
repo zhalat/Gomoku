@@ -3,7 +3,12 @@
 #include "VectorLight.h"
 #include "GomokuBoard.h"
 
-static void checkConnection(GomokuBoard& board);
+class TestUtility
+{
+public:
+    static void checkConnection(GomokuBoard& board);
+};
+
 
 class GomokuBoardTest : public ::testing::Test
 {
@@ -16,7 +21,7 @@ public:
 
 TEST_F(GomokuBoardTest, ConstructorConnectionCorrectnessTest)
 {
-    checkConnection(*m_GomokuBoard);
+    TestUtility::checkConnection(*m_GomokuBoard);
 }
 
 TEST_F(GomokuBoardTest, CopyConstructorTest)
@@ -26,7 +31,7 @@ TEST_F(GomokuBoardTest, CopyConstructorTest)
     assert(gboardCopy != NULL);
     ASSERT_EQ(gboardCopy->getSize(), m_GomokuBoard->getSize());
 
-    checkConnection(*m_GomokuBoard);
+    TestUtility::checkConnection(*m_GomokuBoard);
 
     delete gboardCopy;
 }
@@ -425,7 +430,7 @@ TEST_F(GomokuBoardTest, GetFirstMoveTest)
     ASSERT_TRUE(firstMove == Board::PositionXY(4, 4));
 }
 
-void checkConnection(GomokuBoard& board)
+void TestUtility::checkConnection(GomokuBoard& board)
 {
     // Checking if constructor correctly made edges connections.
     uint32_t fieldA(0);

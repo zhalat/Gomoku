@@ -3586,101 +3586,105 @@ TEST_F(SpotterTest, EdgeTHREAT_2_CASE_AATest2)
     ASSERT_TRUE(1 == countThreats(out2, ThreatFinder::THREAT_2_CASE_A));
 }
 
-//TEST_F(SpotterTest, EdgeTHREAT_2_CASE_ATest1)
-//{
-//    // Precondition.
-//    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-//    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-//    //	0 |. . . . . . . . . . . . . . .|
-//    //	1 |. . . . . . . . . . . . . . .|
-//    //	2 |. . . . x x . . . . . . . . .|
-//    //	3 |. . . . . . . . . . . . . . .|
-//
-//    // Action: .xx...* -> .xx...x (2A)
-//    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-//    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-//    //	0 |. . . . . . . . . . . . . . .|
-//    //	1 |. . . . . . . . . . . . . . .|
-//    //	2 |. . . . x x . . . x . . . . .|
-//    //	3 |. . . . . . . . . . . . . . .|
-//    //--------------------------------------------------------------------------------------------
-//
-//    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
-//    m_board->putMove(Board::PositionXY(2, 5), Board::PLAYER_A);
-//    const vector<Spotter::SpottedThreats> out1 =m_spotter.execute(Board::PositionXY(2, 4), false);
-//    ASSERT_TRUE(1 == out1.size());
-//    ASSERT_TRUE(1 == countThreats(out1, ThreatFinder::THREAT_2_CASE_A));
-//
-//    // Do some actions:
-//    // a. define some constants.
-//    const Board::PositionXY moveAction = Board::PositionXY(2, 9);
-//    const Spotter::RegionToInvestigate regionToInvestigate{moveAction, ThreatFinder::THREAT_2_CASE_A,
-//                                                           ThreatFinder::HORIZONTAL};
-//
-//    // b. Put a new move which is
-//    m_board->putMove(moveAction, Board::PLAYER_A);
-//
-//    // c. Remove all existing threats.
-//    m_spotter.resetInstance();
-//
-//    // c. Tells spotter where should search.
-//    m_spotter.addToExecute(regionToInvestigate);
-//
-//    // d. Run spotter.
-//    const vector<Spotter::SpottedThreats> out2 =m_spotter.execute(moveAction, false);
-//
-//    // e. ASSERT_TRUE if threat change its strength.
-//    ASSERT_TRUE(1 == out2.size());
-//    ASSERT_TRUE(1 == countThreats(out2, ThreatFinder::THREAT_2_CASE_A));
-//}
+TEST_F(SpotterTest, EdgeTHREAT_2_CASE_ATest1)
+{
+    // Precondition.
+    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //	0 |. . . . . . . . . . . . . . .|
+    //	1 |. . . . . . . . . . . . . . .|
+    //	2 |. . . . x x . . . . . . . . .|
+    //	3 |. . . . . . . . . . . . . . .|
 
-//TEST_F(SpotterTest, EdgeTHREAT_2_CASE_ATest2)
-//{
-//    // Precondition.
-//    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-//    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-//    //	0 |. . . . . . . . . . . . . . .|
-//    //	1 |. . . . . . . . . . . . . . .|
-//    //	2 |. . . . x . x . . * . . . . .|
-//    //	3 |. . . . . . . . . . . . . . .|
-//
-//    // Action: .x.x..* -> .x.x..x (2x2A)
-//    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-//    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-//    //	0 |. . . . . . . . . . . . . . .|
-//    //	1 |. . . . . . . . . . . . . . .|
-//    //	2 |. . . . x . x . . x . . . . .|
-//    //	3 |. . . . . . . . . . . . . . .|
-//    //--------------------------------------------------------------------------------------------
-//
-//    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
-//    m_board->putMove(Board::PositionXY(2, 6), Board::PLAYER_A);
-//    const vector<Spotter::SpottedThreats> out1 =m_spotter.execute(Board::PositionXY(2, 4), false);
-//    ASSERT_TRUE(1 == out1.size());
-//    ASSERT_TRUE(1 == countThreats(out1, ThreatFinder::THREAT_2_CASE_A));
-//
-//    // Do some actions:
-//    // a. define some constants.
-//    const Board::PositionXY moveAction = Board::PositionXY(2, 9);
-//    const Spotter::RegionToInvestigate regionToInvestigate{moveAction, ThreatFinder::THREAT_2_CASE_A,
-//                                                           ThreatFinder::HORIZONTAL};
-//
-//    // b. Put a new move which is
-//    m_board->putMove(moveAction, Board::PLAYER_A);
-//
-//    // c. Remove all existing threats.
-//    // m_spotter.resetInstance();
-//
-//    // c. Tells spotter where should search.
-//    m_spotter.addToExecute(regionToInvestigate);
-//
-//    // d. Run spotter.
-//    const vector<Spotter::SpottedThreats> out2 =m_spotter.execute(moveAction, false);
-//
-//    // e. ASSERT_TRUE if threat change its strength.
-//    ASSERT_TRUE(2 == out2.size());
-//    ASSERT_TRUE(2 == countThreats(out2, ThreatFinder::THREAT_2_CASE_A));
-//}
+    // Action: .xx...* -> .xx...x (2A)
+    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //	0 |. . . . . . . . . . . . . . .|
+    //	1 |. . . . . . . . . . . . . . .|
+    //	2 |. . . . x x . . . x . . . . .|
+    //	3 |. . . . . . . . . . . . . . .|
+    //--------------------------------------------------------------------------------------------
+
+    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
+    m_board->putMove(Board::PositionXY(2, 5), Board::PLAYER_A);
+    const vector<Spotter::SpottedThreats> out1 =m_spotter.execute(Board::PositionXY(2, 4), false);
+    ASSERT_TRUE(1 == out1.size());
+    ASSERT_TRUE(1 == countThreats(out1, ThreatFinder::THREAT_2_CASE_A));
+
+    // Do some actions:
+    // a. define some constants.
+    const Board::PositionXY moveAction = Board::PositionXY(2, 9);
+    const Spotter::RegionToInvestigate regionToInvestigate{moveAction, ThreatFinder::THREAT_2_CASE_A,
+                                                           ThreatFinder::HORIZONTAL};
+
+    // b. Put a new move which is
+    m_board->putMove(moveAction, Board::PLAYER_A);
+
+    // c. Remove all existing threats.
+    m_spotter.resetInstance();
+
+    // c. Tells spotter where should search.
+    m_spotter.addToExecute(regionToInvestigate);
+
+    // d. Run spotter.
+    const vector<Spotter::SpottedThreats> out2 =m_spotter.execute(moveAction, false);
+
+    // e. ASSERT_TRUE if threat change its strength.
+    ASSERT_TRUE(0 == out2.size());
+
+    //but 2A shall be still recognizable
+    const vector<Spotter::SpottedThreats> out3 =m_spotter.execute(Board::PositionXY(2, 4), false);
+    ASSERT_TRUE(1 == out3.size());
+    ASSERT_TRUE(1 == countThreats(out3, ThreatFinder::THREAT_2_CASE_A));
+}
+
+TEST_F(SpotterTest, EdgeTHREAT_2_CASE_ATest2)
+{
+    // Precondition.
+    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //	0 |. . . . . . . . . . . . . . .|
+    //	1 |. . . . . . . . . . . . . . .|
+    //	2 |. . . . x . x . . * . . . . .|
+    //	3 |. . . . . . . . . . . . . . .|
+
+    // Action: .x.x..* -> .x.x..x (2x2A)
+    //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //	   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //	0 |. . . . . . . . . . . . . . .|
+    //	1 |. . . . . . . . . . . . . . .|
+    //	2 |. . . . x . x . . x . . . . .|
+    //	3 |. . . . . . . . . . . . . . .|
+    //--------------------------------------------------------------------------------------------
+
+    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
+    m_board->putMove(Board::PositionXY(2, 6), Board::PLAYER_A);
+    const vector<Spotter::SpottedThreats> out1 =m_spotter.execute(Board::PositionXY(2, 4), false);
+    ASSERT_TRUE(1 == out1.size());
+    ASSERT_TRUE(1 == countThreats(out1, ThreatFinder::THREAT_2_CASE_A));
+
+    // Do some actions:
+    // a. define some constants.
+    const Board::PositionXY moveAction = Board::PositionXY(2, 9);
+    const Spotter::RegionToInvestigate regionToInvestigate{moveAction, ThreatFinder::THREAT_2_CASE_A,
+                                                           ThreatFinder::HORIZONTAL};
+
+    // b. Put a new move which is
+    m_board->putMove(moveAction, Board::PLAYER_A);
+
+    // c. Remove all existing threats.
+    m_spotter.resetInstance();
+
+    // c. Tells spotter where should search.
+    m_spotter.addToExecute(regionToInvestigate);
+
+    // d. Run spotter.
+    const vector<Spotter::SpottedThreats> out2 =m_spotter.execute(moveAction, false);
+
+    // e. ASSERT_TRUE if threat change its strength.
+    ASSERT_TRUE(1 == out2.size());
+    ASSERT_TRUE(1 == countThreats(out2, ThreatFinder::THREAT_2_CASE_A));
+}
 
 TEST_F(SpotterTest, EdgeTHREAT_3_CASE_BTest1)
 {
