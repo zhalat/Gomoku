@@ -1,5 +1,12 @@
 #include "Threat4CaseA.h"
 
+const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> Threat4CaseA::k_ATOM_NUMBER_4A = {
+        { ThreatFinder::MY_PAWN, 2 },
+        { ThreatFinder::ENEMY_PAWN, 0 },
+        { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+        { ThreatFinder::ASTERIX, -1 }  // it depends.
+};
+
 /// Threat-mask for X player.
 const ThreatFinder::ThreatPattern Threat4CaseA::m_threatPatternX[] = {
     // Finds:
@@ -148,7 +155,7 @@ void Threat4CaseA::getThreatUpDetails(const Board::PositionXY initialPosition, c
     const uint8_t gapsHexCodeNorm    = standarizePov(gapsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
     Board::PositionXY initialPositionNorm = initialPosition;
-    getGomokuBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
+    getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
     getPieces(myPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_myPawns[0],

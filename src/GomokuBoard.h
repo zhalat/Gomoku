@@ -4,6 +4,7 @@
 #include "Interfaces/IObserver.h"
 
 using namespace std;
+class TestUtility;
 
 class GomokuBoard
     : public Board
@@ -54,10 +55,12 @@ class GomokuBoard
         m_pNeighbours = nullptr;
     };
 
-   //private:
+   private:
     size_t m_size;
     vector<PositionXY> m_moveHistory;
     graph::Graph * m_pBoardStructure;
     IIterator<graph::Node> * m_pIterator;
     Neighbours * m_pNeighbours;
+
+    friend TestUtility;
 };

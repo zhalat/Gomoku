@@ -1,5 +1,12 @@
 #include "Threat3CaseC.h"
 
+const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> Threat3CaseC::k_ATOM_NUMBER_3C= {
+        { ThreatFinder::MY_PAWN, 2 },
+        { ThreatFinder::ENEMY_PAWN, 0 },
+        { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+        { ThreatFinder::ASTERIX, -1 }  // it depends.
+};
+
 /// Threat-mask for X player.
 const ThreatFinder::ThreatPattern Threat3CaseC::m_threatPatternX[] = {
     // Finds:
@@ -167,7 +174,7 @@ void Threat3CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
     const uint8_t gapsHexCodeNorm = standarizePov(gapsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
     Board::PositionXY initialPositionNorm = initialPosition;
-    getGomokuBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
+    getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
     getPieces(myPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_myPawns[0],
@@ -177,14 +184,14 @@ void Threat3CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
     getPieces(enemyPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_enemyPawns[0],
               ThreatFinder::ThreatUpDetails::k_MAX_ENEMY_PAWNS);
     // a. make adjustment for a case ex. |.xxx.o   o.xxx.|
-    const bool isEnemyPawnOnBoard1 = getGomokuBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[0]);
-    const bool isEnemyPawnOnBoard2 = getGomokuBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[1]);
+    const bool isEnemyPawnOnBoard1 = getBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[0]);
+    const bool isEnemyPawnOnBoard2 = getBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[1]);
     Board::PositionXY beginTmp     = rThreatUpDetails.m_enemyPawns[0];
     Board::PositionXY endTmp       = rThreatUpDetails.m_enemyPawns[1];
     if(!isEnemyPawnOnBoard1 && !isEnemyPawnOnBoard2)
     {
-        getGomokuBoard().goDirection(rThreatUpDetails.m_enemyPawns[0], directionForward);
-        getGomokuBoard().goDirection(rThreatUpDetails.m_enemyPawns[1], directionBackward);
+        getBoard().goDirection(rThreatUpDetails.m_enemyPawns[0], directionForward);
+        getBoard().goDirection(rThreatUpDetails.m_enemyPawns[1], directionBackward);
         beginTmp = rThreatUpDetails.m_enemyPawns[0];
         endTmp   = rThreatUpDetails.m_enemyPawns[1];
 
@@ -193,14 +200,14 @@ void Threat3CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
     }
     else if(isEnemyPawnOnBoard1 && !isEnemyPawnOnBoard2)
     {
-        getGomokuBoard().goDirection(rThreatUpDetails.m_enemyPawns[1], directionBackward);
+        getBoard().goDirection(rThreatUpDetails.m_enemyPawns[1], directionBackward);
         endTmp = rThreatUpDetails.m_enemyPawns[1];
 
         rThreatUpDetails.m_enemyPawns[1] = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
     }
     else if(!isEnemyPawnOnBoard1 && isEnemyPawnOnBoard2)
     {
-        getGomokuBoard().goDirection(rThreatUpDetails.m_enemyPawns[0], directionForward);
+        getBoard().goDirection(rThreatUpDetails.m_enemyPawns[0], directionForward);
         beginTmp                         = rThreatUpDetails.m_enemyPawns[0];
         rThreatUpDetails.m_enemyPawns[0] = rThreatUpDetails.m_enemyPawns[1];
         rThreatUpDetails.m_enemyPawns[1] = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
@@ -217,12 +224,12 @@ void Threat3CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
     // 4. Provide extended gap.
     Board::PositionXY pretendExtGap1 = rThreatUpDetails.m_myPawns[2];
     Board::PositionXY pretendExtGap2 = rThreatUpDetails.m_myPawns[0];
-    getGomokuBoard().goDirection(pretendExtGap1, directionForward, 2);
-    getGomokuBoard().goDirection(pretendExtGap2, directionBackward, 2);
+    getBoard().goDirection(pretendExtGap1, directionForward, 2);
+    getBoard().goDirection(pretendExtGap2, directionBackward, 2);
     const bool isPretendExtGap1OK =
-            (pretendExtGap1 <= rThreatUpDetails.m_gaps[1]) && (getGomokuBoard().isOnBoard(pretendExtGap1));
+            (pretendExtGap1 <= rThreatUpDetails.m_gaps[1]) && (getBoard().isOnBoard(pretendExtGap1));
     const bool isPretendExtGap2OK =
-            (pretendExtGap2 >= rThreatUpDetails.m_gaps[0]) && (getGomokuBoard().isOnBoard(pretendExtGap2));
+            (pretendExtGap2 >= rThreatUpDetails.m_gaps[0]) && (getBoard().isOnBoard(pretendExtGap2));
 
     if(isPretendExtGap1OK)
     {

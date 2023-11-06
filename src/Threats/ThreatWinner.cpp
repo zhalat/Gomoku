@@ -1,5 +1,12 @@
 #include "ThreatWinner.h"
 
+const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> ThreatWinner::k_ATOM_NUMBER_WINNER= {
+        { ThreatFinder::MY_PAWN, 2 },
+        { ThreatFinder::ENEMY_PAWN, 0 },
+        { ThreatFinder::GAP, -1 },     // it depends. .xx...* or  *...xx...*
+        { ThreatFinder::ASTERIX, -1 }  // it depends.
+};
+
 /// Threat-mask for X player.
 const ThreatFinder::ThreatPattern ThreatWinner::m_threatPatternX[] = {
     // Finds:
@@ -140,7 +147,7 @@ void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, c
     const uint8_t myPawnsHexCodeNorm = standarizePov(myPawnsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
     Board::PositionXY initialPositionNorm = initialPosition;
-    getGomokuBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
+    getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
     getPieces(myPawnsHexCodeNorm, initialPositionNorm, directionForward, &rThreatUpDetails.m_myPawns[0],
@@ -149,10 +156,10 @@ void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, c
     // 2. Provide asterixes.
     Board::PositionXY asterix1Tmp = rThreatUpDetails.m_myPawns[0];
     Board::PositionXY asterix2Tmp = rThreatUpDetails.m_myPawns[4];
-    getGomokuBoard().goDirection(asterix1Tmp, directionBackward);
-    getGomokuBoard().goDirection(asterix2Tmp, directionForward);
-    const bool isAsterix1TmpOnBoard = getGomokuBoard().isOnBoard(asterix1Tmp);
-    const bool isAsterix2TmpOnBoard = getGomokuBoard().isOnBoard(asterix2Tmp);
+    getBoard().goDirection(asterix1Tmp, directionBackward);
+    getBoard().goDirection(asterix2Tmp, directionForward);
+    const bool isAsterix1TmpOnBoard = getBoard().isOnBoard(asterix1Tmp);
+    const bool isAsterix2TmpOnBoard = getBoard().isOnBoard(asterix2Tmp);
 
     Board::PositionXY beginTmp;
     Board::PositionXY endTmp;
