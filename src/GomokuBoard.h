@@ -1,18 +1,20 @@
 #pragma once
 
-#include "Board.h"
+#include "Interfaces/IBoard.h"
 #include "Interfaces/IObserver.h"
 
 using namespace std;
 class TestUtility;
 
 class GomokuBoard
-    : public Board
+    : public IBoard
     , public Observer::IObserverSubject
 {
    public:
-    static constexpr uint32_t MAX_GOMOKU_BOARD_SIZE       = 19;
+    static constexpr uint32_t k_MAX_GOMOKU_BOARD_SIZE       = 19;
     static constexpr uint32_t MIN_GOMOKU_BOARD_SIZE       = 5;
+    static constexpr uint32_t k_MAX_GOMOKU_BOARD_SQARE_SIZE = k_MAX_GOMOKU_BOARD_SIZE* k_MAX_GOMOKU_BOARD_SIZE;
+    static constexpr uint32_t k_MIN_GOMOKU_BOARD_SQARE_SIZE = MIN_GOMOKU_BOARD_SIZE* MIN_GOMOKU_BOARD_SIZE;
 
     bool putMove(const PositionXY xy, const Player player) override;
     Player getMove(const PositionXY xy) const override;
@@ -29,7 +31,7 @@ class GomokuBoard
     bool isOnBoard(const PositionXY xy) const override;
     bool canIGo(const PositionXY xy, const Direction direction) const override;
     void goDirection(PositionXY & xy, const Direction direction, const uint32_t steps = 1) const override;
-    Board & clone() const override;
+    IBoard & clone() const override;
     vector<graph::Node> getNeighborhood(const PositionXY xy) const override;
     void resetInstance() override;
     uint32_t getSize() const override { return m_size; }

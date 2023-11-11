@@ -2,6 +2,8 @@
 #include <string.h>
 #include "Threats/ThreatFinder.h"
 
+class IBoard;
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS NAME: Score
 ///
@@ -44,7 +46,7 @@ class Score final
     static constexpr uint32_t MAX_TRACKED_THREATS = 15;
 
     static Score * getInstance();
-    void setBoard(const Board & rBoard);
+    void setBoard(const IBoard & rBoard);
     Score() = default;
 
    private:

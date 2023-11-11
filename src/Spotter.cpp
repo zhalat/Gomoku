@@ -1,29 +1,57 @@
-#include <assert.h>
+#include <memory>
 #include "Threats/ThreatsBloodRelation.h"
 #include "Spotter.h"
 #include "Score.h"
 
-void Spotter::addToExecute(const RegionToInvestigate regionToInvestigate)
+Spotter::Spotter(const IBoard::Player playerPerspective)
+:m_myPlayer{playerPerspective}
+{};
+
+Spotter::Spotter(const Spotter& ref)
+:m_myPlayer{ref.m_myPlayer}
+,m_regionToInvestigate{ref.m_regionToInvestigate}
+{}
+
+Spotter::Spotter(Spotter&& ref)
+:m_myPlayer{ref.m_myPlayer}
+,m_regionToInvestigate{std::move(ref.m_regionToInvestigate)}
+{}
+
+Spotter& Spotter::operator=(const Spotter& ref)
 {
-    m_regionToInvestigate.addToTail(regionToInvestigate);
+    if (this != &ref)
+    {
+        m_myPlayer = ref.m_myPlayer;
+        m_regionToInvestigate = ref.m_regionToInvestigate;
+    }
+    return *this;
 }
 
-vector<Spotter::SpottedThreats> Spotter::execute(const Board::PositionXY xy, const bool isOpponentMove, const uint32_t multiplier)
+Spotter & Spotter::operator=(const Spotter&& ref)
 {
-#warning \
-    "Extract from this method. method 'ExecuteRegions()' and make it private. execute() will run that metod and additionaly searches TWO_LIST threats."
+    if (this != &ref)
+    {
+        m_myPlayer = std::move(ref.m_myPlayer);
+        m_regionToInvestigate = std::move(ref.m_regionToInvestigate);
+    }
+    return *this;
+}
+
+void Spotter::addToExecute(const RegionToInvestigate regionToInvestigate)
+{
+    m_regionToInvestigate.push_back(regionToInvestigate);
+}
+
+vector<Spotter::SpottedThreats> Spotter::execute(const IBoard::PositionXY xy, const bool isOpponentMove, const uint32_t multiplier)
+{
     // Keeps in bit representation, direction where threats have been found.
     uint32_t trendMark = 0;
 
-    // Go thru all threats marked for executing their blood relation threats.
-    IIterator<RegionToInvestigate> * const execIt = m_regionToInvestigate.getIterator();
-    assert(execIt);
-
     vector<Spotter::SpottedThreats> retVal;
 
-    for(; execIt->hasNext();)
+    for(std::list<RegionToInvestigate>::iterator it = m_regionToInvestigate.begin(); it!=m_regionToInvestigate.end();++it)
     {
-        const RegionToInvestigate regionToInvestigate = execIt->getNext();
+        const RegionToInvestigate regionToInvestigate = *it;
         const uint32_t threatBloodAssociationIndex    = static_cast<uint32_t>(regionToInvestigate.m_threatKind);
 
         // Get handle to dismissal/promotion threat container.
@@ -57,10 +85,6 @@ vector<Spotter::SpottedThreats> Spotter::execute(const Board::PositionXY xy, con
             }
         }
     }
-
-    // Searching region done.
-    execIt->backToBegin();
-    resetInstance();
 
     // If it was my move, besides previous stuff, run all Threat2CaseX (see ThreatsBloodRelation::TWO_LIST) because the
     // new move might form a new threat. Here is a place where each a new threat is born.
@@ -147,14 +171,11 @@ vector<Spotter::SpottedThreats> Spotter::execute(const Board::PositionXY xy, con
             }
         }
     }
-
+    resetInstance();
     return retVal;
 }
 
 void Spotter::resetInstance()
 {
-    for(; !m_regionToInvestigate.isEmpty();)
-    {
-        m_regionToInvestigate.removeFromTail();
-    }
+    m_regionToInvestigate.clear();
 }

@@ -38,7 +38,7 @@ ThreatWinner::ThreatWinner() : ThreatFinder(PATTERN_LENGHT, m_pov, NUMELEM(m_pov
 
 ///	Check pretendThreat if meets all requirement to real threat.
 bool ThreatWinner::checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
-                               const Board::Player playerPerspective) const
+                               const IBoard::Player playerPerspective) const
 {
     // Equal the first pointOfview in m_threatPattern
     static const uint32_t pointOfViewOffset = 1;
@@ -51,7 +51,7 @@ bool ThreatWinner::checkThreat(const uint32_t pretendThreat, const uint32_t poin
     uint32_t asterixCntrMask                  = 0;
     uint32_t threatPattern                    = 0;
 
-    if(Board::PLAYER_A == playerPerspective)
+    if(IBoard::PLAYER_A == playerPerspective)
     {
         myPawnsCntrMask   = 0x000000FF;
         adversaryCntrMask = 0x0000FF00;
@@ -59,7 +59,7 @@ bool ThreatWinner::checkThreat(const uint32_t pretendThreat, const uint32_t poin
         asterixCntrMask   = 0xFF000000;
         threatPattern     = m_threatPatternX[threatPatternIndex].m_threatPattern;
     }
-    else if(Board::PLAYER_B == playerPerspective)
+    else if(IBoard::PLAYER_B == playerPerspective)
     {
         myPawnsCntrMask   = 0x0000FF00;
         adversaryCntrMask = 0x000000FF;
@@ -99,7 +99,7 @@ bool ThreatWinner::checkThreat(const uint32_t pretendThreat, const uint32_t poin
 }
 
 /// Gets threat up details after threat has been found.
-void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
+void ThreatWinner::getThreatUpDetails(const IBoard::PositionXY initialPosition, const Trend trend,
                                       ThreatUpDetails & rThreatUpDetails) const
 {
     const uint32_t stepForward      = PATTERN_LENGHT - m_threatDownDetails.m_pointOfView - 1;
@@ -115,10 +115,10 @@ void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, c
     uint32_t enemyPawnsShift        = 0;
 
     // 0. Precondition.
-    const Board::Direction directionForward  = Trend2DirectionStraight.at(trend);
-    const Board::Direction directionBackward = Trend2DirectionReverse.at(trend);
+    const IBoard::Direction directionForward  = Trend2DirectionStraight.at(trend);
+    const IBoard::Direction directionBackward = Trend2DirectionReverse.at(trend);
 
-    if(Board::PLAYER_A == m_threatDownDetails.m_playerPerspective)
+    if(IBoard::PLAYER_A == m_threatDownDetails.m_playerPerspective)
     {
         myPawnsCntrMask        = 0x000000FF;
         adversaryPawnsCntrMask = 0x0000FF00;
@@ -127,7 +127,7 @@ void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, c
         myPawnsShift           = 0;
         enemyPawnsShift        = 8;
     }
-    else if(Board::PLAYER_B == m_threatDownDetails.m_playerPerspective)
+    else if(IBoard::PLAYER_B == m_threatDownDetails.m_playerPerspective)
     {
         myPawnsCntrMask        = 0x0000FF00;
         adversaryPawnsCntrMask = 0x000000FF;
@@ -146,7 +146,7 @@ void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, c
         static_cast<uint8_t>((m_threatDownDetails.m_hexCode & myPawnsCntrMask) >> myPawnsShift);
     const uint8_t myPawnsHexCodeNorm = standarizePov(myPawnsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
-    Board::PositionXY initialPositionNorm = initialPosition;
+    IBoard::PositionXY initialPositionNorm = initialPosition;
     getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
@@ -154,15 +154,15 @@ void ThreatWinner::getThreatUpDetails(const Board::PositionXY initialPosition, c
               ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS);
 
     // 2. Provide asterixes.
-    Board::PositionXY asterix1Tmp = rThreatUpDetails.m_myPawns[0];
-    Board::PositionXY asterix2Tmp = rThreatUpDetails.m_myPawns[4];
+    IBoard::PositionXY asterix1Tmp = rThreatUpDetails.m_myPawns[0];
+    IBoard::PositionXY asterix2Tmp = rThreatUpDetails.m_myPawns[4];
     getBoard().goDirection(asterix1Tmp, directionBackward);
     getBoard().goDirection(asterix2Tmp, directionForward);
     const bool isAsterix1TmpOnBoard = getBoard().isOnBoard(asterix1Tmp);
     const bool isAsterix2TmpOnBoard = getBoard().isOnBoard(asterix2Tmp);
 
-    Board::PositionXY beginTmp;
-    Board::PositionXY endTmp;
+    IBoard::PositionXY beginTmp;
+    IBoard::PositionXY endTmp;
 
     if(isAsterix1TmpOnBoard && isAsterix2TmpOnBoard)
     {

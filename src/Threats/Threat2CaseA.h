@@ -1,6 +1,6 @@
 #pragma once
 #include <assert.h>
-#include "Board.h"
+#include "Interfaces/IBoard.h"
 #include "ThreatFinder.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -32,8 +32,8 @@ class Threat2CaseA final : public ThreatFinder
     static const std::unordered_map<ThreatFinder::ThreatAnatnomy, int> k_ATOM_NUMBER_2A;
 
     bool checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
-                     const Board::Player playerPerspective) const override;
-    void getThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
+                     const IBoard::Player playerPerspective) const override;
+    void getThreatUpDetails(const IBoard::PositionXY initialPosition, const Trend trend,
                             ThreatUpDetails & rThreatUpDetails) const override;
     bool isSearchForSimmetrics() const override
     {
@@ -58,9 +58,9 @@ class Threat2CaseA final : public ThreatFinder
    private:
     // Check threat to find normal and symmetric pattern.
     bool CheckThreatNormal(const uint32_t pretendThreat, const uint32_t pointOfView,
-                           const Board::Player playerPerspective) const;
+                           const IBoard::Player playerPerspective) const;
     bool CheckThreatSymmetric(const uint32_t pretendThreat, const uint32_t pointOfView,
-                              const Board::Player playerPerspective) const;
+                              const IBoard::Player playerPerspective) const;
 
     // Threat pattern for X player.
     static const ThreatPattern m_threatPatternX[];

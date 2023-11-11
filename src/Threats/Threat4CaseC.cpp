@@ -47,7 +47,7 @@ Threat4CaseC::Threat4CaseC() : ThreatFinder(PATTERN_LENGHT, m_pov, NUMELEM(m_pov
 
 ///	Check pretendThreat if meets all requirement to real threat.
 bool Threat4CaseC::checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
-                               const Board::Player playerPerspective) const
+                               const IBoard::Player playerPerspective) const
 {
     // Equal the first pointOfview in m_threatPattern
     static const uint32_t pointOfViewOffset = 1;
@@ -61,7 +61,7 @@ bool Threat4CaseC::checkThreat(const uint32_t pretendThreat, const uint32_t poin
     uint32_t asterixCntrMask                  = 0;
     uint32_t threatPattern                    = 0;
 
-    if(Board::PLAYER_A == playerPerspective)
+    if(IBoard::PLAYER_A == playerPerspective)
     {
         myPawnsCntrMask        = 0x000000FF;
         adversaryPawnsCntrMask = 0x0000FF00;
@@ -69,7 +69,7 @@ bool Threat4CaseC::checkThreat(const uint32_t pretendThreat, const uint32_t poin
         asterixCntrMask        = 0xFF000000;
         threatPattern          = m_threatPatternX[threatPatternIndex].m_threatPattern;
     }
-    else if(Board::PLAYER_B == playerPerspective)
+    else if(IBoard::PLAYER_B == playerPerspective)
     {
         myPawnsCntrMask        = 0x0000FF00;
         adversaryPawnsCntrMask = 0x000000FF;
@@ -111,7 +111,7 @@ bool Threat4CaseC::checkThreat(const uint32_t pretendThreat, const uint32_t poin
 }
 
 /// Gets threat up details after threat has been found.
-void Threat4CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
+void Threat4CaseC::getThreatUpDetails(const IBoard::PositionXY initialPosition, const Trend trend,
                                       ThreatUpDetails & rThreatUpDetails) const
 {
     const uint32_t stepForward      = PATTERN_LENGHT - m_threatDownDetails.m_pointOfView - 1;
@@ -127,10 +127,10 @@ void Threat4CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
     uint32_t enemyPawnsShift        = 0;
 
     // 0. Precondition.
-    const Board::Direction directionForward  = Trend2DirectionStraight.at(trend);
-    const Board::Direction directionBackward = Trend2DirectionReverse.at(trend);
+    const IBoard::Direction directionForward  = Trend2DirectionStraight.at(trend);
+    const IBoard::Direction directionBackward = Trend2DirectionReverse.at(trend);
 
-    if(Board::PLAYER_A == m_threatDownDetails.m_playerPerspective)
+    if(IBoard::PLAYER_A == m_threatDownDetails.m_playerPerspective)
     {
         myPawnsCntrMask        = 0x000000FF;
         adversaryPawnsCntrMask = 0x0000FF00;
@@ -139,7 +139,7 @@ void Threat4CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
         myPawnsShift           = 0;
         enemyPawnsShift        = 8;
     }
-    else if(Board::PLAYER_B == m_threatDownDetails.m_playerPerspective)
+    else if(IBoard::PLAYER_B == m_threatDownDetails.m_playerPerspective)
     {
         myPawnsCntrMask        = 0x0000FF00;
         adversaryPawnsCntrMask = 0x000000FF;
@@ -164,7 +164,7 @@ void Threat4CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
             standarizePov(enemyPawnsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
     const uint8_t gapsHexCodeNorm = standarizePov(gapsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
-    Board::PositionXY initialPositionNorm = initialPosition;
+    IBoard::PositionXY initialPositionNorm = initialPosition;
     getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.
@@ -177,8 +177,8 @@ void Threat4CaseC::getThreatUpDetails(const Board::PositionXY initialPosition, c
     // a. make adjustment for a case ex. |.xxx.o   o.xxx.|
     const bool isEnemyPawnOnBoard1 = getBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[0]);
     const bool isEnemyPawnOnBoard2 = getBoard().isOnBoard(rThreatUpDetails.m_enemyPawns[1]);
-    Board::PositionXY beginTmp     = rThreatUpDetails.m_enemyPawns[0];
-    Board::PositionXY endTmp       = rThreatUpDetails.m_enemyPawns[1];
+    IBoard::PositionXY beginTmp     = rThreatUpDetails.m_enemyPawns[0];
+    IBoard::PositionXY endTmp       = rThreatUpDetails.m_enemyPawns[1];
     if(!isEnemyPawnOnBoard1 && !isEnemyPawnOnBoard2)
     {
         getBoard().goDirection(rThreatUpDetails.m_enemyPawns[0], directionForward);

@@ -18,12 +18,18 @@ add_executable( gomoku-al
     Threats/ThreatFinder.cpp
     Threats/ThreatsBloodRelation.cpp
     Threats/ThreatWinner.cpp
+        Interfaces/IBoard.h
+    Interfaces/IIterator.h
+    Interfaces/IObserver.h
+    Interfaces/ISpotter.h
     GomokuBoard.cpp
     Exceptions.h
     Spotter.cpp
     Spotter.h
     Score.cpp
-    Score.h)
+    Score.h
+    ThreatTracker.h
+    ThreatTracker.cpp )
 
                 
 target_include_directories(gomoku-al PUBLIC

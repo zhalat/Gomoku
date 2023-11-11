@@ -1,24 +1,34 @@
 #include <queue>
-#include "Board.h"
+#include "Interfaces/IBoard.h"
 #include "ThreatFinder.h"
 #include <ctime>
 
+const std::unordered_map<ThreatFinder::Trend, IBoard::Direction> ThreatFinder::Trend2DirectionStraight { { ThreatFinder::VERTICAL, IBoard::DOWN },
+                                                                                   { ThreatFinder::HORIZONTAL, IBoard::RIGHT },
+                                                                                   { ThreatFinder::RISING, IBoard::DOWN_LEFT },
+                                                                                   { ThreatFinder::FALLING, IBoard::DOWN_RIGHT }};
+
+const std::unordered_map<ThreatFinder::Trend, IBoard::Direction> ThreatFinder::Trend2DirectionReverse{ { ThreatFinder::VERTICAL, IBoard::UP },
+                                                                                 { ThreatFinder::HORIZONTAL, IBoard::LEFT },
+                                                                                 { ThreatFinder::RISING, IBoard::UP_RIGHT },
+                                                                                 { ThreatFinder::FALLING, IBoard::UP_LEFT }};
+
 /// Browse neighborhood for threat.
-bool ThreatFinder::findThreatPattern(const Board::PositionXY & initialPosition, const Trend trend,
-                                     const Board::Player playerPerspective)
+bool ThreatFinder::findThreatPattern(const IBoard::PositionXY & initialPosition, const Trend trend,
+                                     const IBoard::Player playerPerspective)
 {
     bool retVal = false;
 
-    // Board has to be provided first.
+    // IBoard has to be provided first.
     assert(NULL != m_board);
 
     // Ensure that initial field is on board.
     assert(m_board->isOnBoard(initialPosition));
 
     // Ensure that initialPosition is not empty.
-    assert(Board::PLAYER_EMPTY != m_board->getMove(initialPosition));
+    assert(IBoard::PLAYER_EMPTY != m_board->getMove(initialPosition));
 
-    const Board::Player opponentPlayer = (Board::PLAYER_A == playerPerspective) ? Board::PLAYER_B : Board::PLAYER_A;
+    const IBoard::Player opponentPlayer = (IBoard::PLAYER_A == playerPerspective) ? IBoard::PLAYER_B : IBoard::PLAYER_A;
 
     // Reset previous result.
     m_threatLocation.clearAll();
@@ -43,7 +53,7 @@ bool ThreatFinder::findThreatPattern(const Board::PositionXY & initialPosition, 
         const uint32_t currentPointOfView = m_pointsView[i];
 
         // Used for jumping thru board.
-        Board::PositionXY currentPositionOnBoard = initialPosition;
+        IBoard::PositionXY currentPositionOnBoard = initialPosition;
         uint32_t currentThreat                   = 0;
 
         // Used for keeping how many steps should be done before the opposite direction will take place.
@@ -63,7 +73,7 @@ bool ThreatFinder::findThreatPattern(const Board::PositionXY & initialPosition, 
             if(0 == exceptionCntr)
             {
                 // Get actual pawn (from board).
-                const Board::Player currentPawn = m_board->getMove(currentPositionOnBoard);
+                const IBoard::Player currentPawn = m_board->getMove(currentPositionOnBoard);
 
                 currentThreat |= (static_cast<uint32_t>(currentPawn) << j);
 
@@ -72,7 +82,7 @@ bool ThreatFinder::findThreatPattern(const Board::PositionXY & initialPosition, 
 
                 if(isEmptyOrRival)
                 {
-                    currentThreat |= (static_cast<uint32_t>(Board::PLAYER_EMPTY_OR_ENEMY) << j);
+                    currentThreat |= (static_cast<uint32_t>(IBoard::PLAYER_EMPTY_OR_ENEMY) << j);
                 }
             }
 
@@ -104,7 +114,7 @@ bool ThreatFinder::findThreatPattern(const Board::PositionXY & initialPosition, 
                 // If new position is out of board it general means that pattern was not found.
                 // However we can treat board frame as opponent move. So put there just an opponent move and check.
                 currentThreat |= (static_cast<uint32_t>(opponentPlayer) << (j + 1));
-                currentThreat |= (static_cast<uint32_t>(Board::PLAYER_EMPTY_OR_ENEMY) << (j + 1));
+                currentThreat |= (static_cast<uint32_t>(IBoard::PLAYER_EMPTY_OR_ENEMY) << (j + 1));
 
                 if(isReversion)
                 {
@@ -180,8 +190,8 @@ uint8_t ThreatFinder::standarizePov(const uint8_t hexCode, const uint8_t pointOf
 }
 
 /// Provide (x,y) threat's pieces(x,o,.,*) basing on normalized threat.
-void ThreatFinder::getPieces(const uint8_t normHexCode, const Board::PositionXY initialPositionNorm,
-                             const Board::Direction direction, Board::PositionXY pBuffer[],
+void ThreatFinder::getPieces(const uint8_t normHexCode, const IBoard::PositionXY initialPositionNorm,
+                             const IBoard::Direction direction, IBoard::PositionXY pBuffer[],
                              const uint32_t bufferSize) const
 {
     static const uint8_t mask           = 0x01;
@@ -195,7 +205,7 @@ void ThreatFinder::getPieces(const uint8_t normHexCode, const Board::PositionXY 
         if(isPiece)
         {
             assert(index < bufferSize);
-            Board::PositionXY initialPositionNormTmp = initialPositionNorm;
+            IBoard::PositionXY initialPositionNormTmp = initialPositionNorm;
             getBoard().goDirection(initialPositionNormTmp, direction, i);
             pBuffer[index++] = initialPositionNormTmp;
         }
@@ -206,16 +216,16 @@ void ThreatFinder::getPieces(const uint8_t normHexCode, const Board::PositionXY 
 /// From currentXYPosition make one step on trend towards up/right/up_right if no reversion or
 /// down/left/down_left if reversion should take place. Such a new position override currentXYPosition.
 /// If new currentXYPosition would exceed board return false and old position is preserved.
-bool ThreatFinder::makeStepOnTrend(const bool isReversion, Board::PositionXY & currentXYPosition,
+bool ThreatFinder::makeStepOnTrend(const bool isReversion, IBoard::PositionXY & currentXYPosition,
                                    const Trend trend) const
 {
     bool retVal = false;
     assert(NULL != m_board);
 
     // Find out direction toward which we are going to crawl.
-    const Board::Direction directionForward  = Trend2DirectionStraight.at(trend);
-    const Board::Direction directionBackward = Trend2DirectionReverse.at(trend);
-    Board::Direction direction = Board::DIRECTION_NONE;
+    const IBoard::Direction directionForward  = Trend2DirectionStraight.at(trend);
+    const IBoard::Direction directionBackward = Trend2DirectionReverse.at(trend);
+    IBoard::Direction direction = IBoard::DIRECTION_NONE;
     if(!isReversion)
     {
         direction = directionForward;

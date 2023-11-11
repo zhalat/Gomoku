@@ -50,7 +50,7 @@ Score * Score::getInstance()
     return &score;
 }
 
-void Score::setBoard(const Board & rBoard)
+void Score::setBoard(const IBoard & rBoard)
 {
     for(uint32_t i = 0; i < NUMELEM(m_ThreatScore); ++i)
     {

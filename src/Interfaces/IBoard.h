@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class Board {
+class IBoard {
 public:
     /// Define allowed values on the board.
     enum Player : uint32_t {
@@ -170,7 +170,7 @@ public:
 
     virtual void goDirection(PositionXY &xy, const Direction direction, const uint32_t steps = 1) const = 0;
 
-    virtual Board &clone() const = 0;
+    virtual IBoard &clone() const = 0;
 
     virtual vector<graph::Node> getNeighborhood(const PositionXY xy) const = 0;
 
@@ -194,17 +194,17 @@ public:
         return rival;
     }
 
-    Board() = default;
+    IBoard() = default;
 
-    Board(const Board &) = delete;
+    IBoard(const IBoard &) = delete;
 
-    Board(const Board &&) = delete;
+    IBoard(const IBoard &&) = delete;
 
-    Board &operator=(const Board &) = delete;
+    IBoard &operator=(const IBoard &) = delete;
 
-    Board &operator=(const Board &&) = delete;
+    IBoard &operator=(const IBoard &&) = delete;
 
-    virtual ~Board() = default;
+    virtual ~IBoard() = default;
 
 private:
     static void printWhiteMark(std::ostream &stream, const uint32_t i) {
@@ -213,41 +213,41 @@ private:
         }
     }
 
-    friend std::ostream &operator<<(std::ostream &stream, const Board &board) {
+    friend std::ostream &operator<<(std::ostream &stream, const IBoard &board) {
         const uint32_t T = board.getSize() / 10;
         const uint32_t U = board.getSize() % 10;
-        Board::printWhiteMark(stream, 3);
+        IBoard::printWhiteMark(stream, 3);
         for (uint32_t i = 0; i < T; ++i) {
             for (uint32_t j = 0; j < 10; ++j) {
                 if (0 == i) {
-                    Board::printWhiteMark(stream, 2);
+                    IBoard::printWhiteMark(stream, 2);
                 } else {
                     stream << i;
-                    Board::printWhiteMark(stream, 1);
+                    IBoard::printWhiteMark(stream, 1);
                 }
             }
         }
 
         for (uint32_t i = 0; i < U; ++i) {
             stream << T;
-            Board::printWhiteMark(stream, 1);
+            IBoard::printWhiteMark(stream, 1);
         }
 
         stream << std::endl;
-        Board::printWhiteMark(stream, 3);
+        IBoard::printWhiteMark(stream, 3);
 
         for (uint32_t i = 0; i < board.getSize(); ++i) {
             stream << i % 10;
-            Board::printWhiteMark(stream, 1);
+            IBoard::printWhiteMark(stream, 1);
         }
 
         stream << endl;
         for (uint32_t j = 0; j < board.getSize(); ++j) {
             if (0 == j) {
-                Board::printWhiteMark(stream, 3);
+                IBoard::printWhiteMark(stream, 3);
                 stream << "_";
             } else {
-                Board::printWhiteMark(stream, 1);
+                IBoard::printWhiteMark(stream, 1);
                 stream << "_";
             }
         }
@@ -256,7 +256,7 @@ private:
         for (uint32_t i = 0; i < board.getSize(); ++i) {
             if (i < 10) {
                 stream << i;
-                Board::printWhiteMark(stream, 1);
+                IBoard::printWhiteMark(stream, 1);
                 stream << "|";
             } else {
                 stream << i << "|";
@@ -269,20 +269,20 @@ private:
                 if (board.getSize() - 1 == j) {
                     stream << "|" << endl;
                 } else {
-                    Board::printWhiteMark(stream, 1);
+                    IBoard::printWhiteMark(stream, 1);
                 }
             }
         }
 
         for (uint32_t j = 0; j < board.getSize(); ++j) {
             if (0 == j) {
-                Board::printWhiteMark(stream, 2);
+                IBoard::printWhiteMark(stream, 2);
                 stream << "|_";
             } else if (board.getSize() - 1 == j) {
-                Board::printWhiteMark(stream, 1);
+                IBoard::printWhiteMark(stream, 1);
                 stream << "_|";
             } else {
-                Board::printWhiteMark(stream, 1);
+                IBoard::printWhiteMark(stream, 1);
                 stream << "_";
             }
         }

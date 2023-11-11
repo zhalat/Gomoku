@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "Board.h"
+#include "IBoard.h"
 #include "GomokuBoard.h"
 #include "Threats/Threat4CaseAA.h"
 
@@ -29,23 +29,23 @@ TEST_F(Threat4CaseAATest, FindPatternOnHorizontalTrendTest1)
     // step by step build .XX.X. and verify if pattern is found.
 
     // a:   .X....
-    m_board->putMove(Board::PositionXY(2, 2), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 2), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // b:   .XX...
-    m_board->putMove(Board::PositionXY(2, 3), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 3), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // c:   .XXX..
-    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 4), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // d:   .XXX.X.
-    m_board->putMove(Board::PositionXY(2, 6), Board::PLAYER_A);
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 3), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 4), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 6), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 6), IBoard::PLAYER_A);
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 3), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 4), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 6), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 }
 
 TEST_F(Threat4CaseAATest, FindPatternOnHorizontalTrendTest2)
@@ -53,56 +53,56 @@ TEST_F(Threat4CaseAATest, FindPatternOnHorizontalTrendTest2)
     // step by step build .XX.X. and verify if pattern is found.
 
     // a:   .X....
-    m_board->putMove(Board::PositionXY(2, 2), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 2), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // b:   .XX...
-    m_board->putMove(Board::PositionXY(2, 3), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 3), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // c:   .XXX..
-    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 4), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // d:   .XXXX.
-    m_board->putMove(Board::PositionXY(2, 5), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 3), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 4), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 5), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 5), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 3), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 4), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 5), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 }
 
 TEST_F(Threat4CaseAATest, FindPatternOnHorizontalTrendTest3)
 {
     // a:   .X....
-    m_board->putMove(Board::PositionXY(2, 2), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 2), IBoard::PLAYER_A);
     // b:   .XX...
-    m_board->putMove(Board::PositionXY(2, 3), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 3), IBoard::PLAYER_A);
     // c:   .XXX..
-    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 4), IBoard::PLAYER_A);
     // d:   .XXX.X.
-    m_board->putMove(Board::PositionXY(2, 6), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 6), IBoard::PLAYER_A);
     // e:   .XXX.XO
-    m_board->putMove(Board::PositionXY(2, 6), Board::PLAYER_B);
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 3), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 4), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 6), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 6), IBoard::PLAYER_B);
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 3), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 4), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 6), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 
     // a:   .X....
-    m_board->putMove(Board::PositionXY(3, 2), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(3, 2), IBoard::PLAYER_A);
     // b:   .XX...
-    m_board->putMove(Board::PositionXY(3, 3), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(3, 3), IBoard::PLAYER_A);
     // c:   .XXX..
-    m_board->putMove(Board::PositionXY(3, 4), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(3, 4), IBoard::PLAYER_A);
     // d:   .XXX.X.
-    m_board->putMove(Board::PositionXY(3, 6), Board::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(3, 6), IBoard::PLAYER_A);
     // e:   .XXXOX.
-    m_board->putMove(Board::PositionXY(3, 5), Board::PLAYER_B);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(3, 2), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(3, 3), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(3, 4), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(3, 6), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(3, 5), IBoard::PLAYER_B);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(3, 2), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(3, 3), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(3, 4), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(3, 6), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 }
 
 TEST_F(Threat4CaseAATest, FindPatternOnHorizontalTrendTest4)
@@ -114,11 +114,11 @@ TEST_F(Threat4CaseAATest, FindPatternOnHorizontalTrendTest4)
     //    0 |. . . . . . . . . . . . . . .|
     //    1 |. . . . . . . . . . . . . . .|
     //    2 |. . . . x x x . x . . . . . .|
-    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_A);
-    m_board->putMove(Board::PositionXY(2, 5), Board::PLAYER_A);
-    m_board->putMove(Board::PositionXY(2, 6), Board::PLAYER_A);
-    m_board->putMove(Board::PositionXY(2, 8), Board::PLAYER_A);
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 8), ThreatFinder::HORIZONTAL, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(2, 4), IBoard::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 5), IBoard::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 6), IBoard::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(2, 8), IBoard::PLAYER_A);
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 8), ThreatFinder::HORIZONTAL, IBoard::PLAYER_A));
 }
 
 TEST_F(Threat4CaseAATest, FindPatternAbbutedToFrameTest1)
@@ -143,23 +143,23 @@ TEST_F(Threat4CaseAATest, FindPatternAbbutedToFrameTest1)
     // 14|. . . . . . . . . . . . . . .|
     //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
-    m_board->putMove(Board::PositionXY(1, 5), Board::PLAYER_B);
-    m_board->putMove(Board::PositionXY(2, 4), Board::PLAYER_B);
-    m_board->putMove(Board::PositionXY(4, 2), Board::PLAYER_B);
-    m_board->putMove(Board::PositionXY(5, 1), Board::PLAYER_B);
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(1, 5), ThreatFinder::RISING, Board::PLAYER_B));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(2, 4), ThreatFinder::RISING, Board::PLAYER_B));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(4, 2), ThreatFinder::RISING, Board::PLAYER_B));
-    ASSERT_TRUE(m_threatFinder->findThreatPattern(Board::PositionXY(5, 1), ThreatFinder::RISING, Board::PLAYER_B));
+    m_board->putMove(IBoard::PositionXY(1, 5), IBoard::PLAYER_B);
+    m_board->putMove(IBoard::PositionXY(2, 4), IBoard::PLAYER_B);
+    m_board->putMove(IBoard::PositionXY(4, 2), IBoard::PLAYER_B);
+    m_board->putMove(IBoard::PositionXY(5, 1), IBoard::PLAYER_B);
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(1, 5), ThreatFinder::RISING, IBoard::PLAYER_B));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(2, 4), ThreatFinder::RISING, IBoard::PLAYER_B));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(4, 2), ThreatFinder::RISING, IBoard::PLAYER_B));
+    ASSERT_TRUE(m_threatFinder->findThreatPattern(IBoard::PositionXY(5, 1), ThreatFinder::RISING, IBoard::PLAYER_B));
 
-    m_board->putMove(Board::PositionXY(9, 0), Board::PLAYER_A);
-    m_board->putMove(Board::PositionXY(10, 1), Board::PLAYER_A);
-    m_board->putMove(Board::PositionXY(12, 3), Board::PLAYER_A);
-    m_board->putMove(Board::PositionXY(13, 4), Board::PLAYER_A);
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(9, 0), ThreatFinder::RISING, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(10, 1), ThreatFinder::RISING, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(12, 3), ThreatFinder::RISING, Board::PLAYER_A));
-    ASSERT_FALSE(m_threatFinder->findThreatPattern(Board::PositionXY(13, 4), ThreatFinder::RISING, Board::PLAYER_A));
+    m_board->putMove(IBoard::PositionXY(9, 0), IBoard::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(10, 1), IBoard::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(12, 3), IBoard::PLAYER_A);
+    m_board->putMove(IBoard::PositionXY(13, 4), IBoard::PLAYER_A);
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(9, 0), ThreatFinder::RISING, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(10, 1), ThreatFinder::RISING, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(12, 3), ThreatFinder::RISING, IBoard::PLAYER_A));
+    ASSERT_FALSE(m_threatFinder->findThreatPattern(IBoard::PositionXY(13, 4), ThreatFinder::RISING, IBoard::PLAYER_A));
 }
 
 TEST_F(Threat4CaseAATest, GetPieces1)
@@ -174,36 +174,36 @@ TEST_F(Threat4CaseAATest, GetPieces1)
     // 3 |. . . . . . . . . . . . . . .|
 
     // 0. Define expectation.
-    const Board::PositionXY elAsterix1   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elAsterix2   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap1       = Board::PositionXY(2, 2);
-    const Board::PositionXY elGap2       = Board::PositionXY(2, 4);
-    const Board::PositionXY elGap3       = Board::PositionXY(2, 8);
-    const Board::PositionXY elGap4       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap5       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap6       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap7       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap8       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap9       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap10      = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elExtendGap1 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elExtendGap2 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elX1         = Board::PositionXY(2, 3);
-    const Board::PositionXY elX2         = Board::PositionXY(2, 5);
-    const Board::PositionXY elX3         = Board::PositionXY(2, 6);
-    const Board::PositionXY elX4         = Board::PositionXY(2, 7);
-    const Board::PositionXY elX5         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elO1         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elO2         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY beginning    = Board::PositionXY(2, 2);
-    const Board::PositionXY end          = Board::PositionXY(2, 8);
+    const IBoard::PositionXY elAsterix1   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elAsterix2   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap1       = IBoard::PositionXY(2, 2);
+    const IBoard::PositionXY elGap2       = IBoard::PositionXY(2, 4);
+    const IBoard::PositionXY elGap3       = IBoard::PositionXY(2, 8);
+    const IBoard::PositionXY elGap4       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap5       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap6       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap7       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap8       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap9       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap10      = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elExtendGap1 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elExtendGap2 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elX1         = IBoard::PositionXY(2, 3);
+    const IBoard::PositionXY elX2         = IBoard::PositionXY(2, 5);
+    const IBoard::PositionXY elX3         = IBoard::PositionXY(2, 6);
+    const IBoard::PositionXY elX4         = IBoard::PositionXY(2, 7);
+    const IBoard::PositionXY elX5         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elO1         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elO2         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY beginning    = IBoard::PositionXY(2, 2);
+    const IBoard::PositionXY end          = IBoard::PositionXY(2, 8);
 
     // 1. Create a threat.
-    m_board->putMove(elX1, Board::PLAYER_A);
-    m_board->putMove(elX2, Board::PLAYER_A);
-    m_board->putMove(elX3, Board::PLAYER_A);
-    m_board->putMove(elX4, Board::PLAYER_A);
-    m_threatFinder->findThreatPattern(elX1, ThreatFinder::HORIZONTAL, Board::PLAYER_A);
+    m_board->putMove(elX1, IBoard::PLAYER_A);
+    m_board->putMove(elX2, IBoard::PLAYER_A);
+    m_board->putMove(elX3, IBoard::PLAYER_A);
+    m_board->putMove(elX4, IBoard::PLAYER_A);
+    m_threatFinder->findThreatPattern(elX1, ThreatFinder::HORIZONTAL, IBoard::PLAYER_A);
 
     // 2. Get elements.
     ThreatFinder::ThreatLocation threatLocation;
@@ -261,36 +261,36 @@ TEST_F(Threat4CaseAATest, GetPieces2)
     // 7 |. . . . . . . . . . . . . . .|
 
     // 0. Define expectation.
-    const Board::PositionXY elAsterix1   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elAsterix2   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap1       = Board::PositionXY(0, 6);
-    const Board::PositionXY elGap2       = Board::PositionXY(3, 3);
-    const Board::PositionXY elGap3       = Board::PositionXY(6, 0);
-    const Board::PositionXY elGap4       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap5       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap6       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap7       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap8       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap9       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elGap10      = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elExtendGap1 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elExtendGap2 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elX1         = Board::PositionXY(1, 5);
-    const Board::PositionXY elX2         = Board::PositionXY(2, 4);
-    const Board::PositionXY elX3         = Board::PositionXY(4, 2);
-    const Board::PositionXY elX4         = Board::PositionXY(5, 1);
-    const Board::PositionXY elX5         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elO1         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY elO2         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
-    const Board::PositionXY beginning    = Board::PositionXY(0, 6);
-    const Board::PositionXY end          = Board::PositionXY(6, 0);
+    const IBoard::PositionXY elAsterix1   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elAsterix2   = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap1       = IBoard::PositionXY(0, 6);
+    const IBoard::PositionXY elGap2       = IBoard::PositionXY(3, 3);
+    const IBoard::PositionXY elGap3       = IBoard::PositionXY(6, 0);
+    const IBoard::PositionXY elGap4       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap5       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap6       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap7       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap8       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap9       = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elGap10      = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elExtendGap1 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elExtendGap2 = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elX1         = IBoard::PositionXY(1, 5);
+    const IBoard::PositionXY elX2         = IBoard::PositionXY(2, 4);
+    const IBoard::PositionXY elX3         = IBoard::PositionXY(4, 2);
+    const IBoard::PositionXY elX4         = IBoard::PositionXY(5, 1);
+    const IBoard::PositionXY elX5         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elO1         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY elO2         = ThreatFinder::ThreatLocation::k_XY_OUT_OF_BOARD;
+    const IBoard::PositionXY beginning    = IBoard::PositionXY(0, 6);
+    const IBoard::PositionXY end          = IBoard::PositionXY(6, 0);
 
     // 1. Create a threat.
-    m_board->putMove(elX1, Board::PLAYER_A);
-    m_board->putMove(elX2, Board::PLAYER_A);
-    m_board->putMove(elX3, Board::PLAYER_A);
-    m_board->putMove(elX4, Board::PLAYER_A);
-    m_threatFinder->findThreatPattern(elX4, ThreatFinder::RISING, Board::PLAYER_A);
+    m_board->putMove(elX1, IBoard::PLAYER_A);
+    m_board->putMove(elX2, IBoard::PLAYER_A);
+    m_board->putMove(elX3, IBoard::PLAYER_A);
+    m_board->putMove(elX4, IBoard::PLAYER_A);
+    m_threatFinder->findThreatPattern(elX4, ThreatFinder::RISING, IBoard::PLAYER_A);
 
     // 2. Get elements.
     ThreatFinder::ThreatLocation threatLocation;

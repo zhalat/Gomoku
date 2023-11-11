@@ -45,7 +45,7 @@ Threat4CaseAA::Threat4CaseAA() : ThreatFinder(PATTERN_LENGHT, m_pov, NUMELEM(m_p
 
 ///	Check pretendThreat if meets all requirement to real threat.
 bool Threat4CaseAA::checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
-                                const Board::Player playerPerspective) const
+                                const IBoard::Player playerPerspective) const
 {
     // Equal the first pointOfview in m_threatPattern
     static const uint32_t pointOfViewOffset = 1;
@@ -59,7 +59,7 @@ bool Threat4CaseAA::checkThreat(const uint32_t pretendThreat, const uint32_t poi
     uint32_t asterixCntrMask                  = 0;
     uint32_t threatPattern                    = 0;
 
-    if(Board::PLAYER_A == playerPerspective)
+    if(IBoard::PLAYER_A == playerPerspective)
     {
         myPawnsCntrMask   = 0x000000FF;
         adversaryCntrMask = 0x0000FF00;
@@ -67,7 +67,7 @@ bool Threat4CaseAA::checkThreat(const uint32_t pretendThreat, const uint32_t poi
         asterixCntrMask   = 0xFF000000;
         threatPattern     = m_threatPatternX[threatPatternIndex].m_threatPattern;
     }
-    else if(Board::PLAYER_B == playerPerspective)
+    else if(IBoard::PLAYER_B == playerPerspective)
     {
         myPawnsCntrMask   = 0x0000FF00;
         adversaryCntrMask = 0x000000FF;
@@ -111,7 +111,7 @@ bool Threat4CaseAA::checkThreat(const uint32_t pretendThreat, const uint32_t poi
 }
 
 /// Gets threat up details after threat has been found.
-void Threat4CaseAA::getThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
+void Threat4CaseAA::getThreatUpDetails(const IBoard::PositionXY initialPosition, const Trend trend,
                                        ThreatUpDetails & rThreatUpDetails) const
 {
     const uint32_t stepForward      = PATTERN_LENGHT - m_threatDownDetails.m_pointOfView - 1;
@@ -127,10 +127,10 @@ void Threat4CaseAA::getThreatUpDetails(const Board::PositionXY initialPosition, 
     uint32_t enemyPawnsShift        = 0;
 
     // 0. Precondition.
-    const Board::Direction directionForward  = Trend2DirectionStraight.at(trend);
-    const Board::Direction directionBackward = Trend2DirectionReverse.at(trend);
+    const IBoard::Direction directionForward  = Trend2DirectionStraight.at(trend);
+    const IBoard::Direction directionBackward = Trend2DirectionReverse.at(trend);
 
-    if(Board::PLAYER_A == m_threatDownDetails.m_playerPerspective)
+    if(IBoard::PLAYER_A == m_threatDownDetails.m_playerPerspective)
     {
         myPawnsCntrMask        = 0x000000FF;
         adversaryPawnsCntrMask = 0x0000FF00;
@@ -139,7 +139,7 @@ void Threat4CaseAA::getThreatUpDetails(const Board::PositionXY initialPosition, 
         myPawnsShift           = 0;
         enemyPawnsShift        = 8;
     }
-    else if(Board::PLAYER_B == m_threatDownDetails.m_playerPerspective)
+    else if(IBoard::PLAYER_B == m_threatDownDetails.m_playerPerspective)
     {
         myPawnsCntrMask        = 0x0000FF00;
         adversaryPawnsCntrMask = 0x000000FF;
@@ -160,7 +160,7 @@ void Threat4CaseAA::getThreatUpDetails(const Board::PositionXY initialPosition, 
     const uint8_t myPawnsHexCodeNorm = standarizePov(myPawnsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
     const uint8_t gapsHexCodeNorm    = standarizePov(gapsHexCode, m_threatDownDetails.m_pointOfView, PATTERN_LENGHT);
 
-    Board::PositionXY initialPositionNorm = initialPosition;
+    IBoard::PositionXY initialPositionNorm = initialPosition;
     getBoard().goDirection(initialPositionNorm, directionBackward, m_threatDownDetails.m_pointOfView);
 
     // 1. Provide my pawns.

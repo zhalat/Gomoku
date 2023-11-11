@@ -1,7 +1,7 @@
 #pragma once
 #include <assert.h>
 #include <unordered_map>
-#include "Board.h"
+#include "Interfaces/IBoard.h"
 #include "GomokuBoard.h"
 
 #define NUMELEM(x) (sizeof(x) / sizeof(x[0]))
@@ -53,15 +53,8 @@ class ThreatFinder
     };
 
     /// Straight and reverse conversion trend to direction.
-    const std::unordered_map<Trend, Board::Direction> Trend2DirectionStraight { { ThreatFinder::VERTICAL, Board::DOWN },
-                                                                                { ThreatFinder::HORIZONTAL, Board::RIGHT },
-                                                                                { ThreatFinder::RISING, Board::DOWN_LEFT },
-                                                                                { ThreatFinder::FALLING, Board::DOWN_RIGHT }};
-
-    const std::unordered_map<Trend, Board::Direction> Trend2DirectionReverse{ { ThreatFinder::VERTICAL, Board::UP },
-                                                                              { ThreatFinder::HORIZONTAL, Board::LEFT },
-                                                                              { ThreatFinder::RISING, Board::UP_RIGHT },
-                                                                              { ThreatFinder::FALLING, Board::UP_LEFT }};
+    static const std::unordered_map<Trend, IBoard::Direction> Trend2DirectionStraight;
+    static const std::unordered_map<Trend, IBoard::Direction> Trend2DirectionReverse;
 
     /// Keeps flags about symmetric pattern. Does matter only for symmetric patterns like 2A.
     struct FoundFlags
@@ -84,7 +77,7 @@ class ThreatFinder
         uint32_t m_hexCode;
         uint32_t m_pointOfView;
         FoundFlags m_foundFlags;
-        Board::Player m_playerPerspective;
+        IBoard::Player m_playerPerspective;
 
         ThreatDownDetails()
         {
@@ -96,7 +89,7 @@ class ThreatFinder
             m_hexCode           = 0;
             m_pointOfView       = 0;
             m_foundFlags        = {0};
-            m_playerPerspective = Board::PLAYER_NONE;
+            m_playerPerspective = IBoard::PLAYER_NONE;
         }
     };
 
@@ -110,21 +103,21 @@ class ThreatFinder
         static constexpr uint32_t k_MAX_EXTEND_SPACES = 2;
         static constexpr uint32_t k_MAX_ASTERIXES     = 2;
 
-        Board::Player m_whos;
-        Board::PositionXY m_myPawns[k_MAX_MY_PAWNS];
-        Board::PositionXY m_enemyPawns[k_MAX_ENEMY_PAWNS];
-        Board::PositionXY m_gaps[k_MAX_EMPTY_SPACES];
-        Board::PositionXY m_extGaps[k_MAX_EXTEND_SPACES];
-        Board::PositionXY m_asterixes[k_MAX_ASTERIXES];
-        Board::PositionXY m_beginningThreat;
-        Board::PositionXY m_endThreat;
+        IBoard::Player m_whos;
+        IBoard::PositionXY m_myPawns[k_MAX_MY_PAWNS];
+        IBoard::PositionXY m_enemyPawns[k_MAX_ENEMY_PAWNS];
+        IBoard::PositionXY m_gaps[k_MAX_EMPTY_SPACES];
+        IBoard::PositionXY m_extGaps[k_MAX_EXTEND_SPACES];
+        IBoard::PositionXY m_asterixes[k_MAX_ASTERIXES];
+        IBoard::PositionXY m_beginningThreat;
+        IBoard::PositionXY m_endThreat;
 
         ThreatUpDetails() { clearAll(); }
 
         void clearAll()
         {
             // Tell who's threat.
-            m_whos = Board::Player::PLAYER_NONE;
+            m_whos = IBoard::Player::PLAYER_NONE;
             for(uint32_t i = 0; i < k_MAX_MY_PAWNS; ++i)
                 m_myPawns[i] = ThreatLocation::k_XY_OUT_OF_BOARD;
             for(uint32_t i = 0; i < k_MAX_ENEMY_PAWNS; ++i)
@@ -144,8 +137,8 @@ class ThreatFinder
     /// Keeps threat location on a board.
     struct ThreatLocation
     {
-        static constexpr Board::PositionXY k_XY_OUT_OF_BOARD = Board::PositionXY(Board::PositionXY::k_INVALID_FIELD, Board::PositionXY::k_INVALID_FIELD);
-        static constexpr Board::PositionXY k_XY_BEGIN_OF_BOARD = Board::PositionXY(0, 0);
+        static constexpr IBoard::PositionXY k_XY_OUT_OF_BOARD = IBoard::PositionXY(IBoard::PositionXY::k_INVALID_FIELD, IBoard::PositionXY::k_INVALID_FIELD);
+        static constexpr IBoard::PositionXY k_XY_BEGIN_OF_BOARD = IBoard::PositionXY(0, 0);
         static const uint32_t k_DEFAULT_MULTIPLIER = 1;
 
         Trend m_trend;
@@ -172,11 +165,11 @@ class ThreatFinder
         uint8_t m_pointOfView;
     };
 
-    void setBoard(const Board * pBoard) { m_board = pBoard; }
-    const Board & getBoard() const{ return *m_board;}
-    virtual bool findThreatPattern(const Board::PositionXY & initialPosition,
+    void setBoard(const IBoard * pBoard) { m_board = pBoard; }
+    const IBoard & getBoard() const{ return *m_board;}
+    virtual bool findThreatPattern(const IBoard::PositionXY & initialPosition,
                                    const Trend trend,
-                                   const Board::Player playerPerspective) final;
+                                   const IBoard::Player playerPerspective) final;
     void getThreatFields(ThreatLocation & rThreatLocation) const;
 
     ThreatFinder(const uint32_t patternLenght, const uint32_t * pPointsView, const uint32_t pointsViewSize,
@@ -201,18 +194,18 @@ class ThreatFinder
 
    protected:
     virtual bool checkThreat(const uint32_t pretendThreat, const uint32_t pointOfView,
-                             const Board::Player playerPerspective) const = 0;
-    virtual void getThreatUpDetails(const Board::PositionXY initialPosition, const Trend trend,
+                             const IBoard::Player playerPerspective) const = 0;
+    virtual void getThreatUpDetails(const IBoard::PositionXY initialPosition, const Trend trend,
                                     ThreatUpDetails & rThreatUpDetails) const = 0;
     virtual bool isSearchForSimmetrics() const = 0;
     virtual void prepareSelfForNewSearch() = 0;
     uint8_t standarizePov(const uint8_t hexCode, const uint8_t pointOfView, const uint8_t length) const;
-    void getPieces(const uint8_t normHexCode, const Board::PositionXY initialPositionNorm,
-                   const Board::Direction direction, Board::PositionXY pBuffer[], const uint32_t bufferSize) const;
-    bool makeStepOnTrend(const bool isReversion, Board::PositionXY & currentXYPosition, const Trend trend) const;
+    void getPieces(const uint8_t normHexCode, const IBoard::PositionXY initialPositionNorm,
+                   const IBoard::Direction direction, IBoard::PositionXY pBuffer[], const uint32_t bufferSize) const;
+    bool makeStepOnTrend(const bool isReversion, IBoard::PositionXY & currentXYPosition, const Trend trend) const;
 
    private:
-    const Board * m_board;
+    const IBoard * m_board;
     const uint32_t m_patternLenght;
     const uint32_t * m_pointsView;
     const uint32_t m_pointsViewSize;

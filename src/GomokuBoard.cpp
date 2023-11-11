@@ -9,8 +9,8 @@ using namespace graph;
 
 GomokuBoard::GomokuBoard(uint32_t size)
 {
-    if((size > MAX_GOMOKU_BOARD_SIZE) or (size < MIN_GOMOKU_BOARD_SIZE))
-        throw exception::General("Board size must be <"+string(to_string(MIN_GOMOKU_BOARD_SIZE))+","+ string(to_string(MAX_GOMOKU_BOARD_SIZE))+">");
+    if((size > k_MAX_GOMOKU_BOARD_SIZE) or (size < MIN_GOMOKU_BOARD_SIZE))
+        throw exception::General("IBoard size must be <" + string(to_string(MIN_GOMOKU_BOARD_SIZE)) + "," + string(to_string(k_MAX_GOMOKU_BOARD_SIZE)) + ">");
 
     // Create graph for Gomoku board.
     const uint32_t graphSize = size * size;
@@ -167,7 +167,7 @@ bool GomokuBoard::putMove(const PositionXY xy, const Player player)
     return retVal;
 }
 
-Board::Player GomokuBoard::getMove(const PositionXY xy) const
+IBoard::Player GomokuBoard::getMove(const PositionXY xy) const
 {
     Player retVal = PLAYER_EMPTY;
     if(false == isOnBoard(xy))
@@ -380,7 +380,7 @@ uint32_t GomokuBoard::inRow(const PositionXY xy, const Direction direction) cons
     return retVal;
 }
 
-Board::OnEdge GomokuBoard::isOnEdge(const PositionXY xy) const
+IBoard::OnEdge GomokuBoard::isOnEdge(const PositionXY xy) const
 {
     // Don't analyze sth which is out of board.
     assert(isOnBoard(xy));
@@ -484,9 +484,9 @@ void GomokuBoard::goDirection(PositionXY & xy, const Direction direction, const 
     }
 }
 
-Board & GomokuBoard::clone() const
+IBoard & GomokuBoard::clone() const
 {
-    Board * retVal = new GomokuBoard(*this);
+    IBoard * retVal = new GomokuBoard(*this);
     assert(retVal);
 
     return *retVal;

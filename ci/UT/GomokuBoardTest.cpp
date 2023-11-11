@@ -38,13 +38,13 @@ TEST_F(GomokuBoardTest, CopyConstructorTest)
 
 TEST_F(GomokuBoardTest, PutMoveTest)
 {
-    const Board::PositionXY validXY(static_cast<uint32_t>(0), static_cast<uint32_t>(0));
-    const Board::PositionXY invalid1XY(static_cast<uint32_t>(5), static_cast<uint32_t>(6));
-    const Board::PositionXY invalid2XY(static_cast<uint32_t>(6), static_cast<uint32_t>(5));
+    const IBoard::PositionXY validXY(static_cast<uint32_t>(0), static_cast<uint32_t>(0));
+    const IBoard::PositionXY invalid1XY(static_cast<uint32_t>(5), static_cast<uint32_t>(6));
+    const IBoard::PositionXY invalid2XY(static_cast<uint32_t>(6), static_cast<uint32_t>(5));
 
-    const Board::Player invalidPlayer = Board::PLAYER_EMPTY;
-    const Board::Player validPlayerA  = Board::PLAYER_A;
-    const Board::Player validPlayerB  = Board::PLAYER_B;
+    const IBoard::Player invalidPlayer = IBoard::PLAYER_EMPTY;
+    const IBoard::Player validPlayerA  = IBoard::PLAYER_A;
+    const IBoard::Player validPlayerB  = IBoard::PLAYER_B;
 
     // Check invalid position.
     ASSERT_EQ(false, m_GomokuBoard->putMove(invalid1XY, validPlayerA));
@@ -55,72 +55,72 @@ TEST_F(GomokuBoardTest, PutMoveTest)
 
     // Check some valid moves.
     ASSERT_EQ(true, m_GomokuBoard->putMove(validXY, validPlayerA));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(5), static_cast<uint32_t>(0)), validPlayerA));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(5)), validPlayerA));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(5), static_cast<uint32_t>(5)), validPlayerA));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(5), static_cast<uint32_t>(0)), validPlayerA));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(5)), validPlayerA));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(5), static_cast<uint32_t>(5)), validPlayerA));
 
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerB));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(2)), validPlayerB));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(2)), validPlayerB));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(5), static_cast<uint32_t>(2)), validPlayerB));
-    ASSERT_EQ(true, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(5)), validPlayerB));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerB));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(2)), validPlayerB));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(2)), validPlayerB));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(5), static_cast<uint32_t>(2)), validPlayerB));
+    ASSERT_EQ(true, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(5)), validPlayerB));
 
     // Trying put move on not vacant place.
 
     // Try to put PlayerA to a place occuped by PlayerA.
-    ASSERT_EQ(false, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(0)), validPlayerA));
+    ASSERT_EQ(false, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(0)), validPlayerA));
     // Try to put PlayerB to a place occuped by PlayerB.
-    ASSERT_EQ(false, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerB));
+    ASSERT_EQ(false, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerB));
     // Try to put PlayerB to a place occuped by PlayerA.
-    ASSERT_EQ(false, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(0)), validPlayerB));
+    ASSERT_EQ(false, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(0), static_cast<uint32_t>(0)), validPlayerB));
     // Try to put PlayerA to a place occuped by PlayerB.
-    ASSERT_EQ(false, m_GomokuBoard->putMove(Board::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerA));
+    ASSERT_EQ(false, m_GomokuBoard->putMove(IBoard::PositionXY(static_cast<uint32_t>(3), static_cast<uint32_t>(0)), validPlayerA));
 }
 
 TEST_F(GomokuBoardTest, getMoveTest)
 {
     // Define some positions.
-    const Board::PositionXY xy1(0, 0);
-    const Board::PositionXY xy2(3, 3);
-    const Board::PositionXY xy3(5, 5);
+    const IBoard::PositionXY xy1(0, 0);
+    const IBoard::PositionXY xy2(3, 3);
+    const IBoard::PositionXY xy3(5, 5);
 
-    const Board::Player invalidPlayer = Board::PLAYER_EMPTY;
-    const Board::Player validPlayerA  = Board::PLAYER_A;
-    const Board::Player validPlayerB  = Board::PLAYER_B;
+    const IBoard::Player invalidPlayer = IBoard::PLAYER_EMPTY;
+    const IBoard::Player validPlayerA  = IBoard::PLAYER_A;
+    const IBoard::Player validPlayerB  = IBoard::PLAYER_B;
 
     // Check if vacant fields.
-    ASSERT_EQ(Board::PLAYER_EMPTY, m_GomokuBoard->getMove(xy1));
-    ASSERT_EQ(Board::PLAYER_EMPTY, m_GomokuBoard->getMove(xy2));
-    ASSERT_EQ(Board::PLAYER_EMPTY, m_GomokuBoard->getMove(xy3));
+    ASSERT_EQ(IBoard::PLAYER_EMPTY, m_GomokuBoard->getMove(xy1));
+    ASSERT_EQ(IBoard::PLAYER_EMPTY, m_GomokuBoard->getMove(xy2));
+    ASSERT_EQ(IBoard::PLAYER_EMPTY, m_GomokuBoard->getMove(xy3));
 
     m_GomokuBoard->putMove(xy1, validPlayerA);
-    ASSERT_EQ(Board::PLAYER_A, m_GomokuBoard->getMove(xy1));
+    ASSERT_EQ(IBoard::PLAYER_A, m_GomokuBoard->getMove(xy1));
     m_GomokuBoard->putMove(xy2, validPlayerA);
-    ASSERT_EQ(Board::PLAYER_A, m_GomokuBoard->getMove(xy2));
+    ASSERT_EQ(IBoard::PLAYER_A, m_GomokuBoard->getMove(xy2));
     m_GomokuBoard->putMove(xy3, validPlayerB);
-    ASSERT_EQ(Board::PLAYER_B, m_GomokuBoard->getMove(xy3));
+    ASSERT_EQ(IBoard::PLAYER_B, m_GomokuBoard->getMove(xy3));
 }
 
 TEST_F(GomokuBoardTest, GetLastMoveTest)
 {
-    Board::PositionXY lastMove;
+    IBoard::PositionXY lastMove;
 
     // Check empty board.
     ASSERT_EQ(false, m_GomokuBoard->getLastMove(lastMove));
 
     // Check if last accepted move is available thru getLastMove()
-    m_GomokuBoard->putMove(Board::PositionXY(0, 0), Board::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(0, 0), IBoard::PLAYER_A);
     ASSERT_EQ(true, m_GomokuBoard->getLastMove(lastMove));
-    ASSERT_TRUE(Board::PositionXY(0, 0) == lastMove);
+    ASSERT_TRUE(IBoard::PositionXY(0, 0) == lastMove);
 
-    m_GomokuBoard->putMove(Board::PositionXY(2, 5), Board::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(2, 5), IBoard::PLAYER_B);
     ASSERT_EQ(true, m_GomokuBoard->getLastMove(lastMove));
-    ASSERT_TRUE(Board::PositionXY(2, 5) == lastMove);
+    ASSERT_TRUE(IBoard::PositionXY(2, 5) == lastMove);
 
     // Not accepted move shall not modyfy last move.
-    m_GomokuBoard->putMove(Board::PositionXY(0, 0), Board::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(0, 0), IBoard::PLAYER_A);
     ASSERT_EQ(true, m_GomokuBoard->getLastMove(lastMove));
-    ASSERT_TRUE(Board::PositionXY(2, 5) == lastMove);
+    ASSERT_TRUE(IBoard::PositionXY(2, 5) == lastMove);
 }
 
 TEST_F(GomokuBoardTest, VacantFieldsTest)
@@ -138,9 +138,9 @@ TEST_F(GomokuBoardTest, VacantFieldsTest)
     {
         for(Node j = 0; j < m_GomokuBoard->getSize(); ++j)
         {
-            const Board::PositionXY xy(i, j);
+            const IBoard::PositionXY xy(i, j);
 
-            m_GomokuBoard->putMove(xy, Board::PLAYER_A);
+            m_GomokuBoard->putMove(xy, IBoard::PLAYER_A);
             vacantFields--;
             ASSERT_EQ(vacantFields, m_GomokuBoard->vacantFields());
         }
@@ -149,208 +149,208 @@ TEST_F(GomokuBoardTest, VacantFieldsTest)
 
 TEST_F(GomokuBoardTest, EdgeDistanceTest)
 {
-    const Board::PositionXY inTheMiddle(4, 1);
+    const IBoard::PositionXY inTheMiddle(4, 1);
 
-    ASSERT_EQ(static_cast<uint32_t>(4), m_GomokuBoard->edgeDistance(inTheMiddle, Board::UP));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, Board::DOWN));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, Board::LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(4), m_GomokuBoard->edgeDistance(inTheMiddle, Board::RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(4), m_GomokuBoard->edgeDistance(inTheMiddle, Board::UP_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, Board::UP_LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, Board::DOWN_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, Board::DOWN_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(4), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::UP));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::DOWN));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(4), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(4), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::UP_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::UP_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::DOWN_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->edgeDistance(inTheMiddle, IBoard::DOWN_LEFT));
 
-    const Board::PositionXY atTheCorner(0, 5);
+    const IBoard::PositionXY atTheCorner(0, 5);
 
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, Board::UP));
-    ASSERT_EQ(static_cast<uint32_t>(5), m_GomokuBoard->edgeDistance(atTheCorner, Board::DOWN));
-    ASSERT_EQ(static_cast<uint32_t>(5), m_GomokuBoard->edgeDistance(atTheCorner, Board::LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, Board::RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, Board::UP_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, Board::UP_LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, Board::DOWN_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(5), m_GomokuBoard->edgeDistance(atTheCorner, Board::DOWN_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::UP));
+    ASSERT_EQ(static_cast<uint32_t>(5), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::DOWN));
+    ASSERT_EQ(static_cast<uint32_t>(5), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::UP_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::UP_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::DOWN_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(5), m_GomokuBoard->edgeDistance(atTheCorner, IBoard::DOWN_LEFT));
 }
 
 TEST_F(GomokuBoardTest, NeighbourDistanceTest)
 {
     // Put some moves:
-    m_GomokuBoard->putMove(Board::PositionXY(0, 5), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(1, 2), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(3, 4), Board::PLAYER_A);
-    m_GomokuBoard->putMove(Board::PositionXY(4, 1), Board::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(0, 5), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(1, 2), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(3, 4), IBoard::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(4, 1), IBoard::PLAYER_A);
 
     // From this vacant position distance will be computed.
-    const Board::PositionXY pointOfView1(4, 5);
+    const IBoard::PositionXY pointOfView1(4, 5);
 
-    ASSERT_EQ(static_cast<int32_t>(-1), m_GomokuBoard->neighbourDistance(pointOfView1, Board::UP, Board::PLAYER_A));
-    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView1, Board::DOWN, Board::PLAYER_A));
-    ASSERT_EQ(static_cast<int32_t>(3), m_GomokuBoard->neighbourDistance(pointOfView1, Board::LEFT, Board::PLAYER_A));
+    ASSERT_EQ(static_cast<int32_t>(-1), m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::UP, IBoard::PLAYER_A));
+    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::DOWN, IBoard::PLAYER_A));
+    ASSERT_EQ(static_cast<int32_t>(3), m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::LEFT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView1, Board::RIGHT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::RIGHT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView1, Board::UP_RIGHT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::UP_RIGHT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(0),
-              m_GomokuBoard->neighbourDistance(pointOfView1, Board::UP_LEFT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::UP_LEFT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView1, Board::DOWN_RIGHT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::DOWN_RIGHT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView1, Board::DOWN_LEFT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView1, IBoard::DOWN_LEFT, IBoard::PLAYER_A));
 
     // From this non-vacant position distance will be computed.
-    const Board::PositionXY pointOfView2(0, 5);
+    const IBoard::PositionXY pointOfView2(0, 5);
 
-    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView2, Board::UP, Board::PLAYER_A));
-    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView2, Board::DOWN, Board::PLAYER_A));
-    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView2, Board::LEFT, Board::PLAYER_A));
+    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::UP, IBoard::PLAYER_A));
+    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::DOWN, IBoard::PLAYER_A));
+    ASSERT_EQ(static_cast<int32_t>(-2), m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::LEFT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView2, Board::RIGHT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::RIGHT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView2, Board::UP_RIGHT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::UP_RIGHT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView2, Board::UP_LEFT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::UP_LEFT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(-2),
-              m_GomokuBoard->neighbourDistance(pointOfView2, Board::DOWN_RIGHT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::DOWN_RIGHT, IBoard::PLAYER_A));
     ASSERT_EQ(static_cast<int32_t>(3),
-              m_GomokuBoard->neighbourDistance(pointOfView2, Board::DOWN_LEFT, Board::PLAYER_A));
+              m_GomokuBoard->neighbourDistance(pointOfView2, IBoard::DOWN_LEFT, IBoard::PLAYER_A));
 }
 
 TEST_F(GomokuBoardTest, InRowTest)
 {
     // Put some moves:
-    m_GomokuBoard->putMove(Board::PositionXY(0, 0), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(1, 1), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(2, 2), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(3, 3), Board::PLAYER_A);
-    m_GomokuBoard->putMove(Board::PositionXY(4, 4), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(5, 5), Board::PLAYER_B);
-    m_GomokuBoard->putMove(Board::PositionXY(2, 3), Board::PLAYER_A);
-    m_GomokuBoard->putMove(Board::PositionXY(4, 3), Board::PLAYER_A);
-    m_GomokuBoard->putMove(Board::PositionXY(5, 3), Board::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(0, 0), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(1, 1), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(2, 2), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(3, 3), IBoard::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(4, 4), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(5, 5), IBoard::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(2, 3), IBoard::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(4, 3), IBoard::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(5, 3), IBoard::PLAYER_A);
 
-    const Board::PositionXY pointOfView1(0, 0);
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::UP));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::DOWN));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::UP_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::UP_LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(3), m_GomokuBoard->inRow(pointOfView1, Board::DOWN_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, Board::DOWN_LEFT));
+    const IBoard::PositionXY pointOfView1(0, 0);
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::UP));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::DOWN));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::UP_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::UP_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(3), m_GomokuBoard->inRow(pointOfView1, IBoard::DOWN_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView1, IBoard::DOWN_LEFT));
 
-    const Board::PositionXY pointOfView2(3, 3);
-    ASSERT_EQ(static_cast<uint32_t>(2), m_GomokuBoard->inRow(pointOfView2, Board::UP));
-    ASSERT_EQ(static_cast<uint32_t>(3), m_GomokuBoard->inRow(pointOfView2, Board::DOWN));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, Board::LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, Board::RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, Board::UP_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, Board::UP_LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, Board::DOWN_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, Board::DOWN_LEFT));
+    const IBoard::PositionXY pointOfView2(3, 3);
+    ASSERT_EQ(static_cast<uint32_t>(2), m_GomokuBoard->inRow(pointOfView2, IBoard::UP));
+    ASSERT_EQ(static_cast<uint32_t>(3), m_GomokuBoard->inRow(pointOfView2, IBoard::DOWN));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, IBoard::LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, IBoard::RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, IBoard::UP_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, IBoard::UP_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, IBoard::DOWN_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(1), m_GomokuBoard->inRow(pointOfView2, IBoard::DOWN_LEFT));
 
     // Point of view form vacant field.
-    const Board::PositionXY pointOfView3(3, 2);
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::UP));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::DOWN));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::UP_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::UP_LEFT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::DOWN_RIGHT));
-    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, Board::DOWN_LEFT));
+    const IBoard::PositionXY pointOfView3(3, 2);
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::UP));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::DOWN));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::UP_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::UP_LEFT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::DOWN_RIGHT));
+    ASSERT_EQ(static_cast<uint32_t>(0), m_GomokuBoard->inRow(pointOfView3, IBoard::DOWN_LEFT));
 }
 
 TEST_F(GomokuBoardTest, IsOnEdgeTest)
 {
     // Define some positions.
-    const Board::PositionXY xyEdgeUp(0, 2);
-    const Board::PositionXY xyEdgeDown(5, 2);
-    const Board::PositionXY xyEdgeLeft(2, 0);
-    const Board::PositionXY xyEdgeRight(2, 5);
-    const Board::PositionXY xyEdgeCornerUpLeft(0, 0);
-    const Board::PositionXY xyEdgeCornerUpRight(0, 5);
-    const Board::PositionXY xyEdgeCornerDownLeft(5, 0);
-    const Board::PositionXY xyEdgeCornerDownRight(5, 5);
-    const Board::PositionXY xyEdgeInTheMiddle(3, 3);
+    const IBoard::PositionXY xyEdgeUp(0, 2);
+    const IBoard::PositionXY xyEdgeDown(5, 2);
+    const IBoard::PositionXY xyEdgeLeft(2, 0);
+    const IBoard::PositionXY xyEdgeRight(2, 5);
+    const IBoard::PositionXY xyEdgeCornerUpLeft(0, 0);
+    const IBoard::PositionXY xyEdgeCornerUpRight(0, 5);
+    const IBoard::PositionXY xyEdgeCornerDownLeft(5, 0);
+    const IBoard::PositionXY xyEdgeCornerDownRight(5, 5);
+    const IBoard::PositionXY xyEdgeInTheMiddle(3, 3);
 
-    ASSERT_EQ(Board::EDGE_UP, m_GomokuBoard->isOnEdge(xyEdgeUp));
-    ASSERT_EQ(Board::EDGE_DOWN, m_GomokuBoard->isOnEdge(xyEdgeDown));
-    ASSERT_EQ(Board::EDGE_LEFT, m_GomokuBoard->isOnEdge(xyEdgeLeft));
-    ASSERT_EQ(Board::EDGE_RIGHT, m_GomokuBoard->isOnEdge(xyEdgeRight));
-    ASSERT_EQ(Board::CORNER_UP_LEFT, m_GomokuBoard->isOnEdge(xyEdgeCornerUpLeft));
-    ASSERT_EQ(Board::CORNER_UP_RIGHT, m_GomokuBoard->isOnEdge(xyEdgeCornerUpRight));
-    ASSERT_EQ(Board::CORNER_DOWN_LEFT, m_GomokuBoard->isOnEdge(xyEdgeCornerDownLeft));
-    ASSERT_EQ(Board::CORNER_DOWN_RIGHT, m_GomokuBoard->isOnEdge(xyEdgeCornerDownRight));
-    ASSERT_EQ(Board::EDGE_NONE, m_GomokuBoard->isOnEdge(xyEdgeInTheMiddle));
+    ASSERT_EQ(IBoard::EDGE_UP, m_GomokuBoard->isOnEdge(xyEdgeUp));
+    ASSERT_EQ(IBoard::EDGE_DOWN, m_GomokuBoard->isOnEdge(xyEdgeDown));
+    ASSERT_EQ(IBoard::EDGE_LEFT, m_GomokuBoard->isOnEdge(xyEdgeLeft));
+    ASSERT_EQ(IBoard::EDGE_RIGHT, m_GomokuBoard->isOnEdge(xyEdgeRight));
+    ASSERT_EQ(IBoard::CORNER_UP_LEFT, m_GomokuBoard->isOnEdge(xyEdgeCornerUpLeft));
+    ASSERT_EQ(IBoard::CORNER_UP_RIGHT, m_GomokuBoard->isOnEdge(xyEdgeCornerUpRight));
+    ASSERT_EQ(IBoard::CORNER_DOWN_LEFT, m_GomokuBoard->isOnEdge(xyEdgeCornerDownLeft));
+    ASSERT_EQ(IBoard::CORNER_DOWN_RIGHT, m_GomokuBoard->isOnEdge(xyEdgeCornerDownRight));
+    ASSERT_EQ(IBoard::EDGE_NONE, m_GomokuBoard->isOnEdge(xyEdgeInTheMiddle));
 }
 
 TEST_F(GomokuBoardTest, goDirectionTest)
 {
     // Check position on corner.
-    const Board::PositionXY xyCorner(0, 5);
+    const IBoard::PositionXY xyCorner(0, 5);
 
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, Board::UP));
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, Board::UP_RIGHT));
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, Board::DOWN_RIGHT));
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, Board::RIGHT));
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, Board::UP_LEFT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, IBoard::UP));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, IBoard::UP_RIGHT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, IBoard::DOWN_RIGHT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, IBoard::RIGHT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyCorner, IBoard::UP_LEFT));
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyCorner, Board::LEFT));
-    Board::PositionXY xyCornerLeft(xyCorner);
-    m_GomokuBoard->goDirection(xyCornerLeft, Board::LEFT);
-    ASSERT_TRUE(Board::PositionXY(0, 4) == xyCornerLeft);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyCorner, IBoard::LEFT));
+    IBoard::PositionXY xyCornerLeft(xyCorner);
+    m_GomokuBoard->goDirection(xyCornerLeft, IBoard::LEFT);
+    ASSERT_TRUE(IBoard::PositionXY(0, 4) == xyCornerLeft);
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyCorner, Board::DOWN));
-    Board::PositionXY xyCornerDown(xyCorner);
-    m_GomokuBoard->goDirection(xyCornerDown, Board::DOWN);
-    ASSERT_TRUE(Board::PositionXY(1, 5) == xyCornerDown);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyCorner, IBoard::DOWN));
+    IBoard::PositionXY xyCornerDown(xyCorner);
+    m_GomokuBoard->goDirection(xyCornerDown, IBoard::DOWN);
+    ASSERT_TRUE(IBoard::PositionXY(1, 5) == xyCornerDown);
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyCorner, Board::DOWN_LEFT));
-    Board::PositionXY xyCornerDownLeft(xyCorner);
-    m_GomokuBoard->goDirection(xyCornerDownLeft, Board::DOWN_LEFT);
-    ASSERT_TRUE(Board::PositionXY(1, 4) == xyCornerDownLeft);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyCorner, IBoard::DOWN_LEFT));
+    IBoard::PositionXY xyCornerDownLeft(xyCorner);
+    m_GomokuBoard->goDirection(xyCornerDownLeft, IBoard::DOWN_LEFT);
+    ASSERT_TRUE(IBoard::PositionXY(1, 4) == xyCornerDownLeft);
 
     // Check position on board frame.
-    const Board::PositionXY xyFrame(3, 0);
+    const IBoard::PositionXY xyFrame(3, 0);
 
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyFrame, Board::LEFT));
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyFrame, Board::DOWN_LEFT));
-    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyFrame, Board::UP_LEFT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyFrame, IBoard::LEFT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyFrame, IBoard::DOWN_LEFT));
+    ASSERT_EQ(false, m_GomokuBoard->canIGo(xyFrame, IBoard::UP_LEFT));
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, Board::UP));
-    Board::PositionXY xyFrameUp(xyFrame);
-    m_GomokuBoard->goDirection(xyFrameUp, Board::UP);
-    ASSERT_TRUE(Board::PositionXY(2, 0) == xyFrameUp);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, IBoard::UP));
+    IBoard::PositionXY xyFrameUp(xyFrame);
+    m_GomokuBoard->goDirection(xyFrameUp, IBoard::UP);
+    ASSERT_TRUE(IBoard::PositionXY(2, 0) == xyFrameUp);
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, Board::UP_RIGHT));
-    Board::PositionXY xyFrameUpRight(xyFrame);
-    m_GomokuBoard->goDirection(xyFrameUpRight, Board::UP_RIGHT);
-    ASSERT_TRUE(Board::PositionXY(2, 1) == xyFrameUpRight);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, IBoard::UP_RIGHT));
+    IBoard::PositionXY xyFrameUpRight(xyFrame);
+    m_GomokuBoard->goDirection(xyFrameUpRight, IBoard::UP_RIGHT);
+    ASSERT_TRUE(IBoard::PositionXY(2, 1) == xyFrameUpRight);
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, Board::RIGHT));
-    Board::PositionXY xyFrameRight(xyFrame);
-    m_GomokuBoard->goDirection(xyFrameRight, Board::RIGHT);
-    ASSERT_TRUE(Board::PositionXY(3, 1) == xyFrameRight);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, IBoard::RIGHT));
+    IBoard::PositionXY xyFrameRight(xyFrame);
+    m_GomokuBoard->goDirection(xyFrameRight, IBoard::RIGHT);
+    ASSERT_TRUE(IBoard::PositionXY(3, 1) == xyFrameRight);
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, Board::DOWN_RIGHT));
-    Board::PositionXY xyFrameDownRight(xyFrame);
-    m_GomokuBoard->goDirection(xyFrameDownRight, Board::DOWN_RIGHT);
-    ASSERT_TRUE(Board::PositionXY(4, 1) == xyFrameDownRight);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, IBoard::DOWN_RIGHT));
+    IBoard::PositionXY xyFrameDownRight(xyFrame);
+    m_GomokuBoard->goDirection(xyFrameDownRight, IBoard::DOWN_RIGHT);
+    ASSERT_TRUE(IBoard::PositionXY(4, 1) == xyFrameDownRight);
 
-    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, Board::DOWN));
-    Board::PositionXY xyFrameDown(xyFrame);
-    m_GomokuBoard->goDirection(xyFrameDown, Board::DOWN);
-    ASSERT_TRUE(Board::PositionXY(4, 0) == xyFrameDown);
+    ASSERT_EQ(true, m_GomokuBoard->canIGo(xyFrame, IBoard::DOWN));
+    IBoard::PositionXY xyFrameDown(xyFrame);
+    m_GomokuBoard->goDirection(xyFrameDown, IBoard::DOWN);
+    ASSERT_TRUE(IBoard::PositionXY(4, 0) == xyFrameDown);
 }
 
 TEST_F(GomokuBoardTest, RemoveMoveTest)
 {
-    const Board::PositionXY xy1(0, 0);
-    const Board::PositionXY xy2(1, 1);
-    const Board::PositionXY vacant(2, 2);
+    const IBoard::PositionXY xy1(0, 0);
+    const IBoard::PositionXY xy2(1, 1);
+    const IBoard::PositionXY vacant(2, 2);
 
-    const Board::Player validPlayerA = Board::PLAYER_A;
-    const Board::Player validPlayerB = Board::PLAYER_B;
+    const IBoard::Player validPlayerA = IBoard::PLAYER_A;
+    const IBoard::Player validPlayerB = IBoard::PLAYER_B;
 
     // Put some moves.
     m_GomokuBoard->putMove(xy1, validPlayerA);
@@ -366,18 +366,18 @@ TEST_F(GomokuBoardTest, RemoveMoveTest)
 
 TEST_F(GomokuBoardTest, RemoveNLastMoveTest)
 {
-    const Board::Player playerA = Board::PLAYER_A;
+    const IBoard::Player playerA = IBoard::PLAYER_A;
     const uint32_t cntrA        = 4;
-    const Board::PositionXY xyA1(0, 0);
-    const Board::PositionXY xyA2(1, 1);
-    const Board::PositionXY xyA3(2, 2);
-    const Board::PositionXY xyA4(3, 3);
+    const IBoard::PositionXY xyA1(0, 0);
+    const IBoard::PositionXY xyA2(1, 1);
+    const IBoard::PositionXY xyA3(2, 2);
+    const IBoard::PositionXY xyA4(3, 3);
 
-    const Board::Player playerB = Board::PLAYER_B;
+    const IBoard::Player playerB = IBoard::PLAYER_B;
     const uint32_t cntrB        = 3;
-    const Board::PositionXY xyB1(0, 5);
-    const Board::PositionXY xyB2(1, 5);
-    const Board::PositionXY xyB3(2, 5);
+    const IBoard::PositionXY xyB1(0, 5);
+    const IBoard::PositionXY xyB2(1, 5);
+    const IBoard::PositionXY xyB3(2, 5);
 
     // Put some moves.
     const uint32_t cntrEmpty = 0;
@@ -402,8 +402,8 @@ TEST_F(GomokuBoardTest, RemoveNLastMoveTest)
 
 TEST_F(GomokuBoardTest, OppositePlayerTest)
 {
-    const Board::Player playerA = Board::PLAYER_A;
-    const Board::Player playerB = Board::PLAYER_B;
+    const IBoard::Player playerA = IBoard::PLAYER_A;
+    const IBoard::Player playerB = IBoard::PLAYER_B;
 
     ASSERT_EQ(playerB, m_GomokuBoard->oppositePlayer(playerA));
     ASSERT_EQ(playerA, m_GomokuBoard->oppositePlayer(playerB));
@@ -415,19 +415,19 @@ TEST_F(GomokuBoardTest, GetFirstMoveTest)
 
     // No move on board.
     ASSERT_TRUE(0 == m_GomokuBoard->getMoveNumber());
-    Board::PositionXY firstMove;
+    IBoard::PositionXY firstMove;
     ASSERT_TRUE(false == m_GomokuBoard->getFirstMove(firstMove));
 
-    m_GomokuBoard->putMove(Board::PositionXY(4, 4), Board::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(4, 4), IBoard::PLAYER_B);
     moveCntr++;
-    m_GomokuBoard->putMove(Board::PositionXY(5, 5), Board::PLAYER_B);
+    m_GomokuBoard->putMove(IBoard::PositionXY(5, 5), IBoard::PLAYER_B);
     moveCntr++;
-    m_GomokuBoard->putMove(Board::PositionXY(2, 3), Board::PLAYER_A);
+    m_GomokuBoard->putMove(IBoard::PositionXY(2, 3), IBoard::PLAYER_A);
     moveCntr++;
 
     ASSERT_TRUE(moveCntr == m_GomokuBoard->getMoveNumber());
     ASSERT_TRUE(true == m_GomokuBoard->getFirstMove(firstMove));
-    ASSERT_TRUE(firstMove == Board::PositionXY(4, 4));
+    ASSERT_TRUE(firstMove == IBoard::PositionXY(4, 4));
 }
 
 void TestUtility::checkConnection(GomokuBoard& board)
