@@ -18,7 +18,7 @@ class GomokuBoard
 
     bool putMove(const PositionXY xy, const Player player) override;
     Player getMove(const PositionXY xy) const override;
-    bool removeMove(const PositionXY xy) const override;
+    bool removeMove(const PositionXY xy) override;
     bool removeNLastMove(const unsigned n) override;
     bool getLastMove(PositionXY & xy) const override;
     bool getFirstMove(PositionXY & xy) const override;
@@ -31,7 +31,7 @@ class GomokuBoard
     bool isOnBoard(const PositionXY xy) const override;
     bool canIGo(const PositionXY xy, const Direction direction) const override;
     void goDirection(PositionXY & xy, const Direction direction, const uint32_t steps = 1) const override;
-    IBoard & clone() const override;
+    std::shared_ptr<IBoard> clone() const  override;
     vector<graph::Node> getNeighborhood(const PositionXY xy) const override;
     void resetInstance() override;
     uint32_t getSize() const override { return m_size; }

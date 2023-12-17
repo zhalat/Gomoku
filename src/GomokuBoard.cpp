@@ -180,7 +180,7 @@ IBoard::Player GomokuBoard::getMove(const PositionXY xy) const
     return retVal;
 }
 
-bool GomokuBoard::removeMove(const PositionXY xy) const
+bool GomokuBoard::removeMove(const PositionXY xy)
 {
     bool retVal = false;
     if(false==isOnBoard(xy)) return retVal;
@@ -484,19 +484,15 @@ void GomokuBoard::goDirection(PositionXY & xy, const Direction direction, const 
     }
 }
 
-IBoard & GomokuBoard::clone() const
+std::shared_ptr<IBoard> GomokuBoard::clone() const
 {
-    IBoard * retVal = new GomokuBoard(*this);
-    assert(retVal);
-
-    return *retVal;
+    std::shared_ptr<IBoard> retVal = std::make_shared<GomokuBoard>(*this);
+    return retVal;
 }
 
 vector<graph::Node> GomokuBoard::getNeighborhood(const PositionXY xy) const
 {
-#warning "Should be retval reference & ??"
-    vector<graph::Node> retVal = m_pBoardStructure->neighbors(xy.convert2Linear(m_size));
-    return retVal;
+    return m_pBoardStructure->neighbors(xy.convert2Linear(m_size));
 }
 
 void GomokuBoard::resetInstance()

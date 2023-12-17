@@ -44,6 +44,7 @@ void Spotter::addToExecute(const RegionToInvestigate regionToInvestigate)
 
 vector<Spotter::SpottedThreats> Spotter::execute(const IBoard::PositionXY xy, const bool isOpponentMove, const uint32_t multiplier)
 {
+
     // Keeps in bit representation, direction where threats have been found.
     uint32_t trendMark = 0;
 

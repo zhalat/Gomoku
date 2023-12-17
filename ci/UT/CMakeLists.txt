@@ -22,9 +22,10 @@ add_executable( ci
     "ThreatWinnerTest.cpp"
     "SpotterTest.cpp"
     "ThreatTrackerTest.cpp"
+    "EvalBoardTest.cpp"
+
 #    "OpenBookTest/OpenBookTest.cpp"
 #    "BoardScoreTest/BoardScoreTest.cpp"
-#    "StateEvaluationTest/StateEvaluationTest.cpp"
 #    "MinMaxTest/MinMaxTest.cpp"
 #    "AlphaBetaTest/AlphaBetaTest.cpp"
     
@@ -48,6 +49,7 @@ add_executable( ci
     "../../src/Score.cpp"
     "../../src/Spotter.cpp"
     "../../src/ThreatTracker.cpp"
+    "../../src/Heuristics/EvalBoard.cpp"
 
     # Stubs
  )

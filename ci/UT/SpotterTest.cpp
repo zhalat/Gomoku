@@ -11,7 +11,6 @@ class SpotterTest : public ::testing::Test
 {
     void SetUp()
     {
-        m_board = new GomokuBoard(k_BOARD_SIZE);
         SetBoard(*m_board);
     }
 
@@ -31,14 +30,16 @@ public:
             Score::getInstance()->setBoard(rBoard);
         }
     }
-    GomokuBoard* m_board{nullptr};
-    //spotter works on m_board indirectly (via Score class)
+
+    GomokuBoard* m_board= new GomokuBoard(k_BOARD_SIZE);
+    //spotter works on m_board directly (it pass m_board to Score class)
     Spotter m_spotter{IBoard::Player::PLAYER_A};
 };
 
 uint32_t countThreats(const vector<Spotter::SpottedThreats>& v, ThreatFinder::KindOfThreats m_threatKind)
 {
-    std::count_if(v.begin(), v.end(), [&m_threatKind](auto& t) { return t.m_threatKind==m_threatKind; });
+    const uint32_t retVal = std::count_if(v.begin(), v.end(), [&m_threatKind](auto& t) { return t.m_threatKind==m_threatKind; });
+    return retVal;
 }
 
 TEST_F(SpotterTest, ExecuteTest_FindingTwoListThreats1)

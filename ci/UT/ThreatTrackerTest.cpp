@@ -6,6 +6,7 @@
 #include "Score.h"
 #include "Spotter.h"
 #include "ThreatTracker.h"
+#include "Threats/ThreatFinder.h"
 
 using namespace std;
 
@@ -15,23 +16,34 @@ class ThreatTrackerTest : public ::testing::Test
 {
     void SetUp()
     {
-        m_board     = make_unique<GomokuBoard>(15);
-        m_spotterHuman   = make_shared<Spotter>(IBoard::PLAYER_A);
-        m_spotterCpu   = make_shared<Spotter>(IBoard::PLAYER_B);
-        m_trackerHuman = make_unique<ThreatTracker>(IBoard::PLAYER_A,*m_spotterHuman.get());
-        m_trackerCpu   = make_unique<ThreatTracker>(IBoard::PLAYER_B,*m_spotterCpu.get());
+        m_board     = make_unique<GomokuBoard>(k_BOARD_SIZE);
+        m_spotterHuman   = make_unique<Spotter>(IBoard::PLAYER_A);
+        m_spotterCpu   = make_unique<Spotter>(IBoard::PLAYER_B);
+        m_trackerHuman = make_unique<ThreatTracker>(IBoard::PLAYER_A, *m_spotterHuman.get());
+        m_trackerCpu   = make_unique<ThreatTracker>(IBoard::PLAYER_B, *m_spotterCpu.get());
         m_trackerHuman->setBoard(*m_board.get());
         m_trackerCpu->setBoard(*m_board.get());
+        SetBoard(*m_board);
     }
 
     void TearDown()
     {}
 
 public:
+    static constexpr uint32_t k_BOARD_SIZE = 15;
+
+    void SetBoard(const IBoard& rBoard)
+    {
+        for(uint32_t i = 0; i < Score::MAX_KIND_OF_THREATS; ++i)
+        {
+            Score::getInstance()->setBoard(rBoard);
+        }
+    }
+
     // IBoard for game.
     unique_ptr<IBoard> m_board;
-    shared_ptr<ISpotter> m_spotterHuman;
-    shared_ptr<ISpotter> m_spotterCpu;
+    unique_ptr<ISpotter> m_spotterHuman;
+    unique_ptr<ISpotter> m_spotterCpu;
     unique_ptr<ThreatTracker> m_trackerHuman;
     unique_ptr<ThreatTracker> m_trackerCpu;
 };
@@ -533,9 +545,9 @@ TEST_F(ThreatTrackerTest, GetGapsUniqueTest1)
 
 TEST_F(ThreatTrackerTest, GetGapsNonUniqueTest1)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . x . . . . . . . . . . . .|
@@ -551,7 +563,7 @@ TEST_F(ThreatTrackerTest, GetGapsNonUniqueTest1)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     ThreatFinder::ThreatLocation threatContainer;
     ThreatFinder::ThreatUpDetails& threatUpDetails = threatContainer.m_threatDetails;
@@ -708,9 +720,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber1)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber2)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . . x . . . . . . . . . .|
@@ -726,7 +738,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber2)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 2;
@@ -750,9 +762,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber2)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber3)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . o . . . . . . . . .|
     // 2 |. . . . . o . . . . . . . . .|
@@ -768,7 +780,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber3)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 3;
@@ -801,9 +813,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber3)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber4)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . x . . . . . . . . . . . .|
@@ -819,7 +831,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber4)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 0;
@@ -843,9 +855,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber4)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber5)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . . . . . . . . . . . . .|
@@ -861,7 +873,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber5)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 1;
@@ -890,9 +902,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber5)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber6)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . . x . . . . . . . . . .|
@@ -908,7 +920,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber6)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 4;
@@ -932,8 +944,8 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber6)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber7)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
     //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . x x x . . x . . . . . . .|
@@ -974,9 +986,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber7)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber8)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . . . . . . . . . . . . .|
@@ -992,7 +1004,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber8)
     // 12|. . . . . . . . . . . . . . .|
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 0;
@@ -1018,9 +1030,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber8)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber9)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . . . x . . . . . . . . .|
@@ -1037,7 +1049,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber9)
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
 
     // 1. Define expectation.
@@ -1107,9 +1119,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber10)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber11)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . x . . . . . . . . . . .|
@@ -1126,7 +1138,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber11)
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 4;
@@ -1150,9 +1162,9 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber11)
 
 TEST_F(ThreatTrackerTest, GetCommonFieldNumber12)
 {
-    //                       1 1 1 1 1
-    //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    //                        1 1 1 1 1
+    //    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     // 0 |. . . . . . . . . . . . . . .|
     // 1 |. . . . . . . . . . . . . . .|
     // 2 |. . . x x . . . . . . . . . .|
@@ -1169,7 +1181,7 @@ TEST_F(ThreatTrackerTest, GetCommonFieldNumber12)
     // 13|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
     // 14|. . . . . . . . . . . . . . .|
-    //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+    //   |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
 
     // 1. Define expectation.
     const uint32_t expectResult = 8;
@@ -1349,6 +1361,161 @@ TEST_F(ThreatTrackerTest, RealGapsTest1)
         ASSERT_TRUE(isOntheList(*it1, expected3AExGaps));
     }
     gaps.clear();
+}
+
+struct MementoParamStruct
+{
+    vector<IBoard::PositionXY> m_human;
+    vector<IBoard::PositionXY> m_cpu;
+    uint32_t m_back;
+    std::map<ThreatFinder::KindOfThreats, uint32_t> m_state;
+};
+
+class MementoTest : public ::testing::TestWithParam< MementoParamStruct >
+{
+    void SetUp()
+    {
+        m_board     = make_unique<GomokuBoard>(k_BOARD_SIZE);
+        m_spotterCpu   = make_unique<Spotter>(IBoard::PLAYER_A);
+        m_trackerCpu   = make_unique<ThreatTracker>(IBoard::PLAYER_A, *m_spotterCpu.get());
+        m_trackerCpu->setBoard(*m_board.get());
+        SetBoard(*m_board);
+    }
+
+    void TearDown()
+    {}
+
+public:
+    static constexpr uint32_t k_BOARD_SIZE = 15;
+
+    void SetBoard(const IBoard& rBoard)
+    {
+        for(uint32_t i = 0; i < Score::MAX_KIND_OF_THREATS; ++i)
+        {
+            Score::getInstance()->setBoard(rBoard);
+        }
+    }
+
+    unique_ptr<IBoard> m_board;
+    unique_ptr<ISpotter> m_spotterCpu;
+    unique_ptr<ThreatTracker> m_trackerCpu;
+};
+
+INSTANTIATE_TEST_CASE_P(
+    MementoTestParameters,
+    MementoTest,
+    ::testing::Values
+    (
+        MementoParamStruct{
+            .m_human{},
+            .m_cpu{IBoard::PositionXY(2,3),IBoard::PositionXY(3,4),IBoard::PositionXY(4,5),IBoard::PositionXY(4,3)},
+            .m_back = 0,
+            .m_state{
+                        {ThreatFinder::KindOfThreats::THREAT_WINNER, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_A, 1},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_A, 3},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_C, 0}
+                    }
+        },
+        MementoParamStruct{
+                .m_human{},
+                .m_cpu{IBoard::PositionXY(2,3),IBoard::PositionXY(3,4),IBoard::PositionXY(4,5),IBoard::PositionXY(4,3)},
+                .m_back = 1,
+                .m_state{
+                        {ThreatFinder::KindOfThreats::THREAT_WINNER, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_A, 1},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_C, 0}
+                }
+        },
+        MementoParamStruct{
+                .m_human{},
+                .m_cpu{IBoard::PositionXY(2,3),IBoard::PositionXY(3,4),IBoard::PositionXY(4,5),IBoard::PositionXY(4,3)},
+                .m_back = 2,
+                .m_state{
+                        {ThreatFinder::KindOfThreats::THREAT_WINNER, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_A, 1},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_C, 0}
+                }
+        },
+        MementoParamStruct{
+                .m_human{},
+                .m_cpu{IBoard::PositionXY(2,3),IBoard::PositionXY(3,4),IBoard::PositionXY(4,5),IBoard::PositionXY(4,3)},
+                .m_back = 3,
+                .m_state{
+                        {ThreatFinder::KindOfThreats::THREAT_WINNER, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_4_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_3_CASE_C, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_A, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_AA, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_B, 0},
+                        {ThreatFinder::KindOfThreats::THREAT_2_CASE_C, 0}
+                }
+        }
+    )
+);
+
+TEST_P(MementoTest, TestName) {
+    MementoParamStruct params = GetParam();
+
+    m_trackerCpu->mementoEnable();
+    for(auto& el : params.m_cpu) {
+        m_board->putMove(el, m_trackerCpu->getPlayer());
+        m_trackerCpu->updateScore(el, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+    }
+
+    if(params.m_back>0)
+        ASSERT_TRUE(m_trackerCpu->mementoRevert(params.m_back));
+    else
+        ASSERT_FALSE(m_trackerCpu->mementoRevert(params.m_back));
+
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_WINNER).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_WINNER]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_4_CASE_A).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_4_CASE_A]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_4_CASE_AA).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_4_CASE_AA]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_4_CASE_B).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_4_CASE_B]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_4_CASE_C).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_4_CASE_C]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_3_CASE_A).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_3_CASE_A]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_3_CASE_AA).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_3_CASE_AA]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_3_CASE_B).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_3_CASE_B]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_3_CASE_C).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_3_CASE_C]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_2_CASE_A).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_2_CASE_A]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_2_CASE_AA).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_2_CASE_AA]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_2_CASE_B).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_2_CASE_B]);
+    ASSERT_EQ(m_trackerCpu->getThreatList(ThreatFinder::KindOfThreats::THREAT_2_CASE_C).size(), params.m_state[ThreatFinder::KindOfThreats::THREAT_2_CASE_C]);
 }
 
 static bool isOntheList(const IBoard::PositionXY xy, const vector<IBoard::PositionXY>& vct)

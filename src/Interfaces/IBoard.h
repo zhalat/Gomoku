@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <memory>
 #include "DataContainers/Graph.h"
 #include "Interfaces/IIterator.h"
 
@@ -144,7 +145,7 @@ public:
 
     virtual Player getMove(const PositionXY xy) const = 0;
 
-    virtual bool removeMove(const PositionXY xy) const = 0;
+    virtual bool removeMove(const PositionXY xy) = 0;
 
     virtual bool removeNLastMove(const unsigned n) = 0;
 
@@ -170,7 +171,7 @@ public:
 
     virtual void goDirection(PositionXY &xy, const Direction direction, const uint32_t steps = 1) const = 0;
 
-    virtual IBoard &clone() const = 0;
+    virtual std::shared_ptr<IBoard>clone() const = 0;
 
     virtual vector<graph::Node> getNeighborhood(const PositionXY xy) const = 0;
 

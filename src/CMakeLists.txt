@@ -18,10 +18,11 @@ add_executable( gomoku-al
     Threats/ThreatFinder.cpp
     Threats/ThreatsBloodRelation.cpp
     Threats/ThreatWinner.cpp
-        Interfaces/IBoard.h
+    Interfaces/IBoard.h
     Interfaces/IIterator.h
     Interfaces/IObserver.h
     Interfaces/ISpotter.h
+        Interfaces/IEvalBoard.h
     GomokuBoard.cpp
     Exceptions.h
     Spotter.cpp
@@ -29,9 +30,10 @@ add_executable( gomoku-al
     Score.cpp
     Score.h
     ThreatTracker.h
-    ThreatTracker.cpp )
+    ThreatTracker.cpp
+    Heuristics/EvalBoard.h
+    Heuristics/EvalBoard.cpp )
 
-                
 target_include_directories(gomoku-al PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"
 )

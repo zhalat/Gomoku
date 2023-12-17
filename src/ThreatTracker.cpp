@@ -387,6 +387,8 @@ void ThreatTracker::updateScore(const IBoard::PositionXY xy, bool isEnemy, const
     {
         this->addThreats(el.m_location,el.m_threatKind, multiplier);
     }
+
+    storeMemento();
 }
 
 /// Provide threat list.
@@ -395,6 +397,16 @@ const std::list<ThreatFinder::ThreatLocation> & ThreatTracker::getThreatList(
 {
     const uint32_t index = static_cast<uint32_t>(threatKind);
     return m_threatsOnBoard.m_recognizedThreats[index];
+}
+
+void ThreatTracker::mementoEnable()
+{
+    if(m_isMementoEnabled)
+        return;
+
+    //put current state at the very bottom
+    m_isMementoEnabled=true;
+    storeMemento();
 }
 
 /// Revert instance to ininial state.
@@ -409,6 +421,8 @@ void ThreatTracker::resetInstance()
     }
 
     m_spotter.resetInstance();
+    m_memento.clearAll();
+    m_hashCntr=0;
 }
 
 /// Check if provided position is part of provided threat.
@@ -591,4 +605,37 @@ void ThreatTracker::getThreatElementPromotion(const ThreatFinder::ThreatLocation
 
     // If assert fail, it would mean such threat could not even be provided here.
     assert(isFound);
+}
+
+void ThreatTracker::storeMemento()
+{
+    if(m_isMementoEnabled)
+    {
+        Memento data{m_threatsOnBoard, m_score, ++m_hashCntr};
+        m_memento.pushData(data);
+    }
+}
+
+bool ThreatTracker::mementoRevert(uint32_t n)
+{
+    if(m_memento.empty() or 0==n)
+        return false;
+
+    if(m_memento.getSize()<n)
+        return false;
+
+    for(int i = 0; i<n; ++i)
+    {
+        m_memento.popData();
+    }
+    const Memento newState = m_memento.popData();
+    this->m_threatsOnBoard = newState.m_threatsOnBoard;
+    this->m_score = newState.m_score;
+
+    //always keep the very first state
+    if(m_memento.empty())
+    {
+        m_memento.pushData(newState);
+    }
+    return true;
 }
