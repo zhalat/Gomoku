@@ -1,5 +1,6 @@
 #include <sstream>
 #include <assert.h>
+#include <algorithm>
 #include "Exceptions.h"
 #include "GomokuBoard.h"
 #include "BoardIterator.h"
@@ -9,8 +10,8 @@ using namespace graph;
 
 GomokuBoard::GomokuBoard(uint32_t size)
 {
-    if((size > k_MAX_GOMOKU_BOARD_SIZE) or (size < MIN_GOMOKU_BOARD_SIZE))
-        throw exception::General("IBoard size must be <" + string(to_string(MIN_GOMOKU_BOARD_SIZE)) + "," + string(to_string(k_MAX_GOMOKU_BOARD_SIZE)) + ">");
+    if((size > k_MAX_GOMOKU_BOARD_SIZE) or (size < k_MIN_GOMOKU_BOARD_SIZE))
+        throw game_except::General("IBoard size must be <" + string(to_string(k_MIN_GOMOKU_BOARD_SIZE)) + "," + string(to_string(k_MAX_GOMOKU_BOARD_SIZE)) + ">");
 
     // Create graph for Gomoku board.
     const uint32_t graphSize = size * size;
@@ -140,7 +141,7 @@ GomokuBoard::GomokuBoard(const GomokuBoard & board)
     memcpy(m_pNeighbours, board.m_pNeighbours, regionSizeToCpy);
 
     // Copy observers.
-    // m_ObserverClient = board.m_ObserverClient;
+    // m_observerClient = board.m_observerClient;
 }
 
 bool GomokuBoard::putMove(const PositionXY xy, const Player player)
@@ -160,6 +161,7 @@ bool GomokuBoard::putMove(const PositionXY xy, const Player player)
 
         // Save position of this move.
         m_moveHistory.push_back(xy);
+        announce();
 
         retVal = true;
     }
@@ -511,7 +513,17 @@ void GomokuBoard::resetInstance()
 
 void GomokuBoard::registerObserver(const Observer::IObserver & observer)
 {
-    m_ObserverClient.push_back(&observer);
+    auto lambda = [&observer](const Observer::IObserver* it)-> bool
+    {
+        if(&observer==it)
+            return true;
+    };
+
+    const auto it = std::find_if(m_observerClient.begin(), m_observerClient.end(),lambda);
+    if (it == m_observerClient.end())
+    {
+        m_observerClient.push_back(&observer);
+    }
 }
 
 bool GomokuBoard::removeObserver(const Observer::IObserver & observer)
@@ -519,12 +531,12 @@ bool GomokuBoard::removeObserver(const Observer::IObserver & observer)
     bool retVal = false;
 
     // remove from the list iff it exists.
-    for(std::vector<const Observer::IObserver *>::iterator it = m_ObserverClient.begin(); it != m_ObserverClient.end();
+    for(std::vector<const Observer::IObserver *>::iterator it = m_observerClient.begin(); it != m_observerClient.end();
         ++it)
     {
         if(&observer == *it)
         {
-            m_ObserverClient.erase(it);
+            m_observerClient.erase(it);
             retVal = true;
             break;
         }
@@ -535,8 +547,8 @@ bool GomokuBoard::removeObserver(const Observer::IObserver & observer)
 
 void GomokuBoard::announce() const
 {
-    for(std::vector<const Observer::IObserver *>::const_iterator cit = m_ObserverClient.begin();
-        cit != m_ObserverClient.end(); ++cit)
+    for(std::vector<const Observer::IObserver *>::const_iterator cit = m_observerClient.begin();
+        cit != m_observerClient.end(); ++cit)
     {
         (*cit)->update();
     }

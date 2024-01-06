@@ -22,17 +22,25 @@ add_executable( gomoku-al
     Interfaces/IIterator.h
     Interfaces/IObserver.h
     Interfaces/ISpotter.h
-        Interfaces/IEvalBoard.h
+    Interfaces/IEvalBoard.h
+    Interfaces/ISearchTree.h
+    Interfaces/IGame.h
     GomokuBoard.cpp
     Exceptions.h
     Spotter.cpp
     Spotter.h
     Score.cpp
     Score.h
+    OpenBook.h
+    OpenBook.cpp
+    GomokuGame.h
+    GomokuGame.cpp
     ThreatTracker.h
     ThreatTracker.cpp
     Heuristics/EvalBoard.h
-    Heuristics/EvalBoard.cpp )
+    Heuristics/EvalBoard.cpp
+    Heuristics/AlphaBeta.h
+    Heuristics/AlphaBeta.cpp)
 
 target_include_directories(gomoku-al PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}"

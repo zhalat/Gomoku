@@ -44,6 +44,12 @@ class PriorityQueue : public std::priority_queue<T, Sequence, Compare>
         return retVal;
     }
 
+    T topData()
+    {
+        T retVal = std::priority_queue<T>::top();
+        return retVal;
+    }
+
     uint32_t getSize() const
     {
         uint32_t retVal = this->size();

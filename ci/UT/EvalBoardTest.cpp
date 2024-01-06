@@ -8,8 +8,6 @@
 #include "Heuristics/EvalBoard.h"
 #include <vector>
 
-#include <iostream>
-
 using namespace std;
 
 struct TestMovies
@@ -19,7 +17,7 @@ struct TestMovies
     vector<IBoard::PositionXY> m_expectedMove;
 };
 
-bool isOnTheList(const vector<IBoard::PositionXY>& vct, const IBoard::PositionXY& x)
+static bool isOnTheList(const vector<IBoard::PositionXY>& vct, const IBoard::PositionXY& x)
 {
     auto it = std::find_if(vct.begin(), vct.end(), [x](const IBoard::PositionXY& el)
     {

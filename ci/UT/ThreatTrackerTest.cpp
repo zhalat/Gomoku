@@ -19,10 +19,10 @@ class ThreatTrackerTest : public ::testing::Test
         m_board     = make_unique<GomokuBoard>(k_BOARD_SIZE);
         m_spotterHuman   = make_unique<Spotter>(IBoard::PLAYER_A);
         m_spotterCpu   = make_unique<Spotter>(IBoard::PLAYER_B);
-        m_trackerHuman = make_unique<ThreatTracker>(IBoard::PLAYER_A, *m_spotterHuman.get());
-        m_trackerCpu   = make_unique<ThreatTracker>(IBoard::PLAYER_B, *m_spotterCpu.get());
-        m_trackerHuman->setBoard(*m_board.get());
-        m_trackerCpu->setBoard(*m_board.get());
+        m_trackerHuman = make_unique<ThreatTracker>(IBoard::PLAYER_A, *m_spotterHuman);
+        m_trackerCpu   = make_unique<ThreatTracker>(IBoard::PLAYER_B, *m_spotterCpu);
+        m_trackerHuman->setBoard(*m_board);
+        m_trackerCpu->setBoard(*m_board);
         SetBoard(*m_board);
     }
 

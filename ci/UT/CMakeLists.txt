@@ -23,8 +23,9 @@ add_executable( ci
     "SpotterTest.cpp"
     "ThreatTrackerTest.cpp"
     "EvalBoardTest.cpp"
+    "AlphaBetaTest.cpp"
 
-#    "OpenBookTest/OpenBookTest.cpp"
+    "OpenBookTest.cpp"
 #    "BoardScoreTest/BoardScoreTest.cpp"
 #    "MinMaxTest/MinMaxTest.cpp"
 #    "AlphaBetaTest/AlphaBetaTest.cpp"
@@ -48,8 +49,10 @@ add_executable( ci
     "../../src/Threats/ThreatWinner.cpp"
     "../../src/Score.cpp"
     "../../src/Spotter.cpp"
+    "../../src/OpenBook.cpp"
     "../../src/ThreatTracker.cpp"
     "../../src/Heuristics/EvalBoard.cpp"
+    "../../src/Heuristics/AlphaBeta.cpp"
 
     # Stubs
  )
@@ -58,8 +61,6 @@ target_include_directories(ci PUBLIC
     "${PROJECT_SOURCE_DIR}/src"
     "${PROJECT_SOURCE_DIR}/src/DataContainers"
     "${PROJECT_SOURCE_DIR}/src/Interfaces"
-    "${PROJECT_SOURCE_DIR}/src/Headers/SearchAlgorithms"
-    "${PROJECT_SOURCE_DIR}/src/Headers/Threats"
  )
 
 target_link_libraries( ci PRIVATE

@@ -1,9 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
 #include <stdio.h>
-#include <assert.h>
 #include <string.h>
 #include <memory>
 #include "DataContainers/Graph.h"
@@ -107,18 +105,16 @@ public:
         uint32_t m_neighbourhoodSize{0};
     };
 
-    inline static Player String2Player(const char *pString) {
-        assert(pString);
-
+    inline static Player String2Player(const char *string) {
         Player retVal = PLAYER_EMPTY;
 
-        if (0 == strcmp(pString, "x")) {
+        if (0 == strcmp(string, "x")) {
             retVal = PLAYER_A;
-        } else if (0 == strcmp(pString, "o")) {
+        } else if (0 == strcmp(string, "o")) {
             retVal = PLAYER_B;
-        } else if (0 == strcmp(pString, ".")) {
+        } else if (0 == strcmp(string, ".")) {
             retVal = PLAYER_EMPTY;
-        } else if (0 == strcmp(pString, "8")) {
+        } else if (0 == strcmp(string, "8")) {
             retVal = WIN_MARK;
         }
 
@@ -188,10 +184,7 @@ public:
             rival = PLAYER_B;
         } else if (PLAYER_B == player) {
             rival = PLAYER_A;
-        } else {
-            assert(false);
         }
-
         return rival;
     }
 

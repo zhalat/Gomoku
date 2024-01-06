@@ -10,7 +10,7 @@ class IBoard;
 /// EvalBoard interface definition.
 ///
 /// @par Full Description.
-/// Provides api for checking
+/// Provides api for checking board state (heuristics check)
 ///////////////////////////////////////////////////////////////////////////////////////////
 class IEvalBoard
 {
@@ -28,4 +28,6 @@ class IEvalBoard
     virtual bool extendWinnerThreatMove(const bool isMaxPlayer, IBoard::PositionXY& buildUpMove, int& stateScore) const = 0;
     virtual bool extendWinnerActionMove(const bool isMaxPlayer, IBoard::PositionXY& buildUpMove, int& stateScore) const = 0;
     virtual void setBoards(const IBoard& board, const ThreatTracker& trackerHuman, const ThreatTracker& trackerCpu) = 0;
+
+    virtual ~IEvalBoard() = default;
 };

@@ -628,7 +628,7 @@ bool ThreatTracker::mementoRevert(uint32_t n)
     {
         m_memento.popData();
     }
-    const Memento newState = m_memento.popData();
+    const Memento newState = m_memento.topData();
     this->m_threatsOnBoard = newState.m_threatsOnBoard;
     this->m_score = newState.m_score;
 

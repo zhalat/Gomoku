@@ -11,10 +11,10 @@ class GomokuBoard
     , public Observer::IObserverSubject
 {
    public:
-    static constexpr uint32_t k_MAX_GOMOKU_BOARD_SIZE       = 19;
-    static constexpr uint32_t MIN_GOMOKU_BOARD_SIZE       = 5;
+    static constexpr uint32_t k_MAX_GOMOKU_BOARD_SIZE       = 15;
+    static constexpr uint32_t k_MIN_GOMOKU_BOARD_SIZE       = 5;
     static constexpr uint32_t k_MAX_GOMOKU_BOARD_SQARE_SIZE = k_MAX_GOMOKU_BOARD_SIZE* k_MAX_GOMOKU_BOARD_SIZE;
-    static constexpr uint32_t k_MIN_GOMOKU_BOARD_SQARE_SIZE = MIN_GOMOKU_BOARD_SIZE* MIN_GOMOKU_BOARD_SIZE;
+    static constexpr uint32_t k_MIN_GOMOKU_BOARD_SQARE_SIZE = k_MIN_GOMOKU_BOARD_SIZE * k_MIN_GOMOKU_BOARD_SIZE;
 
     bool putMove(const PositionXY xy, const Player player) override;
     Player getMove(const PositionXY xy) const override;

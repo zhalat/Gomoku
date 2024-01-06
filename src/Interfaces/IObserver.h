@@ -12,7 +12,7 @@ class IObserver
 class IObserverSubject
 {
    protected:
-    std::vector<const IObserver *> m_ObserverClient;
+    std::vector<const IObserver *> m_observerClient;
 
    public:
     virtual void registerObserver(const IObserver & observer) = 0;

@@ -1401,7 +1401,7 @@ bool EvalBoard::isDouble3AOneStrokePossible(const bool isMaxPlayer, IBoard::Posi
                     const IBoard::PositionXY adversaryMove = *it2;
                     boardCopy->putMove(adversaryMove, adversaryState->getPlayer());
                     myStateCopy->updateScore(adversaryMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                    //adversaryStateCopy->updateScore(adversaryMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+                    adversaryStateCopy->updateScore(adversaryMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
 
                     const uint32_t my3A4ANumberOfThreatsCurrentStage3 = myStateCopy->getNumberOf(ThreatFinder::THREAT_3_CASE_A) + myStateCopy->getNumberOf(ThreatFinder::THREAT_4_CASE_A);
 
