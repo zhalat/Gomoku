@@ -27,12 +27,8 @@ add_library( gomokuAlgo STATIC
         src/ThreatTracker.cpp
 )
 
-#For private usage. To build myself.
 target_include_directories(gomokuAlgo PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/inc"
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/inc"
+    INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/inc"
 )
 
-#Expose for users includes.
-target_include_directories(gomokuAlgo INTERFACE
-    "${CMAKE_CURRENT_SOURCE_DIR}/inc"
-)

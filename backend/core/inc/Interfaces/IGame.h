@@ -9,27 +9,11 @@
 /// Game interface declaration.
 ///
 /// @par Full Description.
-/// Abstract class for each 2 players boad game.
+/// Abstract class for each 2 players board game.
 ///////////////////////////////////////////////////////////////////////////////////////////
 class IGame
 {
    public:
-    // BackEnd -> GUI.
-    static const constexpr char * TERMINATOR_MSG        = "\n##\n";
-    static const constexpr char * WINNER_MSG            = "\n--->>Game over. You won.\n";
-    static const constexpr char * LOOSER_MSG            = "\n--->>Game over. Computer won.\n";
-    static const constexpr char * STALEMATE_MSG         = "\n--->>Game over. Stalemate.\n";
-    static const constexpr char * YOUR_MOVE_MSG         = "\n--->>Your move:\n";
-    static const constexpr char * LAST_CPU_MOVE_MSG     = "\n--->>Last cpu move:\n";
-    static const constexpr char * LAST_HUMAN_MOVE_MSG   = "\n--->>Last human move:\n";
-    static const constexpr char * INVALID_MOVE_MSG      = "\n!--->>Invalid move.\n";
-    static const constexpr char * INVALID_PARAMETER_MSG = "\n!--->>Invalid parameter.\n";
-    static const constexpr char * CHOOSING_COLOR_MSG    = "\n--->>Choose your color: x or o.\n";
-    static const constexpr char * WINNER_MOVIES_MARK    = "w";
-
-    // GUI -> BackEnd.
-    static const constexpr char * NEW_GAME = "--->>NewGame.";
-
     enum Level
     {
         LEVEL_NONE   = 0,
@@ -37,20 +21,46 @@ class IGame
         INTERMEDIATE = 2,
         ADVANCED     = 3,
         EXPERT       = 4,
-
         // Must be the last
         LEVEL_LAST
     };
 
-    virtual void init(uint32_t size, IBoard::Player humanColor, IGame::Level level,
-                      bool isRandomize, uint32_t maxTime = 0, std::istream & inStream = std::cin,
-                      std::ostream & outStream = std::cout) = 0;
     virtual void play() = 0;
-    virtual bool endGame() = 0;
-    virtual void restartGame() = 0;
-    virtual IBoard::PositionXY getUserMove() const = 0;
-    virtual bool isMoveValid(IBoard::PositionXY xy) const = 0;
     virtual bool isWinner(IBoard::Player player) const = 0;
     virtual bool isStalemate() const = 0;
+    virtual void restartGame() = 0;
+    virtual IBoard::PositionXY getUserMove() const = 0;
+    virtual bool getIsPlayAgain() const = 0;
+    virtual void invalidUserMoveNotify() const = 0;
+    virtual void cpuMoveNotify(IBoard::PositionXY xy) const = 0;
+    virtual void winnerNotify(IBoard::Player player, vector<IBoard::PositionXY> winnerMark) const = 0;
+    virtual void stalemateNotify() const = 0;
+    virtual void restartGameNotify() const = 0;
+    virtual void endGameNotify() const = 0;
+
+    IGame(uint32_t size,
+          IBoard::Player humanColor,
+          IGame::Level level,
+          bool isRandomize,
+          uint32_t maxTime)
+    :m_boardSize{size}
+    ,m_humanColor{humanColor}
+    ,m_computerColor{(humanColor == IBoard::PLAYER_A) ? IBoard::PLAYER_B : IBoard::PLAYER_A}
+    ,m_level{level}
+    ,m_isRandomize{isRandomize}
+    ,m_maxTime{maxTime} {}
     virtual ~IGame()=default;
+    IGame(const IGame&) = delete;
+    IGame(IGame&&) = delete;
+    IGame& operator=(const IGame&) = delete;
+    IGame& operator=(IGame&&) = delete;
+
+protected:
+    uint32_t m_boardSize{};
+    IBoard::Player m_humanColor;
+    IBoard::Player m_computerColor;
+    IGame::Level m_level;
+    bool m_isRandomize{false};
+    uint32_t m_maxTime{0};
+
 };

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(gomokuBackend
+project(gomokuBackendCLI
         VERSION 1.0.1
         DESCRIPTION "Gomoku algorithm implementation from scratch"
         LANGUAGES CXX)
@@ -23,15 +23,17 @@ add_subdirectory(core)
 get_target_property(gomokuAlgo_SRC_PATH gomokuAlgo SOURCE_DIR)
 get_target_property(gomokuAlgo_INCLUDE_DIR gomokuAlgo INTERFACE_INCLUDE_DIRECTORIES)
 
-add_executable( gomokuBackend
+add_executable( gomokuBackendCLI
         main.cpp
+        GomokuGameCLI.cpp
+        GomokuGameCLI.h
 )
 
-target_include_directories(gomokuBackend PRIVATE
-        "${gomokuAlgo_INCLUDE_DIR}"
+target_include_directories(gomokuBackendCLI
+     PRIVATE "${gomokuAlgo_INCLUDE_DIR}"
 )
 
-target_link_libraries( gomokuBackend PRIVATE
+target_link_libraries( gomokuBackendCLI PRIVATE
         gomokuAlgo
         pthread
         Boost::program_options

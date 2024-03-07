@@ -24,6 +24,7 @@ RUN apt-get update \
     libboost-program-options-dev \
     libboost-filesystem-dev \
     libmodbus-dev \
+    protobuf-compiler \
     #---diagnostic tools---
     net-tools \
     iputils-ping \
