@@ -1,8 +1,3 @@
-#include <cstring>
-#include <cstdlib>
-#include <time.h>
-#include <limits.h>
-#include "Exceptions.h"
 #include "GomokuGame.h"
 #include "Spotter.h"
 #include "Score.h"
@@ -14,20 +9,15 @@ using namespace std;
 
 static const IBoard::PositionXY k_XY_OUT_OF_BOARD = IBoard::PositionXY(IBoard::PositionXY::k_INVALID_FIELD, IBoard::PositionXY::k_INVALID_FIELD);
 
-void GomokuGame::init(const uint32_t size, const IBoard::Player humanColor, const IGame::Level level,
-                      const bool isRandomize, const uint32_t maxTime, std::istream & inStream, std::ostream & outStream)
+GomokuGame::GomokuGame(uint32_t size,
+                       IBoard::Player humanColor,
+                       IGame::Level level,
+                       bool isRandomize,
+                       uint32_t maxTime,
+                       IGameInteraction& gameInteraction)
+:IGame{size, humanColor, level, isRandomize, maxTime}
+,m_gameInteraction{gameInteraction}
 {
-    srand(time(NULL));
-
-    m_computerColor = (humanColor == IBoard::PLAYER_A) ? IBoard::PLAYER_B : IBoard::PLAYER_A;
-    m_humanColor    = humanColor;
-    m_level = level;
-    m_boardSize = size;
-    m_isRandomize = isRandomize;
-    m_maxTime     = maxTime;
-    pInputStream  = &inStream;
-    pOutputStream = &outStream;
-
     m_board= make_unique<GomokuBoard>(m_boardSize);
     m_spotterCpu = make_unique<Spotter>(m_computerColor);
     m_spotterHuman = make_unique<Spotter>(m_humanColor);
@@ -39,14 +29,6 @@ void GomokuGame::init(const uint32_t size, const IBoard::Player humanColor, cons
     m_engine = make_unique<AlphaBeta>(m_level, "AlphaBeta");
     m_engine->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
     m_engine->setInitialPlayer(m_computerColor);
-}
-
-void GomokuGame::setBoard(const IBoard& board)
-{
-    for(uint32_t i = 0; i < Score::MAX_KIND_OF_THREATS; ++i)
-    {
-        Score::getInstance()->setBoard(board);
-    }
 }
 
 void GomokuGame::play()
@@ -175,14 +157,14 @@ void GomokuGame::play()
             break;
 
             case HUMAN_MOVE: {
-                humanMove              = getUserMove();
+                humanMove              = m_gameInteraction.getUserMove();
                 playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
                 playStateMachine       = HUMAN_VALIDATION_MOVE;
             }
             break;
 
             case HUMAN_VALIDATION_MOVE: {
-                if(isMoveValid(humanMove))
+                if(isUserMoveValid(humanMove))
                 {
                     m_board->putMove(humanMove, m_humanColor);
                     m_trackerCpu->updateScore(humanMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
@@ -196,13 +178,11 @@ void GomokuGame::play()
                 }
                 else
                 {
-                    *pOutputStream << INVALID_MOVE_MSG << TERMINATOR_MSG;
+                    m_gameInteraction.invalidUserMoveNotify();
 
                     playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
                     playStateMachine       = HUMAN_MOVE;
                 }
-
-                pOutputStream->flush();
             }
             break;
 
@@ -213,33 +193,35 @@ void GomokuGame::play()
 
                 if(isWinner(m_computerColor))
                 {
-                    *pOutputStream << LOOSER_MSG;
+                    vector<IBoard::PositionXY> mark;
                     const ThreatFinder::ThreatLocation & rThreatLocation = m_trackerCpu->getThreatList(ThreatFinder::THREAT_WINNER).front();
                     for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS; ++i)
                     {
                         const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
-                        *pOutputStream << WINNER_MOVIES_MARK << rXy;
+                        mark.push_back(rXy);
                     }
+                    m_gameInteraction.winnerNotify(m_computerColor, mark);
 
                     playStateMachine       = GAME_OVER;
                     playStateMachineShadow = GAME_OVER;
                 }
                 else if(isWinner(m_humanColor))
                 {
-                    *pOutputStream << WINNER_MSG;
+                    vector<IBoard::PositionXY> mark;
                     const ThreatFinder::ThreatLocation & rThreatLocation =m_trackerHuman->getThreatList(ThreatFinder::THREAT_WINNER).front();
                     for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS; ++i)
                     {
                         const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
-                        *pOutputStream << WINNER_MOVIES_MARK << rXy;
+                        mark.push_back(rXy);
                     }
+                    m_gameInteraction.winnerNotify(m_humanColor, mark);
 
                     playStateMachine       = GAME_OVER;
                     playStateMachineShadow = GAME_OVER;
                 }
                 else if(isStalemate())
                 {
-                    *pOutputStream << STALEMATE_MSG;
+                    m_gameInteraction.stalemateNotify();
 
                     playStateMachine       = GAME_OVER;
                     playStateMachineShadow = GAME_OVER;
@@ -265,16 +247,11 @@ void GomokuGame::play()
                     playStateMachine = HUMAN_MOVE;
                 }
 
-                *pOutputStream << TERMINATOR_MSG;
-                pOutputStream->flush();
-
                 playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
             }
             break;
 
             case DISPLAY: {
-                *pOutputStream << *m_board;
-
                 IBoard::PositionXY lastMove = k_XY_OUT_OF_BOARD;
 
                 if(m_board->getLastMove(lastMove))
@@ -283,26 +260,24 @@ void GomokuGame::play()
 
                     if(isComputerMovePrint)
                     {
-                        *pOutputStream << LAST_CPU_MOVE_MSG << lastMove;
+                        m_gameInteraction.cpuMoveNotify(lastMove);
                     }
                     else
                     {
-                        *pOutputStream << LAST_HUMAN_MOVE_MSG << lastMove;
+                        m_gameInteraction.humanMoveNotify(lastMove);
                     }
-
                 }
-
-                pOutputStream->flush();
 
                 playStateMachine = playStateMachineShadow;
             }
             break;
 
             case GAME_OVER: {
-                isEnd = endGame();
+                isEnd = !m_gameInteraction.getIsPlayAgain();
                 if(isEnd)
                 {
                     // Bye bye.
+                   m_gameInteraction.endGameNotify();
                 }
                 else
                 {
@@ -323,100 +298,6 @@ void GomokuGame::play()
                 assert(false);
         }
     }
-}
-
-bool GomokuGame::endGame()
-{
-    bool retVal              = true;
-    std::string frontEndData = std::string();
-
-    *pInputStream >> frontEndData;
-
-    if(pInputStream->fail())
-    {
-        assert(false);
-    }
-    else
-    {
-        // GUI message parser.
-        if(frontEndData == std::string(NEW_GAME))
-        {
-            pInputStream->clear();
-            retVal = false;
-        }
-    }
-
-    return retVal;
-}
-
-void GomokuGame::restartGame()
-{
-    m_board->resetInstance();
-    m_trackerCpu->resetInstance();
-    m_trackerHuman->resetInstance();
-//    m_pBoardScoreCpu->SetPlayer(m_ComputerColor);
-//    m_pBoardScoreHuman->SetPlayer(m_HumanColor);
-    setBoard(*m_board);
-    pOutputStream->clear();
-    pInputStream->clear();
-}
-
-IBoard::PositionXY GomokuGame::getUserMove() const
-{
-    IBoard::PositionXY retVal = k_XY_OUT_OF_BOARD;
-    uint32_t x               = 0;
-    uint32_t y               = 0;
-
-    while(true)
-    {
-        *pOutputStream << YOUR_MOVE_MSG << TERMINATOR_MSG;
-        pOutputStream->flush();
-        x = 0;
-        y = 0;
-
-        *pInputStream >> x;
-        if(pInputStream->fail())
-        {
-            *pOutputStream << INVALID_PARAMETER_MSG << TERMINATOR_MSG;
-            pInputStream->clear();
-            // Ignore to the end of line
-            pInputStream->ignore(INT_MAX, '\n');
-            continue;
-        }
-
-        *pInputStream >> y;
-        if(pInputStream->fail())
-        {
-            *pOutputStream << INVALID_PARAMETER_MSG << TERMINATOR_MSG;
-            pInputStream->clear();
-            // Ignore to the end of line
-            pInputStream->ignore(INT_MAX, '\n');
-            continue;
-        }
-        else
-        {
-            break;
-        }
-
-        pOutputStream->flush();
-    }
-
-    retVal = IBoard::PositionXY(x, y);
-    return retVal;
-}
-
-
-bool GomokuGame::isMoveValid(const IBoard::PositionXY xy) const
-{
-    bool retVal = false;
-
-    const bool isOnBoard = m_board->isOnBoard(xy);
-    const bool isVacant  = ((isOnBoard) && (IBoard::PLAYER_EMPTY == m_board->getMove(xy)));
-
-    // Position must be on board, vacant.
-    retVal = (isOnBoard && isVacant);
-
-    return retVal;
 }
 
 bool GomokuGame::isWinner(const IBoard::Player player) const
@@ -448,6 +329,36 @@ bool GomokuGame::isStalemate() const
     const bool isStalemate          = (moveOnBoard == maxFields);
 
     return isStalemate;
+}
+
+void GomokuGame::restartGame()
+{
+    m_board->resetInstance();
+    m_trackerCpu->resetInstance();
+    m_trackerHuman->resetInstance();
+    setBoard(*m_board);
+    m_gameInteraction.restartGameNotify();
+}
+
+void GomokuGame::setBoard(const IBoard& board)
+{
+    for(uint32_t i = 0; i < Score::MAX_KIND_OF_THREATS; ++i)
+    {
+        Score::getInstance()->setBoard(board);
+    }
+}
+
+bool GomokuGame::isUserMoveValid(const IBoard::PositionXY xy) const
+{
+    bool retVal = false;
+
+    const bool isOnBoard = m_board->isOnBoard(xy);
+    const bool isVacant  = ((isOnBoard) && (IBoard::PLAYER_EMPTY == m_board->getMove(xy)));
+
+    // Position must be on board, vacant.
+    retVal = (isOnBoard && isVacant);
+
+    return retVal;
 }
 
 IBoard::PositionXY GomokuGame::getBestMove() const
