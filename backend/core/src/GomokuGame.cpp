@@ -13,8 +13,10 @@ GomokuGame::GomokuGame(uint32_t size,
                        IBoard::Player humanColor,
                        IGame::Level level,
                        bool isRandomize,
-                       uint32_t maxTime)
+                       uint32_t maxTime,
+                       IGameInteraction& gameInteraction)
 :IGame{size, humanColor, level, isRandomize, maxTime}
+,m_gameInteraction{gameInteraction}
 {
     m_board= make_unique<GomokuBoard>(m_boardSize);
     m_spotterCpu = make_unique<Spotter>(m_computerColor);
@@ -155,7 +157,7 @@ void GomokuGame::play()
             break;
 
             case HUMAN_MOVE: {
-                humanMove              = getUserMove();
+                humanMove              = m_gameInteraction.getUserMove();
                 playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
                 playStateMachine       = HUMAN_VALIDATION_MOVE;
             }
@@ -176,7 +178,7 @@ void GomokuGame::play()
                 }
                 else
                 {
-                    invalidUserMoveNotify();
+                    m_gameInteraction.invalidUserMoveNotify();
 
                     playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
                     playStateMachine       = HUMAN_MOVE;
@@ -198,7 +200,7 @@ void GomokuGame::play()
                         const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
                         mark.push_back(rXy);
                     }
-                    winnerNotify(m_computerColor, mark);
+                    m_gameInteraction.winnerNotify(m_computerColor, mark);
 
                     playStateMachine       = GAME_OVER;
                     playStateMachineShadow = GAME_OVER;
@@ -212,14 +214,14 @@ void GomokuGame::play()
                         const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
                         mark.push_back(rXy);
                     }
-                    winnerNotify(m_humanColor, mark);
+                    m_gameInteraction.winnerNotify(m_humanColor, mark);
 
                     playStateMachine       = GAME_OVER;
                     playStateMachineShadow = GAME_OVER;
                 }
                 else if(isStalemate())
                 {
-                    stalemateNotify();
+                    m_gameInteraction.stalemateNotify();
 
                     playStateMachine       = GAME_OVER;
                     playStateMachineShadow = GAME_OVER;
@@ -258,11 +260,11 @@ void GomokuGame::play()
 
                     if(isComputerMovePrint)
                     {
-                        cpuMoveNotify(lastMove);
+                        m_gameInteraction.cpuMoveNotify(lastMove);
                     }
                     else
                     {
-                        //humanMoveNotify(lastMove);
+                        m_gameInteraction.humanMoveNotify(lastMove);
                     }
                 }
 
@@ -271,11 +273,11 @@ void GomokuGame::play()
             break;
 
             case GAME_OVER: {
-                isEnd = !getIsPlayAgain();
+                isEnd = !m_gameInteraction.getIsPlayAgain();
                 if(isEnd)
                 {
                     // Bye bye.
-                   // endGameNotify();
+                   m_gameInteraction.endGameNotify();
                 }
                 else
                 {
@@ -335,7 +337,7 @@ void GomokuGame::restartGame()
     m_trackerCpu->resetInstance();
     m_trackerHuman->resetInstance();
     setBoard(*m_board);
-    restartGameNotify();
+    m_gameInteraction.restartGameNotify();
 }
 
 void GomokuGame::setBoard(const IBoard& board)

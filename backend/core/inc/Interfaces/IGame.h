@@ -4,12 +4,12 @@
 #include "ISearchTree.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS NAME: Game
+/// CLASS NAME: IGame
 ///
-/// Game interface declaration.
+/// Board game interface declaration. Solely for board.
 ///
 /// @par Full Description.
-/// Abstract class for each 2 players board game.
+/// Abstract class for each 2 players board game. Board state only.
 ///////////////////////////////////////////////////////////////////////////////////////////
 class IGame
 {
@@ -29,14 +29,6 @@ class IGame
     virtual bool isWinner(IBoard::Player player) const = 0;
     virtual bool isStalemate() const = 0;
     virtual void restartGame() = 0;
-    virtual IBoard::PositionXY getUserMove() const = 0;
-    virtual bool getIsPlayAgain() const = 0;
-    virtual void invalidUserMoveNotify() const = 0;
-    virtual void cpuMoveNotify(IBoard::PositionXY xy) const = 0;
-    virtual void winnerNotify(IBoard::Player player, vector<IBoard::PositionXY> winnerMark) const = 0;
-    virtual void stalemateNotify() const = 0;
-    virtual void restartGameNotify() const = 0;
-    virtual void endGameNotify() const = 0;
 
     IGame(uint32_t size,
           IBoard::Player humanColor,
@@ -63,4 +55,26 @@ protected:
     bool m_isRandomize{false};
     uint32_t m_maxTime{0};
 
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS NAME: IGameInteraction
+///
+/// Board game interface declaration. Solely for player interaction.
+///
+/// @par Full Description.
+/// Abstract class for each 2 players board game. Interaction only.
+///////////////////////////////////////////////////////////////////////////////////////////
+class IGameInteraction
+{
+public:
+    virtual IBoard::PositionXY getUserMove() const = 0;
+    virtual bool getIsPlayAgain() const = 0;
+    virtual void invalidUserMoveNotify() const = 0;
+    virtual void cpuMoveNotify(IBoard::PositionXY xy) const = 0;
+    virtual void humanMoveNotify(IBoard::PositionXY xy) const =0;
+    virtual void winnerNotify(IBoard::Player player, vector<IBoard::PositionXY> winnerMark) const = 0;
+    virtual void stalemateNotify() const = 0;
+    virtual void restartGameNotify() const = 0;
+    virtual void endGameNotify() const = 0;
 };

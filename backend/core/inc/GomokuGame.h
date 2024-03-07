@@ -5,13 +5,15 @@
 #include "Interfaces/IGame.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS NAME: Score
+/// CLASS NAME: GomokuGame
 ///
-/// Gomoku game logic - user interface.
+/// Gomoku game logic
 ///
 /// @par Full Description.
-/// Middle implementation of game. Does not decide how user's move are
-/// provided (gui/CLI/sockets etc), but implements gomoku general game flow.
+/// The class provide gomoku game logic flow.
+/// It doesn't know how to interact with players. Any players interactions are
+/// delegated to concrete class which must be provided and implement IGameInteraction interface.
+/// Design pattern: Template method.
 ///////////////////////////////////////////////////////////////////////////////////////////
 class GomokuGame : public IGame
 {
@@ -25,28 +27,36 @@ class GomokuGame : public IGame
                IBoard::Player humanColor,
                IGame::Level level,
                bool isRandomize,
-               uint32_t maxTime);
+               uint32_t maxTime,
+               IGameInteraction& gameInteraction);
     GomokuGame(const GomokuGame&) = delete;
     GomokuGame(GomokuGame&&) = delete;
     GomokuGame& operator=(const GomokuGame&) = delete;
     GomokuGame& operator=(GomokuGame&&) = delete;
     virtual ~GomokuGame() = default;
 
+    //IGame:
     void play() override;
     bool isWinner(IBoard::Player player) const override;
     bool isStalemate() const override;
     void restartGame() override;
 
+    IBoard* getBoard() const
+    {
+        return m_board.get();
+    }
+
 private:
     void setBoard(const IBoard& board);
     bool isUserMoveValid(IBoard::PositionXY xy) const;
     IBoard::PositionXY getBestMove() const;
+    IGameInteraction& m_gameInteraction;
 
-    unique_ptr<IBoard> m_board{nullptr};                //game board
     unique_ptr<ISpotter> m_spotterCpu{nullptr};         //finds threads. Cpu pov.
     unique_ptr<ISpotter> m_spotterHuman{nullptr};       //finds threads. Human pov.
     unique_ptr<ThreatTracker> m_trackerCpu{nullptr};    //storages threads for cpu
     unique_ptr<ThreatTracker> m_trackerHuman{nullptr};  //storages threads for human
     unique_ptr<ISearchTree> m_engine{nullptr};          //algorithm for finding best move
+    unique_ptr<IBoard> m_board{nullptr};                //game board
 };
 

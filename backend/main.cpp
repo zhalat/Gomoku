@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Exceptions.h"
-#include "GomokuBoard.h"
+#include "GomokuGame.h"
 #include "GomokuGameCLI.h"
 
 namespace po = boost::program_options;
@@ -40,14 +40,19 @@ int main(int argc, char * argv[])
         return 0;
     }
 
-    GomokuGameCLI gomokuGameCLI{boardSize,
-                                IBoard::String2Player(player.c_str()),
-                                static_cast<IGame::Level>(level),
-                                true,
-                                timeLimit};
-//    gomokuGameCLI.init( std::cin,
-//                     std::cout);
-    gomokuGameCLI.play();
+    //create GomoguGame which uses CLI as a GUI.
+    GomokuGameCLI gomokuGameCLI{IBoard::String2Player(player.c_str())};
+    GomokuGame gomokuGame{ boardSize,
+                           IBoard::String2Player(player.c_str()),
+                           static_cast<IGame::Level>(level),
+                           true,
+                           timeLimit,
+                           gomokuGameCLI };
+    gomokuGameCLI.setBoard(gomokuGame.getBoard());
+
+    //starts a game
+    gomokuGame.restartGame();
+    gomokuGame.play();
 
     return 0;
 }
