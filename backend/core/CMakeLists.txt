@@ -31,4 +31,3 @@ target_include_directories(gomokuAlgo PRIVATE
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/inc"
     INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/inc"
 )
-
