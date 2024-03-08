@@ -2,14 +2,21 @@ cmake_minimum_required(VERSION 3.16)
 
 project(GomokuGui VERSION 0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 6.4 REQUIRED COMPONENTS Quick)
 
 qt_standard_project_setup()
 
+add_subdirectory(../../backend/core ${CMAKE_BINARY_DIR}/backend_build)
+get_target_property(gomokuAlgo_SRC_PATH gomokuAlgo SOURCE_DIR)
+get_target_property(gomokuAlgo_INCLUDE_DIR gomokuAlgo INTERFACE_INCLUDE_DIRECTORIES)
+
 qt_add_executable(appGomokuGui
     main.cpp
+    GomokuGameGUI.cpp
+    GomokuGameGUI.h
 )
 
 qt_add_qml_module(appGomokuGui
@@ -507,6 +514,7 @@ set_target_properties(appGomokuGui PROPERTIES
 
 target_link_libraries(appGomokuGui
     PRIVATE Qt6::Quick
+    gomokuAlgo
 )
 
 include(GNUInstallDirs)
