@@ -5,12 +5,6 @@
 class GomokuGameGUI final : public IGameInteraction
 {
 public:
-    // BackEnd -> CLI.
-
-
-    // CLI -> BackEnd.
-
-
     GomokuGameGUI(IBoard::Player humanColor);
     GomokuGameGUI(const GomokuGameGUI&) = delete;
     GomokuGameGUI(GomokuGameGUI&&) = delete;
@@ -35,9 +29,6 @@ private:
     void restartGameNotify() const override;
     void endGameNotify() const override;
 
-    // Stream from/to data to be read/write.
-    std::istream& pInputStream {std::cin};
-    std::ostream& pOutputStream {std::cout};
     IBoard* m_board{nullptr};
     const IBoard::Player m_humanColor{};
 };

@@ -1,0 +1,45 @@
+syntax = "proto2";
+
+package message;
+
+enum MsgID
+{
+    USR_MOVE_QUERY             = 0;
+    REPLAY_QUERY               = 1;
+    USR_MOVE_INVALID_NOTIFY    = 2;
+    CPU_MOVE_NOTIFY            = 3;
+    WINNER_NOTIFY              = 4;
+    STALEMATE_NOTIFY           = 5;
+    RESTART_NOTIFY             = 6;
+    END_NOTIFY                 = 7;
+    KEEP_ME_LAST               = 8;
+};
+
+enum PlayerID
+{
+    HUMAN   = 0;
+    CPU     = 1;
+};
+
+message MoveXy {
+    optional int32 m_x = 1; //-1 means invalid move
+    optional int32 m_y = 2; //-1 means invalid move
+}
+
+//--------------- use those below over the socket ------------------
+message Header {
+    required uint32 m_msgId   =1;
+    required uint32 m_msgSize =2;
+}
+
+message MsgQuery {
+    required MsgID k_id = 1 [default = KEEP_ME_LAST];
+    optional MoveXy m_move = 2;
+}
+
+message MsgNotify {
+    required MsgID k_id = 1 [default = KEEP_ME_LAST];
+    repeated MoveXy m_movies = 2;      //for WINNER_NOTIFY, tells winning movies. 
+    optional PlayerID m_playerId =3;   //for WINNER_NOTIFY, tells who won 
+}
+//--------------- use those above over the socket ------------------
