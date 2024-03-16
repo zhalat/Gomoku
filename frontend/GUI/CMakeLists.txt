@@ -9,13 +9,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #
 #qt_standard_project_setup()
 #
-#add_subdirectory(../../backend/core ${CMAKE_BINARY_DIR}/backend_build)
-#get_target_property(gomokuAlgo_SRC_PATH gomokuAlgo SOURCE_DIR)
-#get_target_property(gomokuAlgo_INCLUDE_DIR gomokuAlgo INTERFACE_INCLUDE_DIRECTORIES)
+add_subdirectory(../../backend/core ${CMAKE_BINARY_DIR}/backend_build)
+get_target_property(gomokuAlgo_SRC_PATH gomokuAlgo SOURCE_DIR)
+get_target_property(gomokuAlgo_INCLUDE_DIR gomokuAlgo INTERFACE_INCLUDE_DIRECTORIES)
 
 #generate C++ protobufs .h/.cpp
 add_custom_command(
-        OUTPUT ${CMAKE_SOURCE_DIR}/protobuf/messages.pb.h ${CMAKE_SOURCE_DIR}/protobuf/messages.pb.cpp
+        OUTPUT ${CMAKE_SOURCE_DIR}/protobuf/messages.pb.h ${CMAKE_SOURCE_DIR}/protobuf/messages.pb.cc
         COMMAND protoc -I=${CMAKE_SOURCE_DIR}/protobuf --cpp_out=${CMAKE_SOURCE_DIR}/protobuf ${CMAKE_SOURCE_DIR}/protobuf/messages.proto
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/protobuf
 )
@@ -25,7 +25,7 @@ add_executable(appGomokuGui
         GomokuGameGUI.cpp
         GomokuGameGUI.h
         protobuf/messages.pb.h
-        protobuf/messages.pb.cpp
+        protobuf/messages.pb.cc
 )
 #
 #qt_add_executable(appGomokuGui
@@ -529,10 +529,11 @@ add_executable(appGomokuGui
 #    WIN32_EXECUTABLE TRUE
 #)
 #
-#target_link_libraries(appGomokuGui
-#    PRIVATE Qt6::Quick
-#    gomokuAlgo
-#)
+target_link_libraries(appGomokuGui
+    #PRIVATE Qt6::Quick
+    gomokuAlgo
+    protobuf
+)
 #
 #include(GNUInstallDirs)
 #install(TARGETS appGomokuGui

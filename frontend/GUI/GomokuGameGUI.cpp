@@ -29,3 +29,13 @@ GomokuGameGUI::GomokuGameGUI(IBoard::Player humanColor)
 {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 }
+
+IBoard::PositionXY GomokuGameGUI::getUserMove() const{};
+bool GomokuGameGUI::getIsPlayAgain() const{};
+void GomokuGameGUI::invalidUserMoveNotify() const{};
+void GomokuGameGUI::cpuMoveNotify(IBoard::PositionXY xy) const{};
+void GomokuGameGUI::humanMoveNotify(IBoard::PositionXY xy) const{};
+void GomokuGameGUI::winnerNotify(IBoard::Player player,vector<IBoard::PositionXY> winnerMark) const{};
+void GomokuGameGUI::stalemateNotify() const{};
+void GomokuGameGUI::restartGameNotify() const{};
+void GomokuGameGUI::endGameNotify() const{};
