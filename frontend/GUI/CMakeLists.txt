@@ -22,8 +22,8 @@ add_custom_command(
 
 qt_add_executable(appGomokuGui
     main.cpp
-    GomokuGameGUI.cpp
-    GomokuGameGUI.h
+    GomokuGameClientGUI.cpp
+    GomokuGameClientGUI.h
     protobuf/messages.pb.h
     protobuf/messages.pb.cc
 )
