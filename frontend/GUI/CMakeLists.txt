@@ -24,6 +24,8 @@ qt_add_executable(appGomokuGui
     main.cpp
     GomokuGameClientGUI.cpp
     GomokuGameClientGUI.h
+    GomokuGameServerGUI.cpp
+    GomokuGameServerGUI.h
     protobuf/messages.pb.h
     protobuf/messages.pb.cc
 )

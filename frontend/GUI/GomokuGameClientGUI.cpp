@@ -25,7 +25,7 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
 	m_msgHeader.set_m_msgsize(serializedMessage.size());
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
-
+    while(1);
 	IBoard::PositionXY resp;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, true, resp);
 
@@ -33,7 +33,8 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
 		throw game_except::General{"Send data over a socket error."};
 
 
-	return resp;
+	return k_XY_OUT_OF_BOARD;
+	//return resp;
 }
 
 bool GomokuGameClientGUI::getIsPlayAgain() const

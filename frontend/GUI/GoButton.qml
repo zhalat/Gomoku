@@ -47,7 +47,7 @@ Rectangle {
 
             anchors.fill: parent
             onClicked: {
-                console.log("qml: sdfsadfa")
+                console.log("qml: GoButton has been clicked")
             }
         }
     }
