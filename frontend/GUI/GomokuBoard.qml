@@ -34,68 +34,13 @@ Rectangle {
 
     // Handle BACKEND -> GUI signals.
     Connections {
-        target: gomokuOutputStream
-        onBackendevent: {
-            var EventEnum = {
-                EVENT_NONE        :0,
-                HUMAN_WON         :1,
-                CPU_WON           :2,
-                STALEMATE         :3,
-                CHOOSE_COLOR      :4,
-                CPU_MOVE          :5,
-                HUMAN_MOVE        :6,
-                INVALID_USER_MOVE :7,
-                INVALID_PARAMETER :8
-            };
-
-            var stringDataBacked = foo;
-            var parameterDataBackend = stringDataBacked.split("\n")
-            var event = parameterDataBackend[0]
-
-            console.log(event );
-
-            if( EventEnum.HUMAN_WON == event )
-            {
-               //cpuReply( Number(parameterDataBackend[1]), Number(parameterDataBackend[2]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[3]), Number(parameterDataBackend[4]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[5]), Number(parameterDataBackend[6]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[7]), Number(parameterDataBackend[8]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[9]), Number(parameterDataBackend[10]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[11]), Number(parameterDataBackend[12]) );
-
-               // Emit signal.
-               showNotificationMsg(humanWonNotyfication);
-            }
-            else if( EventEnum.CPU_WON == event )
-            {
-               cpuReply( Number(parameterDataBackend[1]), Number(parameterDataBackend[2]), false );
-               cpuReplyWinnerMark( Number(parameterDataBackend[3]), Number(parameterDataBackend[4]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[5]), Number(parameterDataBackend[6]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[7]), Number(parameterDataBackend[8]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[9]), Number(parameterDataBackend[10]) );
-               cpuReplyWinnerMark( Number(parameterDataBackend[11]), Number(parameterDataBackend[12]) );
-
-               // Emit signal.
-               showNotificationMsg(cpuWonNotyfication);
-            }
-            else if( EventEnum.STALEMATE == event )
-            {
-               console.log("qml: dbg::GomokuBoard:", "EventEnum.STALEMATE" );
-            }
-            else if( EventEnum.CPU_MOVE == event )
-            {
-               console.log("qml: dbg::GomokuBoard:", "EventEnum.CPU_MOVE" );
-               cpuReply( Number(parameterDataBackend[1]), Number(parameterDataBackend[2]), true );
-            }
-            else if( EventEnum.HUMAN_MOVE == event )
-            {
-               console.log("qml: dbg::GomokuBoard:", "EventEnum.HUMAN_MOVE" );
-            }
-            else if( EventEnum.INVALID_USER_MOVE == event )
-            {
-               console.log("qml: dbg::GomokuBoard:", "EventEnum.INVALID_USER_MOVE" );
-            }
-        }
+        target: gomokuGameServerGUI // class must be defined in C++ and registered by setContextProperty()
+        onBackendevent_restart : onBackendevent_restart()
+        onBackendevent_human_won : onBackendevent_human_won(positions)
+        onBackendevent_cpu_won : onBackendevent_cpu_won(positions)
+        onBackendevent_stalemate : onBackendevent_stalemate()
+        onBackendevent_cpu_move : onBackendevent_cpu_move(cpuRow,cpuColumn)
+        onBackendevent_human_move_invalid : onBackendevent_human_move_invalid()
     }
 
     Grid {
@@ -618,9 +563,44 @@ Rectangle {
         hotMoveUp()
     }
 
-    // BACKEND -> GUI. Function put CPU ball.
-    function cpuReply( cpuRow, cpuColumn, isEmitSignal )
+    // BACKEND -> GUI. Handlers
+    function onBackendevent_restart()
     {
+        onResetBoardInstance()
+    }
+
+    function onBackendevent_human_won(positions)
+    {
+        for(var i =0; i<positions.length; ++i)
+        {
+            var map = positions[i]
+            cpuReplyWinnerMarkHelper( Number(map["x"]), Number(map["y"]) );
+        }
+
+        // Emit signal.
+        showNotificationMsg(humanWonNotyfication);
+    }
+
+    function onBackendevent_cpu_won(positions)
+    {
+        for(var i =0; i<positions.length; ++i)
+        {
+            var map = positions[i]
+            cpuReplyWinnerMarkHelper( Number(map["x"]), Number(map["y"]) );
+        }
+
+        // Emit signal.
+        showNotificationMsg(cpuWonNotyfication);
+    }
+
+    function onBackendevent_stalemate()
+    {
+    }
+
+    function onBackendevent_cpu_move(cpuRow,cpuColumn)
+    {
+        console.log("qml: dbg::GomokuBoard cpu move: (", cpuRow, ",",cpuColumn, ")" )
+
         // Conversion need to be added.
         var indexCpu = (cpuRow+1) * realGomokuBoardGrid.gridSize + (cpuColumn+1)
         if( -1 == redDotBallIndex )
@@ -634,15 +614,15 @@ Rectangle {
         }
         redDotBallIndex = indexCpu
 
-        // Emit signal.
-        if(isEmitSignal)
-        {
-            cpuReplyReceived()
-        }
+        cpuReplyReceived()
+
     }
 
-    // BACKEND -> GUI. Function put CPU ball.
-    function cpuReplyWinnerMark( cpuRow, cpuColumn )
+    function onBackendevent_human_move_invalid()
+    {
+    }
+
+    function cpuReplyWinnerMarkHelper( cpuRow, cpuColumn )
     {
         // Conversion need to be added.
         var indexCpu = (cpuRow+1) * realGomokuBoardGrid.gridSize + (cpuColumn+1)

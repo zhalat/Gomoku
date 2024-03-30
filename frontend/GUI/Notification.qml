@@ -52,10 +52,10 @@ Rectangle {
         }
 
         onClicked: {
-            console.log("qml: dbg::Notification:: Human has read message.")
+            console.log("qml: dbg::Notification:: Human restarted game.")
 
-            // Inform C++ backend about human move.
-            gomokuInputStream.frontendeventhumanmsg( "\n--->>NewGame.\n" )
+            // Inform C++ backend that board has been restarted
+            gomokuGameServerGUI.frontend_board_restarted()
             notificationId.visible = false
 
             // Emit signal.

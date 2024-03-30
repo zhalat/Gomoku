@@ -25,12 +25,16 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
 	m_msgHeader.set_m_msgsize(serializedMessage.size());
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
-    while(1);
+    while(1)
+    {
+
+         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 	IBoard::PositionXY resp;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, true, resp);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"getUserMove:: Sending data over a socket error."};
 
 
 	return k_XY_OUT_OF_BOARD;
@@ -62,7 +66,7 @@ void GomokuGameClientGUI::invalidUserMoveNotify() const
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"invalidUserMoveNotify:: Sending data over a socket error."};
 };
 
 void GomokuGameClientGUI::cpuMoveNotify(IBoard::PositionXY xy) const
@@ -88,7 +92,7 @@ void GomokuGameClientGUI::cpuMoveNotify(IBoard::PositionXY xy) const
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"cpuMoveNotify:: Sending data over a socket error."};
 };
 
 void GomokuGameClientGUI::humanMoveNotify(IBoard::PositionXY xy) const
@@ -131,7 +135,7 @@ void GomokuGameClientGUI::winnerNotify(IBoard::Player player,vector<IBoard::Posi
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"SwinnerNotify:: Sending data over a socket error."};
 };
 
 void GomokuGameClientGUI::stalemateNotify() const
@@ -154,7 +158,7 @@ void GomokuGameClientGUI::stalemateNotify() const
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"stalemateNotify:: Sending data over a socket error."};
 };
 void GomokuGameClientGUI::restartGameNotify() const
 {
@@ -176,7 +180,7 @@ void GomokuGameClientGUI::restartGameNotify() const
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"restartGameNotify:: Sending data over a socket error."};
 };
 
 void GomokuGameClientGUI::endGameNotify() const
@@ -199,5 +203,5 @@ void GomokuGameClientGUI::endGameNotify() const
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
-		throw game_except::General{"Send data over a socket error."};
+		throw game_except::General{"endGameNotify:: Sending data over a socket error."};
 };

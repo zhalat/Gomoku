@@ -83,10 +83,7 @@ void GomokuGameServerGUI::listening()
 		 else if(id==message::MsgID::USR_MOVE_QUERY or
 				  id == message::MsgID::REPLAY_QUERY)
 		 {
-			 if(m_msgQuery.ParseFromString(receivedMessage))
-			 {
-				 cout<<"got query message"<<endl;
-			 }
+			 doQuery(static_cast<message::MsgID>(id), receivedMessage);
 		 }
 		 else if(id == message::MsgID::USR_MOVE_INVALID_NOTIFY or
 				  id == message::MsgID::CPU_MOVE_NOTIFY or
@@ -95,13 +92,82 @@ void GomokuGameServerGUI::listening()
 				  id == message::MsgID::RESTART_NOTIFY or
 				  id == message::MsgID::END_NOTIFY)
 		 {
-			 if(m_msgNotify.ParseFromString(receivedMessage))
-			 {
-				 cout<<"got notify message"<<endl;
-			 }
+             doNotify(static_cast<message::MsgID>(id), receivedMessage);
 		 }
-
 
          close(socketData);
      }
+}
+
+void GomokuGameServerGUI::doNotify(const message::MsgID id, const std::string& msgData)
+{
+	if(id == message::MsgID::RESTART_NOTIFY)
+	{
+		emit backendevent_restart();//backend at startup resets board.
+	}
+	else if(id == message::MsgID::CPU_MOVE_NOTIFY)
+	{
+		 if(m_msgNotify.ParseFromString(msgData) and 1==m_msgNotify.m_movies_size())
+		 {
+			const message::MoveXy& move = m_msgNotify.m_movies(0);
+			const int x = move.m_x();
+			const int y = move.m_y();
+			emit backendevent_cpu_move(x, y);
+		 }
+		 else
+		 {
+			 throw game_except::General{"Socket server: Can not parse CPU_MOVE_NOTIFY message."};
+		 }
+	}
+	else if(id == message::MsgID::WINNER_NOTIFY)
+	{
+		QVariantList positionsList;
+		 if(m_msgNotify.ParseFromString(msgData) and 5==m_msgNotify.m_movies_size())
+		 {
+			for(int i=0; i<m_msgNotify.m_movies_size(); ++i)
+			{
+				const message::MoveXy& move = m_msgNotify.m_movies(i);
+				QVariantMap posMap;
+				posMap["x"] = move.m_x();
+				posMap["y"] = move.m_y();
+				positionsList.append(posMap);
+			}
+
+			if(message::PlayerID::HUMAN==m_msgNotify.m_playerid())
+			{
+				emit backendevent_human_won(positionsList);
+			}
+			else
+			{
+				emit backendevent_cpu_won(positionsList);
+			}
+		 }
+		 else
+		 {
+			 throw game_except::General{"Socket server: Can not parse WINNER_NOTIFY message."};
+		 }
+	}
+	else if(id == message::MsgID::STALEMATE_NOTIFY)
+	{
+		emit backendevent_stalemate();
+	}
+	else if(id == message::MsgID::USR_MOVE_INVALID_NOTIFY)
+	{
+		emit backendevent_human_move_invalid();
+	}
+	else
+	{
+		throw game_except::General{"Socket server: Got invalid notify message."};
+	}
+}
+
+IBoard::PositionXY GomokuGameServerGUI::doQuery(const message::MsgID id, const std::string& msgData)
+{
+
+}
+
+void GomokuGameServerGUI::frontend_board_restarted()
+{
+	//frontend notice that human wants reset board.
+	cout<<"todo - user restarted game"<<endl;
 }

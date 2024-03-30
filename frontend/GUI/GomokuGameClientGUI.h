@@ -10,7 +10,6 @@
 #include "Interfaces/IGame.h"
 #include "protobuf/messages.pb.h"
 
-
 class GomokuGameClientGUI final : public IGameInteraction
 {
 public:
