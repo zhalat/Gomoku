@@ -25,20 +25,15 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
 	m_msgHeader.set_m_msgsize(serializedMessage.size());
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
-    while(1)
-    {
 
-         std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
 	IBoard::PositionXY resp;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, true, resp);
 
 	if(stat<0)
 		throw game_except::General{"getUserMove:: Sending data over a socket error."};
 
-
-	return k_XY_OUT_OF_BOARD;
-	//return resp;
+    cout<<"client fffffffffffffffffffffffffffffffffhuman move:" << resp.m_x << ", " <<resp.m_y<<endl;
+    return resp;
 }
 
 bool GomokuGameClientGUI::getIsPlayAgain() const
@@ -62,7 +57,7 @@ void GomokuGameClientGUI::invalidUserMoveNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
 
-	int none;
+    IBoard::PositionXY none;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
@@ -74,7 +69,10 @@ void GomokuGameClientGUI::cpuMoveNotify(IBoard::PositionXY xy) const
     std::string serializedHeader;
     std::string serializedMessage;
 
+        cout<<"client fffffffffffffffffffffffffffffffffcpu move:" << xy.m_x << ", " <<xy.m_y<<endl;
+
     //data
+        m_msgNotify.Clear();
     m_msgNotify.set_k_id(message::MsgID::CPU_MOVE_NOTIFY);
     message::MoveXy* move1 = m_msgNotify.add_m_movies();
     move1->set_m_x(xy.m_x);
@@ -88,7 +86,7 @@ void GomokuGameClientGUI::cpuMoveNotify(IBoard::PositionXY xy) const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
 
-	int none;
+    IBoard::PositionXY none;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
@@ -131,7 +129,7 @@ void GomokuGameClientGUI::winnerNotify(IBoard::Player player,vector<IBoard::Posi
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
 
-	int none;
+    IBoard::PositionXY none;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
@@ -154,7 +152,7 @@ void GomokuGameClientGUI::stalemateNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
 
-	int none;
+    IBoard::PositionXY none;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
@@ -176,7 +174,7 @@ void GomokuGameClientGUI::restartGameNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
 
-	int none;
+    IBoard::PositionXY none;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)
@@ -199,7 +197,7 @@ void GomokuGameClientGUI::endGameNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Message header query serialization error."};
 
-	int none;
+    IBoard::PositionXY none;
 	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
 
 	if(stat<0)

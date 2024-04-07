@@ -83,7 +83,7 @@ void GomokuGameServerGUI::listening()
 		 else if(id==message::MsgID::USR_MOVE_QUERY or
 				  id == message::MsgID::REPLAY_QUERY)
 		 {
-			 doQuery(static_cast<message::MsgID>(id), receivedMessage);
+			 doQuery(static_cast<message::MsgID>(id), receivedMessage, socketData);
 		 }
 		 else if(id == message::MsgID::USR_MOVE_INVALID_NOTIFY or
 				  id == message::MsgID::CPU_MOVE_NOTIFY or
@@ -107,11 +107,18 @@ void GomokuGameServerGUI::doNotify(const message::MsgID id, const std::string& m
 	}
 	else if(id == message::MsgID::CPU_MOVE_NOTIFY)
 	{
-		 if(m_msgNotify.ParseFromString(msgData) and 1==m_msgNotify.m_movies_size())
+		 if( m_msgNotify.ParseFromString(msgData))
 		 {
+//			 bool stat = m_msgNotify.ParseFromString(msgData);
+//			 if(not stat)
+//				 throw game_except::General{"Socket server: Can not parse CPU_MOVE_NOTIFY message."};
+
+
 			const message::MoveXy& move = m_msgNotify.m_movies(0);
 			const int x = move.m_x();
 			const int y = move.m_y();
+
+            cout<<"server fffffffffffffffffffffffffffffffffcpu move:" << x << ", " <<y<<endl;
 			emit backendevent_cpu_move(x, y);
 		 }
 		 else
@@ -161,9 +168,61 @@ void GomokuGameServerGUI::doNotify(const message::MsgID id, const std::string& m
 	}
 }
 
-IBoard::PositionXY GomokuGameServerGUI::doQuery(const message::MsgID id, const std::string& msgData)
+void GomokuGameServerGUI::doQuery(const message::MsgID id, const std::string& msgData, int socketId)
 {
+	if(id == message::MsgID::USR_MOVE_QUERY)
+	{
+		//wait for human move
+		while(not m_isNewHumanMove)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
 
+		m_isNewHumanMove = false;
+
+		//m_lastHumanMove keeps last move. You must push it to backend algorithm
+	    std::string serializedHeader;
+	    std::string serializedMessage;
+
+	    //data
+
+	    m_msgAnswer.set_k_id(message::MsgID::USR_MOVE_ANSWER);
+        message::MoveXy move_xy;
+        move_xy.set_m_x(m_lastHumanMove.m_x);
+        move_xy.set_m_y(m_lastHumanMove.m_y);
+        m_msgAnswer.mutable_m_move()->CopyFrom(move_xy);
+
+        if(!m_msgAnswer.SerializeToString(&serializedMessage))
+			throw game_except::General{"Message data answer serialization error."};
+
+		//header
+		const auto headSize = getMessageSize(m_msgHeader);
+		m_msgHeader.set_m_msgid(message::MsgID::USR_MOVE_ANSWER);
+		m_msgHeader.set_m_msgsize(serializedMessage.size());
+		if(!m_msgHeader.SerializeToString(&serializedHeader))
+			throw game_except::General{"Message header query serialization error."};
+
+        ssize_t bytesSent = 0;
+        bytesSent = write(socketId, serializedHeader.data(), headSize);
+        if(bytesSent != headSize)
+        {
+        	close(socketId);
+        }
+
+        bytesSent = write(socketId, serializedMessage.data(), serializedMessage.size());
+        if(bytesSent != serializedMessage.size())
+        {
+        	close(socketId);
+        }
+	}
+	else if(id == message::MsgID::REPLAY_QUERY)
+	{
+		//emit backendevent_is_play_again();
+	}
+	else
+	{
+		throw game_except::General{"Socket server: Got invalid query message."};
+	}
 }
 
 void GomokuGameServerGUI::frontend_board_restarted()
@@ -171,3 +230,19 @@ void GomokuGameServerGUI::frontend_board_restarted()
 	//frontend notice that human wants reset board.
 	cout<<"todo - user restarted game"<<endl;
 }
+
+void GomokuGameServerGUI::frontend_human_move(int humanX, int humanY)
+{
+    qDebug() << "c++: dbg::GUI->BackEND:: Event Type:[" << message::MsgID::USR_MOVE_QUERY<< "]. Data: " << "(" << humanX << ", " << humanY << ")";
+
+    m_lastHumanMove.m_x = humanX;
+    m_lastHumanMove.m_y = humanY;
+    m_isNewHumanMove = true;
+}
+
+void GomokuGameServerGUI::frontend_is_play_again(int answer)
+{
+	cout<<"play again ??:"<< answer <<endl;
+}
+
+

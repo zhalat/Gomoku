@@ -4,15 +4,17 @@ package message;
 
 enum MsgID
 {
-    USR_MOVE_QUERY             = 0;
-    REPLAY_QUERY               = 1;
-    USR_MOVE_INVALID_NOTIFY    = 2;
-    CPU_MOVE_NOTIFY            = 3;
-    WINNER_NOTIFY              = 4;
-    STALEMATE_NOTIFY           = 5;
-    RESTART_NOTIFY             = 6;
-    END_NOTIFY                 = 7;
-    KEEP_ME_LAST               = 8;
+    USR_MOVE_QUERY             = 0; //backend asks for user move (wants response)
+    USR_MOVE_ANSWER            = 1; //gui answer for backend query (USR_MOVE_QUERY)
+    REPLAY_QUERY               = 2; //backend asks if user wants play again (wants response)
+    REPLAY_ANSWER              = 3; //gui answer for backend query (REPLAY_QUERY)
+    USR_MOVE_INVALID_NOTIFY    = 4; //backend notifies user that last move is invalid (doesn't want response )
+    CPU_MOVE_NOTIFY            = 5; //backend notifies user of CPU last move (doesn't want response )
+    WINNER_NOTIFY              = 6; //backend notifies user who has won (doesn't want response )
+    STALEMATE_NOTIFY           = 7; //backend notifies user that there is stalemate (doesn't want response )
+    RESTART_NOTIFY             = 8; //backend notifies GUI/user to clear board (doesn't want response )
+    END_NOTIFY                 = 9; //backend's farewell  (doesn't want response )
+    KEEP_ME_LAST               = 10;
 };
 
 enum PlayerID
@@ -35,6 +37,12 @@ message Header {
 message MsgQuery {
     required MsgID k_id = 1 [default = KEEP_ME_LAST];
     optional MoveXy m_move = 2;
+}
+
+message MsgAnswer {
+    required MsgID k_id = 1 [default = KEEP_ME_LAST];
+    optional MoveXy m_move = 2;
+    optional bool m_isPlayAgain = 3;
 }
 
 message MsgNotify {

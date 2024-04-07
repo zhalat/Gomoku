@@ -642,7 +642,7 @@ Rectangle {
         var humanColumn = currentHotCell.posy - 1
 
         // Inform C++ backend about human move.
-        gomokuInputStream.frontendeventmove( humanRow, humanColumn );
+        gomokuGameServerGUI.frontend_human_move( humanRow, humanColumn );
 
         // Emit signal.
         hotMoveDown()

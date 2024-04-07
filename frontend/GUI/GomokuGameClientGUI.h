@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <thread>
+#include "Exceptions.h"
 #include "Interfaces/IGame.h"
 #include "protobuf/messages.pb.h"
 
@@ -33,6 +34,7 @@ private:
     mutable message::Header m_msgHeader;
     mutable message::MsgQuery m_msgQuery;
     mutable message::MsgNotify m_msgNotify;
+    mutable message::MsgAnswer m_msgAnswer;
 
     IBoard::PositionXY getUserMove() const override;
     bool getIsPlayAgain() const override;
@@ -77,76 +79,82 @@ private:
          bytesSent = write(sockData, header.data(), headSize);
          if(bytesSent != headSize)
          {
-         	close(sockData);
-         	return -2;
+            close(sockData);
+            return -2;
          }
 
          bytesSent = write(sockData, data.data(), data.size());
          if(bytesSent != data.size())
          {
-         	close(sockData);
-         	return -3;
+            close(sockData);
+            return -3;
          }
 
          //we expect response
          if(wantResp)
          {
-         	//1.read msg header
-         	std::string receivedHeaderMessage(headSize,'\0');
-         	ssize_t bytesRead = read(sockData, &receivedHeaderMessage[0], headSize);
-         	if(bytesRead!=headSize)
-         	{
-         		close(sockData);
-         		return -4;
-         	}
+            //1.read msg header
+            std::string receivedHeaderMessage(headSize,'\0');
+            ssize_t bytesRead = read(sockData, &receivedHeaderMessage[0], headSize);
+            if(bytesRead!=headSize)
+            {
+                close(sockData);
+                return -4;
+            }
 
              if(not m_msgHeader.ParseFromString(receivedHeaderMessage))
              {
-             	close(sockData);
-             	return -5;
+                close(sockData);
+                return -5;
              }
 
              const uint32_t length = m_msgHeader.m_msgsize();
              const uint32_t id = m_msgHeader.m_msgid();
              if(id >= message::MsgID::KEEP_ME_LAST)
              {
-             	close(sockData);
-             	return -6;
+                close(sockData);
+                return -6;
              }
 
              //2.read msg data
              std::string receivedMessage(length,'\0');
              bytesRead = read(sockData, &receivedMessage[0], length);
-         	if(bytesRead!=length)
-         	{
-         		close(sockData);
-         		return -7;
-         	}
+            if(bytesRead!=length)
+            {
+                close(sockData);
+                return -7;
+            }
 
-             if(id==message::MsgID::USR_MOVE_QUERY or
-                id == message::MsgID::REPLAY_QUERY)
-             {
-             	if(m_msgQuery.ParseFromString(receivedMessage))
-             	{
-             		cout<<"got query message"<<endl;
-             	}
-             }
-             else if(id == message::MsgID::USR_MOVE_INVALID_NOTIFY or
-             		id == message::MsgID::CPU_MOVE_NOTIFY or
-         			id == message::MsgID::WINNER_NOTIFY or
-         			id == message::MsgID::STALEMATE_NOTIFY or
-         			id == message::MsgID::RESTART_NOTIFY or
-         			id == message::MsgID::END_NOTIFY)
-             {
-             	if(m_msgNotify.ParseFromString(receivedMessage))
-             	{
-             		cout<<"got notify message"<<endl;
-             	}
-             }
+            if(id == message::MsgID::USR_MOVE_ANSWER)
+            {
+
+                if(m_msgAnswer.ParseFromString(receivedMessage))
+                {
+                    cout<<"ok, got USR_MOVE_ANSWER message"<<endl;
+                   resp.m_x = m_msgAnswer.m_move().m_x();
+                   resp.m_y =  m_msgAnswer.m_move().m_y();
+                   cout<<"fffffffffffffffffffffffffffffffffhuman move:" << m_msgAnswer.m_move().m_x() << ", " <<m_msgAnswer.m_move().m_y()<<endl;
+                }
+                else
+                {
+                    throw game_except::General{"Socket client: Can not parse USR_MOVE_ANSWER message."};
+                }
+
+
+            }
+            else if(id == message::MsgID::REPLAY_ANSWER)
+            {
+                cout<<"ok, got REPLAY_ANSWER message"<<endl;
+            }
+            else
+            {
+                cout<<"error client got invalid id AAAAAA"<<endl;
+            }
+
          }
 
          close(sockData);
-    	return 0;
+        return 0;
     }
 
     template<class T>

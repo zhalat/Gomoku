@@ -30,6 +30,8 @@ public:
     void listening();
 
     Q_INVOKABLE void frontend_board_restarted();
+    Q_INVOKABLE void frontend_human_move(int humanX, int humanY);
+    Q_INVOKABLE void frontend_is_play_again(int answer);
 
 signals:
 	//backend->GUI
@@ -39,7 +41,6 @@ signals:
     void backendevent_stalemate();											//emits when stalemate
     void backendevent_cpu_move(const int cpuRow, const int cpuColumn);		//emits when cpu puts new move
     void backendevent_human_move_invalid();									//emits when human puts invalid new move
-
 private:
     static constexpr auto k_SOCKET_GUI_NAME = "/tmp/GomokuGuiSocket";
     static constexpr auto k_SOCKET_TYPE = AF_LOCAL;
@@ -47,14 +48,20 @@ private:
     mutable message::Header m_msgHeader;
     mutable message::MsgQuery m_msgQuery;
     mutable message::MsgNotify m_msgNotify;
+    mutable message::MsgAnswer m_msgAnswer;
+
 
     void doNotify(const message::MsgID id, const std::string& msgData);
-    IBoard::PositionXY doQuery(const message::MsgID id, const std::string& msgData);
+    void doQuery(const message::MsgID id, const std::string& msgData, int socketId);
 
     //socket
     struct sockaddr_un m_sockName{};
     int m_sockMaster{-1};
     std::atomic<bool> m_isRunning{true};
     int m_msgHeadSize{-1};
+
+    //data GUI->Backend
+    std::atomic<bool> m_isNewHumanMove{false};
+    IBoard::PositionXY m_lastHumanMove{k_XY_OUT_OF_BOARD};
 };
 
