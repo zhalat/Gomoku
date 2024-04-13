@@ -29,12 +29,13 @@ public:
     virtual ~GomokuGameServerGUI() = default;
     void listening();
 
+    //GUI->backend (can be invoked in .qml)
     Q_INVOKABLE void frontend_board_restarted();
     Q_INVOKABLE void frontend_human_move(int humanX, int humanY);
     Q_INVOKABLE void frontend_is_play_again(int answer);
 
 signals:
-	//backend->GUI
+	//backend->GUI (can be send to .qml)
     void backendevent_restart(); 											//emits at startup
     void backendevent_human_won(const QVariantList& positions); 			//emits when human won
     void backendevent_cpu_won(const QVariantList& positions);   			//emits when cpu won
@@ -60,7 +61,7 @@ private:
     std::atomic<bool> m_isRunning{true};
     int m_msgHeadSize{-1};
 
-    //data GUI->Backend
+    //data GUI->Backend, helper data
     std::atomic<bool> m_isNewHumanMove{false};
     IBoard::PositionXY m_lastHumanMove{k_XY_OUT_OF_BOARD};
 };

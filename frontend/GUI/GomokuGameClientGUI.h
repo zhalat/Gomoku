@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <thread>
+#include <QDebug>
 #include "Exceptions.h"
 #include "Interfaces/IGame.h"
 #include "protobuf/messages.pb.h"
@@ -63,55 +64,67 @@ private:
          int sockData{-1};
          const auto headSize = getMessageSize(m_msgHeader);
 
-         //first sends header and data to server
+         qInfo() << "Socket client: Connecting  to " << k_SOCKET_GUI_NAME;
          sockData = socket(k_SOCKET_TYPE, SOCK_STREAM, 0);
          stat = connect(sockData, (const struct sockaddr *)&m_sockName, sizeof(m_sockName));
          if (stat == -1)
          {
+        	 qCritical() << "Connection failed";
              close(sockData);
              return -1;
          }
 
          std::this_thread::sleep_for(std::chrono::milliseconds(20));
-         cout << "Sending..."<< endl;
 
+         qDebug() << "Socket Client: sending header";
          ssize_t bytesSent = 0;
          bytesSent = write(sockData, header.data(), headSize);
          if(bytesSent != headSize)
          {
+        	 qCritical() << "Sending header failed";
             close(sockData);
             return -2;
          }
 
+         qDebug() << "Socket Client: sending data";
          bytesSent = write(sockData, data.data(), data.size());
          if(bytesSent != data.size())
          {
+        	 qCritical() << "Sending data failed";
             close(sockData);
             return -3;
          }
 
-         //we expect response
          if(wantResp)
          {
+        	 qInfo() << "Socket Client: Waiting for response...";
+
             //1.read msg header
             std::string receivedHeaderMessage(headSize,'\0');
             ssize_t bytesRead = read(sockData, &receivedHeaderMessage[0], headSize);
+            qDebug() << "Socket Client: Got response header";
             if(bytesRead!=headSize)
             {
+            	qCritical() << "Socket Client: Invalid header size. Has been split?";
                 close(sockData);
                 return -4;
             }
 
              if(not m_msgHeader.ParseFromString(receivedHeaderMessage))
              {
+             	qCritical() << "Socket Client: Can not parse header";
                 close(sockData);
                 return -5;
              }
 
              const uint32_t length = m_msgHeader.m_msgsize();
              const uint32_t id = m_msgHeader.m_msgid();
+    		 qDebug() << "Socket Client answer: Msg ID:" << id;
+    		 qDebug() << "Socket Client answer: Msg size:" << length;
+
              if(id >= message::MsgID::KEEP_ME_LAST)
              {
+            	 qCritical() << "Socket Client: Got invalid header ID";
                 close(sockData);
                 return -6;
              }
@@ -119,36 +132,34 @@ private:
              //2.read msg data
              std::string receivedMessage(length,'\0');
              bytesRead = read(sockData, &receivedMessage[0], length);
+             qDebug() << "Socket Client: Got response data";
             if(bytesRead!=length)
             {
+            	qCritical() << "Socket Client: Invalid header size. Has been split?";
                 close(sockData);
                 return -7;
             }
 
             if(id == message::MsgID::USR_MOVE_ANSWER)
             {
-
                 if(m_msgAnswer.ParseFromString(receivedMessage))
                 {
-                    cout<<"ok, got USR_MOVE_ANSWER message"<<endl;
                    resp.m_x = m_msgAnswer.m_move().m_x();
                    resp.m_y =  m_msgAnswer.m_move().m_y();
-                   cout<<"fffffffffffffffffffffffffffffffffhuman move:" << m_msgAnswer.m_move().m_x() << ", " <<m_msgAnswer.m_move().m_y()<<endl;
+                   qDebug() << "Socket Client: Human move ("<< resp.m_x<<","<< resp.m_y <<")";
                 }
                 else
                 {
-                    throw game_except::General{"Socket client: Can not parse USR_MOVE_ANSWER message."};
+                	qCritical() << "Socket Client: Can not parse USR_MOVE_ANSWER message";
                 }
-
-
             }
             else if(id == message::MsgID::REPLAY_ANSWER)
             {
-                cout<<"ok, got REPLAY_ANSWER message"<<endl;
+                qDebug() <<"ok, got REPLAY_ANSWER message";
             }
             else
             {
-                cout<<"error client got invalid id AAAAAA"<<endl;
+            	qWarning() << "Socket Client: Got invalid message id:" <<id<<". Ignoring..";
             }
 
          }
