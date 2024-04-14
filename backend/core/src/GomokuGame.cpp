@@ -57,9 +57,9 @@ void GomokuGame::play()
 
     PlayStateMachine playStateMachine       = START;
     PlayStateMachine playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
-    bool isEnd                              = false;
+    m_isEnd                              = false;
 
-    while(!isEnd)
+    while(!m_isEnd)
     {
         switch(playStateMachine)
         {
@@ -273,8 +273,8 @@ void GomokuGame::play()
             break;
 
             case GAME_OVER: {
-                isEnd = !m_gameInteraction.getIsPlayAgain();
-                if(isEnd)
+                m_isEnd = !m_gameInteraction.getIsPlayAgain();
+                if(m_isEnd)
                 {
                     // Bye bye.
                    m_gameInteraction.endGameNotify();
