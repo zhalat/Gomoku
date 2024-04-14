@@ -51,6 +51,7 @@ private:
     bool isUserMoveValid(IBoard::PositionXY xy) const;
     IBoard::PositionXY getBestMove() const;
     IGameInteraction& m_gameInteraction;
+    bool m_isEnd{false};
 
     unique_ptr<ISpotter> m_spotterCpu{nullptr};         //finds threads. Cpu pov.
     unique_ptr<ISpotter> m_spotterHuman{nullptr};       //finds threads. Human pov.

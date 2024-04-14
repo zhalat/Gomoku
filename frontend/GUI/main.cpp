@@ -14,6 +14,8 @@ void f1(GomokuGame& gomokuGame)
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     gomokuGame.restartGame();
     gomokuGame.play();
+
+    qInfo() << "f1 thread finished! Bye";
 }
 
 void f2(GomokuGameServerGUI& gomokuGameServerGUI)
@@ -21,6 +23,8 @@ void f2(GomokuGameServerGUI& gomokuGameServerGUI)
     //Interacts with GUI. GUI->Backend & GUI<-Backend
     //gets query from  backend
     gomokuGameServerGUI.listening();
+
+    qInfo() << "f2 thread finished! Bye";
 }
 
 int main(int argc, char *argv[])
@@ -60,9 +64,11 @@ int main(int argc, char *argv[])
 	//-------Threads----------------------
     std::thread t1{f1, std::ref(gomokuGame)};
     std::thread t2{f2, std::ref(gomokuGameServerGUI)};
+
     app.exec();
+    qInfo() << "User has just closed the app. Cleaning..";
     t1.join();
     t2.join();
 
-    std::cout << "exit!"<<std::endl;
+    qInfo() << "Main thread finished! Bye";
 }

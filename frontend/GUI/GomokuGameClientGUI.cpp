@@ -45,7 +45,10 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
 
 bool GomokuGameClientGUI::getIsPlayAgain() const
 {
+	qInfo() << "Ask human if play again. Waiting for response..";
 
+	//Temporarily always true.
+	return true;
 };
 
 void GomokuGameClientGUI::invalidUserMoveNotify() const
