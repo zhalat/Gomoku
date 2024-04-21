@@ -517,6 +517,7 @@ bool EvalBoard::extendWinnerActionMove(const bool isMaxPlayer, IBoard::PositionX
         retVal      = true;
     }
     else if( isDouble3AOneStrokePossible(isMaxPlayer, buildUpMove, *m_board, *m_trackerCpu, *m_trackerHuman) &&
+             !isAdversary3A &&
              !isHeadShot3APossible(!isMaxPlayer, buildUpTmp, *m_board, *m_trackerCpu, *m_trackerHuman) &&
              !isHeadShot3AAPossible(!isMaxPlayer, buildUpTmp, *m_board, *m_trackerCpu, *m_trackerHuman) &&
              !isHeadShot4BCPossible(!isMaxPlayer, buildUpTmp, *m_board, *m_trackerCpu, *m_trackerHuman) &&
