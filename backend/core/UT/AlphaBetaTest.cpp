@@ -99,7 +99,7 @@ public:
     unique_ptr<AlphaBeta> m_alphaBeta;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     GenerateCandTestParameters,
     GenerateCandTest,
     ::testing::Values
@@ -350,7 +350,7 @@ public:
     unique_ptr<AlphaBeta> m_alphaBeta;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     UpdateCandTestParameters,
     UpdateCandTest,
     ::testing::Values
@@ -518,7 +518,7 @@ public:
     unique_ptr<AlphaBeta> m_alphaBeta;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     FindBestMoveTestParameters,
     FindBestMoveTest,
     ::testing::Values
@@ -870,7 +870,7 @@ public:
     unique_ptr<AlphaBeta> m_alphaBeta;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     StalemateTestParameters,
     StalemateTest,
     ::testing::Values
@@ -977,7 +977,7 @@ public:
     unique_ptr<AlphaBeta> m_alphaBeta;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     BugsTestParameters,
     BugsTest,
     ::testing::Values

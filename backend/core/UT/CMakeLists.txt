@@ -28,8 +28,9 @@ add_executable( ut
     "EvalBoardTest.cpp"
     "AlphaBetaTest.cpp"
     "OpenBookTest.cpp"
+        Anomaly1.cpp
 
-    # Stubs
+        # Stubs
  )
 
 target_include_directories(ut PRIVATE

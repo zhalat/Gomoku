@@ -40,7 +40,7 @@ public:
     unique_ptr<IBoard> m_board;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         OpenBookTestParameters,
         OpenBookTest,
         ::testing::Values

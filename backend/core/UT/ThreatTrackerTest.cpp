@@ -1401,7 +1401,7 @@ public:
     unique_ptr<ThreatTracker> m_trackerCpu;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     MementoTestParameters,
     MementoTest,
     ::testing::Values
