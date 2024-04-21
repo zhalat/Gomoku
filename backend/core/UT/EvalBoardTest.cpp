@@ -66,7 +66,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     HeadShot4BCTestParameters,
     HeadShot4BCTest,
     ::testing::Values
@@ -384,7 +384,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     HeadShot3ATestParameters,
     HeadShot3ATest,
     ::testing::Values
@@ -867,7 +867,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     HeadShot3AATestParameters,
     HeadShot3AATest,
     ::testing::Values
@@ -1182,7 +1182,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     HeadShotDragonTestParameters,
     HeadShotDragonTest,
     ::testing::Values
@@ -1493,7 +1493,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         HeadShotLizardTestParameters,
         HeadShotLizardTest,
         ::testing::Values
@@ -1764,7 +1764,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     Double3AOneStrokeTestParameters,
     Double3AOneStrokeTest,
     ::testing::Values
@@ -2080,7 +2080,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     Double3AMitigationTestParameters,
     Double3AMitigationTest,
     ::testing::Values
@@ -2398,7 +2398,7 @@ public:
     unique_ptr<EvalBoard> m_evalBoard;
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         BlockAndAttack3ATestParameters,
         BlockAndAttack3ATest,
         ::testing::Values
