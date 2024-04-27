@@ -5,6 +5,16 @@
 #include "Heuristics/AlphaBeta.h"
 #include "Exceptions.h"
 
+#define TREE_BROWSE_LOGGER
+
+#ifdef TREE_BROWSE_LOGGER
+    static bool showboard = false;
+//    static Board::PositionXY refxy = Board::PositionXY( 0, 0 );
+//    static uint32_t deepRef = 0;
+    static uint32_t logger = 0;
+    static bool LogStart = true;
+#endif
+
 static void nBestMoveLogger(const uint32_t deep, ISearchTree::PriorityQueueScore & rPriorityQueueScore,
                             const ISearchTree::ScoreForMove scoreForMove);
 
@@ -61,6 +71,12 @@ IBoard::PositionXY AlphaBeta::findBestMove(PriorityQueueScore& bestMove, const v
     m_depth                     = (avaliableCandidats < m_depth) ? avaliableCandidats : m_depth;
 
     vector<IBoard::PositionXY> treeTracker;
+
+#if defined( TREE_BROWSE_LOGGER )
+    m_Logger.NewRecord( TreeLogger::LOG_MINMAX_TREE_RECORD_FILE_NAME );
+    m_Logger.NewRecord( TreeLogger::LOG_MINMAX_BOARD_RECORD_FILE_NAME );
+#endif
+
     ScoreForMove retVal = gameTreeBrowsing(initCandidatesCpy, bestMove, treeTracker, MINUS_INFINITY, PLUS_INFINITY, true);
 
     m_depth = currentDeepSearch;
@@ -319,6 +335,23 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     leafScore = gameTreeBrowsing(nextCandidates, bestMovies, treeTracker, alpha, beta, false, deep + 1);
                 }
 
+#if defined( TREE_BROWSE_LOGGER )
+                // define global static: LogStart
+			if( LogStart )
+			{
+				++logger;
+
+				ScoreForMove log;
+				log.m_move = treeTracker.back();
+				log.m_score = leafScore.m_score;
+
+				m_Logger.AddEntryToRecord( deep, logger, log );
+				m_Logger.AddEntryToRecord( deep, logger, *m_boardCpy );
+                m_Logger.AddEntryToRecord( deep, logger, *m_cpuCpy );
+                m_Logger.AddEntryToRecord( deep, logger, *m_humanCpy );
+			}
+#endif
+
                 nBestMoveLogger(deep, bestMovies, leafScore);
                 best  = MAX(best, leafScore);
                 alpha = MAX(alpha, best.m_score);
@@ -419,6 +452,23 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     // Go one move deeper.
                     leafScore = gameTreeBrowsing(nextCandidates, bestMovies, treeTracker, alpha, beta, true, deep + 1);
                 }
+
+#if defined( TREE_BROWSE_LOGGER )
+                // define global static: LogStart
+			if( LogStart )
+			{
+				++logger;
+
+				ScoreForMove log;
+				log.m_move = treeTracker.back();
+				log.m_score = leafScore.m_score;
+
+				m_Logger.AddEntryToRecord( deep, logger, log );
+				m_Logger.AddEntryToRecord( deep, logger, *m_boardCpy );
+				m_Logger.AddEntryToRecord( deep, logger, *m_cpuCpy );
+				m_Logger.AddEntryToRecord( deep, logger, *m_humanCpy );
+			}
+#endif
 
                 best = MIN(best, leafScore);
                 beta = MIN(beta, best.m_score);

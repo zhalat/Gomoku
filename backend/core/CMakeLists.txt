@@ -25,6 +25,8 @@ add_library( gomokuAlgo STATIC
         src/OpenBook.cpp
         src/GomokuGame.cpp
         src/ThreatTracker.cpp
+        inc/Heuristics/TreeLogger.h
+        src/Heuristics/TreeLogger.cpp
 )
 
 target_include_directories(gomokuAlgo PRIVATE
