@@ -45,6 +45,6 @@ class AlphaBeta : public ISearchTree
     shared_ptr<ThreatTracker> m_humanCpy{nullptr};
     unique_ptr<EvalBoard> m_evalBoard= make_unique<EvalBoard>();
 
-    TreeLogger m_Logger;
-    FRIEND_TEST(UpdateCandTest, TestName);
+    TreeLogger m_treeLogger;
+    FRIEND_TEST(UpdateCandAbTest, TestName);
 };

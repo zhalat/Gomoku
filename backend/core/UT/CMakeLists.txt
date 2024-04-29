@@ -29,6 +29,7 @@ add_executable( ut
     "AlphaBetaTest.cpp"
     "OpenBookTest.cpp"
     "Anomaly.cpp"
+    "MinMaxTest.cpp"
 
         # Stubs
  )

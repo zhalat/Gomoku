@@ -20,7 +20,7 @@ NEW_LINE_DELIMITER       = "\n"
 HOVER_STYLE              = '''\n
 <style type="text/css">
 .hovertext text {
-    font-size: 10px !important;
+    font-size: 11px !important;
     font-family: "Ubuntu Mono", "DejaVu Sans Mono", "Roboto Mono", "Source Code Pro", "Courier New", monospace !important;
 }
 
@@ -32,7 +32,7 @@ MARKER_SIZE_SPACING      = (0.1*MARKER_SIZE)
 X_MAX                    = 100
 Y_MAX                    = 10
 DEPTH_MAX                = 6
-BORAD_STATE_LINE_NUMBER  = 43
+BORAD_STATE_LINE_NUMBER  = 49
 
 class Point:
     def __init__(self,x_init,y_init):
@@ -182,10 +182,11 @@ class Tree:
             raise ValueError( "Tree__init__():Tree too deep." )
             
     def MadeConnections( self ):
+        labels = self.GetPathsOfElements(0)
         zeroLevelNo = self.GetNumberOfElements( 0 )
         for i in range( zeroLevelNo ):
             label = '0_' + str( i + 1 )
-            self.m_MainQ.put( label )
+            self.m_MainQ.put( labels[i] )
             
         while not self.m_MainQ.empty():
             del self.m_CurrentPath[:]
@@ -207,6 +208,7 @@ class Tree:
         for i in range( DEPTH_MAX ):
             if not self.m_labelLevel[i].IsEmpty():
                 label = self.m_labelLevel[i].GetData()
+                print(label)
                 self.m_CurrentPath.append( label )
             else:
                 break
@@ -227,14 +229,16 @@ class Tree:
         # Get all info needed to crate vertex node
         xLocation = self.m_NodeLocator.GetCoordinateX( labelLevel )
         yLocation = self.m_TreeDepth - labelLevel
+        print(self.m_CurrentPath)
         info = self.GetVertexInfo( self.m_CurrentPath )
-        node = Node( xLocation, yLocation, info['Move'], info['Score'], info['Label'] )
-        node.m_Child = childrenLabels
-        fullNodePath = list(self.m_CurrentPath)
-        node.SetPath( fullNodePath ) 
+        if info!=None:
+            node = Node( xLocation, yLocation, info['Move'], info['Score'], info['Label'] )
+            node.m_Child = childrenLabels
+            fullNodePath = list(self.m_CurrentPath)
+            node.SetPath( fullNodePath ) 
 
-        # Add vertex/node to tree.
-        self.m_Vertices.append( node )
+            # Add vertex/node to tree.
+            self.m_Vertices.append( node )
                 
     def SetAncestorToBase( self, ContainerId ):
         if ContainerId >= 0:
@@ -285,11 +289,31 @@ class Tree:
                     
         hFile.close()
         return cntr
+
+    #return list of paths line [0_1, 0_2 ..] on provided level
+    #[level_1, level_2 ..]
+    def GetPathsOfElements(self, level):
+        retVal = []
+        hFile = open(TREE_RECORD, 'r')
+        for line in hFile:
+            if re.search(ROW_COLUMN_FORMAT_RE, line):
+                currentDepthExpr = re.search(ROW_COLUMN_FORMAT_RE, line).group()
+                currentDepth = currentDepthExpr[:len(currentDepthExpr) - 1]
+                currentDepth = strToInt(currentDepth)
+
+                if currentDepth == level:
+                    retVal.append(re.search(LABEL_RE, line).group())
+
+        hFile.close()
+        return retVal
     
-    def FindIndex( self, tag, content ):
+    def FindIndex( self, tag, content, isExact ):
         index = 0
         found = False
-        
+
+        if isExact:
+            tag += " "
+
         for el in content:
             if tag in el:
                 found = True
@@ -314,11 +338,11 @@ class Tree:
         for el in path:
             #check if its' the last 
             if el == path[-1]:
-                vertexIndex = self.FindIndex( el, buffer1 )
+                vertexIndex = self.FindIndex( el, buffer1, False)
                 break
                 
             #Find index of vertex
-            downIndex =  self.FindIndex( el, buffer1 ) - 1
+            downIndex =  self.FindIndex( el, buffer1, False) - 1
             if downIndex < 0:
                 # no children found
                 return 0
@@ -349,14 +373,17 @@ class Tree:
                 
             buffer1 = buffer2
             buffer2 = []
-            
-        vertexData = buffer1[vertexIndex]
-        
-        vertexInfo = NodeInfo
-        
-        vertexInfo['Label'] = re.search( LABEL_RE, vertexData  ).group()
-        vertexInfo['Move'] = re.search( MOVE_RE, vertexData  ).group()
-        vertexInfo['Score'] = re.search( SCORE_RE, vertexData  ).group()
+        if vertexIndex !=-1:
+            vertexData = buffer1[vertexIndex]
+            vertexInfo = NodeInfo
+            vertexInfo['Label'] = re.search( LABEL_RE, vertexData  ).group()
+            vertexInfo['Move'] = re.search( MOVE_RE, vertexData  ).group()
+            vertexInfo['Score'] = re.search( SCORE_RE, vertexData  ).group()
+        else:
+            vertexInfo = NodeInfo
+            vertexInfo['Label'] = "0_1"
+            vertexInfo['Move'] = "(0,0)"
+            vertexInfo['Score'] = "[-1]"
         
         return vertexInfo
 
@@ -379,7 +406,7 @@ class Tree:
         
         for el in vertexLabel:
             #Find index of vertex
-            downIndex =  self.FindIndex( el, buffer1 ) - 1
+            downIndex =  self.FindIndex( el, buffer1, True ) - 1
             if downIndex < 0:
                 # no children found
                 return 0
@@ -441,10 +468,10 @@ class Tree:
         
         for el in path:
             #Find index of vertex
-            index =  self.FindIndex( el, buffer1 )
+            index =  self.FindIndex( el, buffer1, False )
             if index < 0:
-                raise ValueError( "TreeGetBoardState():Path doesn't exist" )
-            
+                #raise ValueError( "TreeGetBoardState():Path doesn't exist" )
+                return ""
             # If we reach the end of path copy the data below. It is what we want. If not copy up- up to reach data of our neighbour 
             # ex. 0_1 is neighbour of 0_2 and vice versa (the same level)
             copyDataUp = True
@@ -607,45 +634,50 @@ if __name__ == "__main__":
      
     cntr1 = 0
     for el in tree.m_Vertices:
-        # Create xy locaton vector
-        x = el.m_Point.m_X
-        y = el.m_Point.m_Y
-        Xn.append( x )
-        Yn.append( y )
-         
-        infoText = el.m_Score + "<br>" + el.m_Move
-        VertexInfoPosition[ cntr1 ] =  [ x, y ]
-        VertexInfoText[ cntr1 ]= infoText  
-        
-        # Hover text.
-        hoverTextList = tree.GetBoardState( el.m_FullPath ) 
-        fullPathStr = '<br> Full path: ' + '--'.join( el.m_FullPath )
-        hoverTextList.append( fullPathStr )
-        hoverText =  '<br>'.join( hoverTextList )
-        HoverText.append( hoverText ) 
-         
-        # Create line vector
-        for el_child in el.m_Child:
-            fullPathChild = list(el.m_FullPath)
-            fullPathChild.append(el_child)
-             
-            point = tree.GetVertexXY( fullPathChild )
-            #parent xy
-            Xe.append( x )
-            Ye.append( y )
-            #children xy
-            Xe.append( point.m_X )
-            Ye.append( point.m_Y )
-            #line type
-            Xe.append( None )
-            Ye.append( None )
-         
-        cntr1 = cntr1 + 1
-#         if cntr1 == 5:
-#             break
-    
-    #======== CREATE PLOTLY LAYOUT: ==========:  
-     
+
+        try:
+            # Create xy locaton vector
+            x = el.m_Point.m_X
+            y = el.m_Point.m_Y
+            Xn.append( x )
+            Yn.append( y )
+
+            infoText = el.m_Score + "<br>" + el.m_Move
+            VertexInfoPosition[ cntr1 ] =  [ x, y ]
+            VertexInfoText[ cntr1 ]= infoText
+
+            # Hover text.
+            hoverTextList = tree.GetBoardState( el.m_FullPath )
+            fullPathStr = '<br> Full path: ' + '--'.join( el.m_FullPath )
+            hoverTextList.append( fullPathStr )
+            hoverText =  '<br>'.join( hoverTextList )
+            HoverText.append( hoverText )
+
+
+            # Create line vector
+            for el_child in el.m_Child:
+                fullPathChild = list(el.m_FullPath)
+                fullPathChild.append(el_child)
+
+                point = tree.GetVertexXY( fullPathChild )
+                #parent xy
+                Xe.append( x )
+                Ye.append( y )
+                #children xy
+                Xe.append( point.m_X )
+                Ye.append( point.m_Y )
+                #line type
+                Xe.append( None )
+                Ye.append( None )
+
+            cntr1 = cntr1 + 1
+    #         if cntr1 == 5:
+    #             break
+        except:
+            continue
+
+    #======== CREATE PLOTLY LAYOUT: ==========:
+
     # Vertices marker. Text can be added and shown when hoover a mouse (see text list below).
     dots = go.Scatter( x = Xn,
                        y = Yn,
@@ -656,57 +688,57 @@ if __name__ == "__main__":
                        textfont = dict( family = 'Consolas', size = 18, color = '#1f77b4' ), # it doesnt set font of hoover text. Must be set by css in html.
                        hoverinfo = 'text',
                        opacity = 0.8 )
-     
-    # Lines bettween vertices. 
+
+    # Lines bettween vertices.
     lines = go.Scatter( x = Xe,
                         y = Ye,
                         mode = 'lines',
                         line = dict( color = 'rgb(210,210,210)', width = 1 ),
                         hoverinfo = 'none',
                         textfont = dict( family = 'Calibri', size = 38, color = '#1f77b4' ) )
-     
+
     # Provide description of each vertices.
     def make_annotations( pos, info, font_size = 8, font_color = 'rgb(0,0,0)' ):
         L = len( pos )
         if len( info ) != L:
             raise ValueError( 'make_annotations()::The lists pos and info must have the same len' )
-         
+
         annotations = go.Annotations()
         for k in range( L ):
-            item = go.Annotation( text = info[k] , # text to be shown within the node  
+            item = go.Annotation( text = info[k] , # text to be shown within the node
                                   x = pos[k][0], y = pos[k][1],
                                   xref = 'x1', yref = 'y1',
                                   font = dict( color = font_color, size = font_size ),
                                   showarrow = False )
             annotations.append( item )
-             
-        return annotations  
-       
+
+        return annotations
+
     axis = dict( showline = False, # hide axis line, grid, ticklabels and  title
                  zeroline = False,
                  showgrid = False,
                  showticklabels = False )
-          
-    layout = dict( title = 'Gomoku Game Tree',  
+
+    layout = dict( title = 'Gomoku Game Tree',
                    annotations = make_annotations( VertexInfoPosition, VertexInfoText ),
                    font = dict(size=12),
                    showlegend = False,
                    xaxis = go.XAxis(axis),
-                   yaxis = go.YAxis(axis),          
+                   yaxis = go.YAxis(axis),
                    margin = dict(l=40, r=40, b=85, t=100),
                    hovermode = 'closest',
                    plot_bgcolor = 'rgb(248,248,248)' )
-     
-    # Default layout - grid etc.  
+
+    # Default layout - grid etc.
     # layout = go.Layout( showlegend=False )
-      
-    #======== PLOT A FIGURE ==========: 
-    
+
+    #======== PLOT A FIGURE ==========:
+
     data=go.Data([lines, dots])
     fig=dict(data=data, layout=layout)
     fig['layout'].update( annotations = make_annotations( VertexInfoPosition, VertexInfoText ) )
     plotly.offline.plot(fig, filename=FIGURE_OUTPUT_NAME)
-     
-    #======== PLOT A FIGURE ==========: 
+
+    #======== PLOT A FIGURE ==========:
 
     SetHoverStyle()
