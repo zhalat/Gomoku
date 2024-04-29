@@ -5,12 +5,14 @@
 #include "Heuristics/AlphaBeta.h"
 #include "Exceptions.h"
 
+//#define TREE_BROWSE_LOGGER
+
 static void nBestMoveLogger(const uint32_t deep, ISearchTree::PriorityQueueScore & rPriorityQueueScore,
                             const ISearchTree::ScoreForMove scoreForMove);
 
 void AlphaBeta::setStates(const IBoard& board, const ThreatTracker& cpu, const ThreatTracker& human)
 {
-    //actually we don't use originals (m_board,m_cpu,m_human). Only for copy.
+    //actually we don't use originals (m_board_ab,m_cpu,m_human). Only for copy.
     m_board = &board;
     m_boardCpy = std::dynamic_pointer_cast<GomokuBoard>(m_board->clone());
 
@@ -18,7 +20,7 @@ void AlphaBeta::setStates(const IBoard& board, const ThreatTracker& cpu, const T
     m_human = &human;
     m_cpuCpy.reset(new ThreatTracker(*m_cpu));
     m_humanCpy.reset(new ThreatTracker(*m_human));
-    //that is not enough. Notice that m_cpuCpy, m_humanCpy are copies and they originals were set ot operate on original m_board.
+    //that is not enough. Notice that m_cpuCpy, m_humanCpy are copies and they originals were set ot operate on original m_board_ab.
     //So here there is need to switch their board.
     m_cpuCpy->setBoard(*m_boardCpy.get());
     m_humanCpy->setBoard(*m_boardCpy.get());
@@ -61,6 +63,12 @@ IBoard::PositionXY AlphaBeta::findBestMove(PriorityQueueScore& bestMove, const v
     m_depth                     = (avaliableCandidats < m_depth) ? avaliableCandidats : m_depth;
 
     vector<IBoard::PositionXY> treeTracker;
+
+#if defined( TREE_BROWSE_LOGGER )
+    m_treeLogger.NewRecord(TreeLogger::LOG_MINMAX_TREE_RECORD_FILE_NAME);
+    m_treeLogger.NewRecord(TreeLogger::LOG_MINMAX_BOARD_RECORD_FILE_NAME);
+#endif
+
     ScoreForMove retVal = gameTreeBrowsing(initCandidatesCpy, bestMove, treeTracker, MINUS_INFINITY, PLUS_INFINITY, true);
 
     m_depth = currentDeepSearch;
@@ -234,6 +242,10 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
         vector<IBoard::PositionXY> & treeTracker, int alpha, int beta,
         bool isMaximizingPlayer, const uint32_t deep)
 {
+#if defined( TREE_BROWSE_LOGGER )
+    uint32_t logger = 0;
+#endif
+
     // Termination condition checker.
     ScoreForMove leafScore;
     if (deep == m_depth)
@@ -253,17 +265,9 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
             if (treeTracker.size())
             {
                 leafScore.m_move = treeTracker.front();
-                //RemoveSnapshot(deep);
             }
-            else
-            {
-                // it means that none move has been put yet.
-                //RemoveSnapshot(deep);
-            }
-
             // Log to n-best move.
             nBestMoveLogger(deep, bestMovies, leafScore);
-
             return leafScore;
         }
         else if (m_evalBoard->extendWinnerActionMove(true, leafScore.m_move, leafScore.m_score))
@@ -271,17 +275,9 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
             if(treeTracker.size())
             {
                 leafScore.m_move = treeTracker.front();
-                //RemoveSnapshot(deep);
             }
-            else
-            {
-                // it means that none move has been put yet.
-                //RemoveSnapshot(deep);
-            }
-
             // Log to n-best move.
             nBestMoveLogger(deep, bestMovies, leafScore);
-
             return leafScore;
         }
         else
@@ -292,11 +288,6 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                 treeTracker.push_back(el);
                 m_cpuCpy->updateScore(el, m_humanCpy->getPlayer() == whoIsTurn(), ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
                 m_humanCpy->updateScore(el, m_cpuCpy->getPlayer() == whoIsTurn(), ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-
-
-                //cout<<*m_boardCpy<<endl;
-                //cout<<*m_cpuCpy<<endl;
-                //cout<<*m_humanCpy<<endl;
 
                 switchPlayer();
                 bool isGameOver = false;
@@ -319,6 +310,16 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     leafScore = gameTreeBrowsing(nextCandidates, bestMovies, treeTracker, alpha, beta, false, deep + 1);
                 }
 
+#if defined( TREE_BROWSE_LOGGER )
+				++logger;
+				ScoreForMove logScore;
+                logScore.m_move = treeTracker.back();
+                logScore.m_score = leafScore.m_score;
+				m_treeLogger.AddEntryToRecord(deep, logger, logScore );
+				m_treeLogger.AddEntryToRecord(deep, logger, *m_boardCpy );
+                m_treeLogger.AddEntryToRecord(deep, logger, *m_cpuCpy );
+                m_treeLogger.AddEntryToRecord(deep, logger, *m_humanCpy );
+#endif
                 nBestMoveLogger(deep, bestMovies, leafScore);
                 best  = MAX(best, leafScore);
                 alpha = MAX(alpha, best.m_score);
@@ -330,10 +331,6 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     m_cpuCpy->mementoRevert(1);
                     m_humanCpy->mementoRevert(1);
                     switchPlayer();
-
-                    //cout<<*m_boardCpy<<endl;
-                    //cout<<*m_cpuCpy<<endl;
-                    //cout<<*m_humanCpy<<endl;
                     break;
                 }
                 else
@@ -342,10 +339,6 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     treeTracker.pop_back();
                     m_cpuCpy->mementoRevert(1);
                     m_humanCpy->mementoRevert(1);
-
-                    //cout<<*m_boardCpy<<endl;
-                    //cout<<*m_cpuCpy<<endl;
-                    //cout<<*m_humanCpy<<endl;
                 }
 
                 switchPlayer();
@@ -362,13 +355,8 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
             if(treeTracker.size())
             {
                 leafScore.m_move = treeTracker.front();
-                //RemoveSnapshot(deep);
             }
-            else
-            {
-                // it means that none move has been put yet.
-                //RemoveSnapshot(deep);
-            }
+
             return leafScore;
         }
         else if(m_evalBoard->extendWinnerActionMove(false, leafScore.m_move, leafScore.m_score))
@@ -376,13 +364,8 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
             if(treeTracker.size())
             {
                 leafScore.m_move = treeTracker.front();
-                //RemoveSnapshot(deep);
             }
-            else
-            {
-                // it means that none move has been put yet.
-                //RemoveSnapshot(deep);
-            }
+
             return leafScore;
         }
         else
@@ -393,11 +376,6 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                 treeTracker.push_back(el);
                 m_cpuCpy->updateScore(el, m_humanCpy->getPlayer() == whoIsTurn(),ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
                 m_humanCpy->updateScore(el, m_cpuCpy->getPlayer() == whoIsTurn(),ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-
-                //cout<<*m_boardCpy<<endl;
-                //cout<<*m_cpuCpy<<endl;
-                //cout<<*m_humanCpy<<endl;
-
                 switchPlayer();
 
                 bool isGameOver = false;
@@ -420,6 +398,17 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     leafScore = gameTreeBrowsing(nextCandidates, bestMovies, treeTracker, alpha, beta, true, deep + 1);
                 }
 
+#if defined( TREE_BROWSE_LOGGER )
+				++logger;
+				ScoreForMove logScore;
+                logScore.m_move = treeTracker.back();
+                logScore.m_score = leafScore.m_score;
+				m_treeLogger.AddEntryToRecord(deep, logger, logScore );
+				m_treeLogger.AddEntryToRecord(deep, logger, *m_boardCpy );
+				m_treeLogger.AddEntryToRecord(deep, logger, *m_cpuCpy );
+				m_treeLogger.AddEntryToRecord(deep, logger, *m_humanCpy );
+#endif
+
                 best = MIN(best, leafScore);
                 beta = MIN(beta, best.m_score);
 
@@ -430,10 +419,6 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     m_cpuCpy->mementoRevert(1);
                     m_humanCpy->mementoRevert(1);
                     switchPlayer();
-
-                    //cout<<*m_boardCpy<<endl;
-                    //cout<<*m_cpuCpy<<endl;
-                    //cout<<*m_humanCpy<<endl;
                     break;
                 }
                 else
@@ -442,10 +427,6 @@ ISearchTree::ScoreForMove AlphaBeta::gameTreeBrowsing(
                     treeTracker.pop_back();
                     m_cpuCpy->mementoRevert(1);
                     m_humanCpy->mementoRevert(1);
-
-                    //cout<<*m_boardCpy<<endl;
-                    //cout<<*m_cpuCpy<<endl;
-                    //cout<<*m_humanCpy<<endl;
                 }
 
                 switchPlayer();

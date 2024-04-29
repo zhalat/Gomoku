@@ -4,6 +4,7 @@
 #include "ThreatTracker.h"
 #include "Interfaces/IBoard.h"
 #include "Heuristics/AlphaBeta.h"
+#include "Heuristics/MinMax.h"
 #include "Score.h"
 #include "Spotter.h"
 
@@ -58,8 +59,8 @@ static bool isOnTheList(const vector<IBoard::PositionXY>& vct, const IBoard::Pos
     return it != vct.end();
 }
 
-//---------------------------------Test: Anomaly1---------------------------------
-class Anomaly1 : public ::testing::TestWithParam<TestMovies>
+//---------------------------------Test: Anomaly---------------------------------
+class Anomaly : public ::testing::TestWithParam<TestMovies>
 {
     void SetUp()
     {
@@ -70,9 +71,13 @@ class Anomaly1 : public ::testing::TestWithParam<TestMovies>
         m_trackerHuman = make_unique<ThreatTracker>(IBoard::PLAYER_B,*m_spotterHuman.get());
         m_trackerCpu->setBoard(*m_board.get());
         m_trackerHuman->setBoard(*m_board.get());
+
         SetBoard(*m_board);
         m_alphaBeta = make_unique<AlphaBeta>(k_DEFAULT_DEPTH, "AlphaBeta");
+        m_minMax = make_unique<MinMax>(k_DEFAULT_DEPTH, "MinMax");
+
         m_alphaBeta->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
+        m_minMax->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
     }
 
     void TearDown()
@@ -97,11 +102,12 @@ public:
     unique_ptr<ThreatTracker> m_trackerCpu;
     unique_ptr<ThreatTracker> m_trackerHuman;
     unique_ptr<AlphaBeta> m_alphaBeta;
+    unique_ptr<MinMax> m_minMax;
 };
 
 INSTANTIATE_TEST_SUITE_P(
-        Anomaly1Parameters,
-        Anomaly1,
+        AnomalyParameters,
+        Anomaly,
         ::testing::Values
         (
             //Anomaly description:
@@ -137,11 +143,45 @@ INSTANTIATE_TEST_SUITE_P(
                     .m_human{IBoard::PositionXY(6, 6),IBoard::PositionXY(8, 6),IBoard::PositionXY(7, 6),IBoard::PositionXY(7, 8),
                              IBoard::PositionXY(5, 7),IBoard::PositionXY(10, 7),IBoard::PositionXY(9, 6),IBoard::PositionXY(8, 5)},
                     .m_expectedMove{IBoard::PositionXY(7, 4),IBoard::PositionXY(11, 8)},
+            },
+            //Anomaly description:
+            /*
+             * In provided situation, CPU (x) is next move which was (9,7).
+             * This is trap as then Human(7,9),Cpu(6,8), Human(7,8)- do you see two deadly threats? double 3 and (7,11)
+             * and dragon (8,7). This anomaly is not deviation. Its because depth was set to 3 which is too shallow.
+             * Depth 5 should solve the issue.
+             */
+            //                       1 1 1 1 1
+            //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+            //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            //0 |. . . . . . . . . . . . . . .|
+            //1 |. . . . . . . . . . . . . . .|
+            //2 |. . . . . . . . . . . . . . .|
+            //3 |. . . . . . . . . . . . . . .|
+            //4 |. . . . . . . . . . . . . . .|
+            //5 |. . . . . . . . . . . . . . .|
+            //6 |. . . . . . . . . . . . . . .|
+            //7 |. . . . . . . . . . . . . . .|
+            //8 |. . . . . . . . . o o o x . .|
+            //9 |. . . . . . . . o x x o . . .|
+            //10|. . . . . o x x x x o . . . .|
+            //11|. . . . . . . . . . . . . . .|
+            //12|. . . . . . . . . . . . . . .|
+            //13|. . . . . . . . . . . . . . .|
+            //14|. . . . . . . . . . . . . . .|
+            //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+            TestMovies
+            {
+                .m_cpu{ IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 8),IBoard::PositionXY(10, 9),IBoard::PositionXY(10, 7),
+                        IBoard::PositionXY(10, 6),IBoard::PositionXY(9, 10),IBoard::PositionXY(8, 12)},
+                .m_human{IBoard::PositionXY(9, 8),IBoard::PositionXY(8, 10),IBoard::PositionXY(8, 9),IBoard::PositionXY(10, 10),
+                         IBoard::PositionXY(10, 5),IBoard::PositionXY(8, 11),IBoard::PositionXY(9, 11)},
+                .m_expectedMove{IBoard::PositionXY(7, 11),IBoard::PositionXY(6, 11),IBoard::PositionXY(7, 9)},
             }
         )
 );
 
-TEST_P(Anomaly1, TestName)
+TEST_P(Anomaly, TestName)
 {
     TestMovies params = GetParam();
     EXPECT_EQ(params.m_cpu.size(), params.m_cpu.size());
@@ -160,15 +200,35 @@ TEST_P(Anomaly1, TestName)
         m_trackerCpu->updateScore(humanMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
     }
 
-    //Now findBestMove.
-    const uint32_t maxCandidatesNumber = 20U;
+    const uint32_t maxCandidatesNumber =30U;
     ISearchTree::PriorityQueueScore nBestMove{maxCandidatesNumber};
+
+    //INTRO: Use minmax to generate candidates
+    nBestMove.clearAll();
+    m_minMax->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
+    m_minMax->setDepth(3);
+    m_minMax->setInitialPlayer( m_trackerCpu->getPlayer());
+    m_minMax->findBestMove(nBestMove);
+
+    vector<IBoard::PositionXY> alphaBetaCandidates;
+    for(int i=0; i<nBestMove.size(); ++i)
+    {
+        const auto el = nBestMove.topData();
+        nBestMove.popData();
+        alphaBetaCandidates.push_back(el.m_move);
+    }
+
+    //AlphaBeta for finding best on high depth
+    nBestMove.clearAll();
     m_alphaBeta->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
-    m_alphaBeta->setDepth(3);
-
+    m_alphaBeta->setDepth(5);
     m_alphaBeta->setInitialPlayer( m_trackerCpu->getPlayer());
-    IBoard::PositionXY best = m_alphaBeta->findBestMove(nBestMove);
+    const IBoard::PositionXY best = m_alphaBeta->findBestMove(nBestMove,alphaBetaCandidates);
 
+    for(int i=0; i<nBestMove.size(); ++i)
+    {
+        const auto el = nBestMove.topData();
+        nBestMove.popData();
+    }
     ASSERT_TRUE(isOnTheList(params.m_expectedMove, best));
 }
-

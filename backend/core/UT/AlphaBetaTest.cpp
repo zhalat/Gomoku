@@ -58,8 +58,8 @@ static bool isOnTheList(const vector<IBoard::PositionXY>& vct, const IBoard::Pos
     return it != vct.end();
 }
 
-//---------------------------------Test: GenerateCandTest---------------------------------
-class GenerateCandTest : public ::testing::TestWithParam<TestMovies>
+//---------------------------------Test: GenerateCandAbTest---------------------------------
+class GenerateCandAbTest : public ::testing::TestWithParam<TestMovies>
 {
     void SetUp()
     {
@@ -100,8 +100,8 @@ public:
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    GenerateCandTestParameters,
-    GenerateCandTest,
+    GenerateCandAbTestParameters,
+    GenerateCandAbTest,
     ::testing::Values
     (
         //                       1 1 1 1 1
@@ -270,7 +270,7 @@ INSTANTIATE_TEST_SUITE_P(
     )
 );
 
-TEST_P(GenerateCandTest, TestName)
+TEST_P(GenerateCandAbTest, TestName)
 {
     // The scenario:
     // 1. Put on the board some moves.
@@ -309,8 +309,8 @@ TEST_P(GenerateCandTest, TestName)
     }
 }
 
-//---------------------------------Test: UpdateCandTest---------------------------------
-class UpdateCandTest : public ::testing::TestWithParam<TestMovies2>
+//---------------------------------Test: UpdateCandAbTest---------------------------------
+class UpdateCandAbTest : public ::testing::TestWithParam<TestMovies2>
 {
     void SetUp()
     {
@@ -351,8 +351,8 @@ public:
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    UpdateCandTestParameters,
-    UpdateCandTest,
+    UpdateCandAbTestParameters,
+    UpdateCandAbTest,
     ::testing::Values
     (
         //                       1 1 1 1 1
@@ -425,7 +425,7 @@ INSTANTIATE_TEST_SUITE_P(
     )
 );
 
-TEST_P(UpdateCandTest, TestName)
+TEST_P(UpdateCandAbTest, TestName)
 {
     // The scenario:
     // 1. On the board where are 3 move run initCandidates = GenerateCand()
@@ -476,8 +476,8 @@ TEST_P(UpdateCandTest, TestName)
     SetBoard(*m_alphaBeta->m_boardCpy.get());//at the end set score to use original m_board
 }
 
-//---------------------------------Test: FindBestMoveTest---------------------------------
-class FindBestMoveTest : public ::testing::TestWithParam<TestMovies3>
+//---------------------------------Test: FindBestMoveAbTest---------------------------------
+class FindBestMoveAbTest : public ::testing::TestWithParam<TestMovies3>
 {
     void SetUp()
     {
@@ -519,8 +519,8 @@ public:
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    FindBestMoveTestParameters,
-    FindBestMoveTest,
+    FindBestMoveAbTestParameters,
+    FindBestMoveAbTest,
     ::testing::Values
     (
         //                       1 1 1 1 1
@@ -788,7 +788,7 @@ INSTANTIATE_TEST_SUITE_P(
     )
 );
 
-TEST_P(FindBestMoveTest, TestName)
+TEST_P(FindBestMoveAbTest, TestName)
 {
     TestMovies3 params = GetParam();
 
@@ -813,7 +813,6 @@ TEST_P(FindBestMoveTest, TestName)
     {
         for(const auto depth : params.m_depth)
         {
-           // cout<<*m_board<<endl;
             m_alphaBeta->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
 
             m_alphaBeta->setDepth(depth);
@@ -828,8 +827,8 @@ TEST_P(FindBestMoveTest, TestName)
     }
 }
 
-//---------------------------------Test: StalemateTest---------------------------------
-class StalemateTest : public ::testing::TestWithParam<TestMovies3>
+//---------------------------------Test: StalemateAbTest---------------------------------
+class StalemateAbTest : public ::testing::TestWithParam<TestMovies3>
 {
     void SetUp()
     {
@@ -871,8 +870,8 @@ public:
 };
 
 INSTANTIATE_TEST_SUITE_P(
-    StalemateTestParameters,
-    StalemateTest,
+    StalemateAbTestParameters,
+    StalemateAbTest,
     ::testing::Values
     (
         //	   0 1 2 3 4
@@ -901,7 +900,7 @@ INSTANTIATE_TEST_SUITE_P(
     )
 );
 
-TEST_P(StalemateTest, TestName)
+TEST_P(StalemateAbTest, TestName)
 {
     TestMovies3 params = GetParam();
 
@@ -932,114 +931,5 @@ TEST_P(StalemateTest, TestName)
         nBestMove.clearAll();
         IBoard::PositionXY best = m_alphaBeta->findBestMove(nBestMove);
         ASSERT_TRUE(isOnTheList(params.m_expectedMove,best));
-    }
-}
-
-//---------------------------------Bug Fix: BugsTest---------------------------------
-class BugsTest : public ::testing::TestWithParam<TestMovies3>
-{
-    void SetUp()
-    {
-        m_board = make_unique<GomokuBoard>(k_BOARD_SIZE);
-        m_spotterCpu = make_unique<Spotter>(IBoard::PLAYER_A);
-        m_spotterHuman = make_unique<Spotter>(IBoard::PLAYER_B);
-        m_trackerCpu = make_unique<ThreatTracker>(IBoard::PLAYER_A,*m_spotterCpu.get());
-        m_trackerHuman = make_unique<ThreatTracker>(IBoard::PLAYER_B,*m_spotterHuman.get());
-        m_trackerCpu->setBoard(*m_board.get());
-        m_trackerHuman->setBoard(*m_board.get());
-        SetBoard(*m_board);
-        m_alphaBeta = make_unique<AlphaBeta>(k_DEFAULT_DEPTH, "AlphaBeta");
-        m_alphaBeta->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
-        m_alphaBeta->setInitialPlayer(IBoard::Player::PLAYER_A);
-    }
-
-    void TearDown()
-    {
-
-    }
-
-public:
-    static constexpr uint32_t k_DEFAULT_DEPTH = 3;
-    static constexpr uint32_t k_BOARD_SIZE = 15;
-    void SetBoard(const IBoard& rBoard)
-    {
-        for(uint32_t i = 0; i < Score::MAX_KIND_OF_THREATS; ++i)
-        {
-            Score::getInstance()->setBoard(rBoard);
-        }
-    }
-
-    unique_ptr<IBoard> m_board;
-    unique_ptr<ISpotter> m_spotterCpu;
-    unique_ptr<ISpotter> m_spotterHuman;
-    unique_ptr<ThreatTracker> m_trackerCpu;
-    unique_ptr<ThreatTracker> m_trackerHuman;
-    unique_ptr<AlphaBeta> m_alphaBeta;
-};
-
-INSTANTIATE_TEST_SUITE_P(
-    BugsTestParameters,
-    BugsTest,
-    ::testing::Values
-    (
-        //                       1 1 1 1 1
-        //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-        //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-        //0 |. . . . . . . . . . . . . . .|
-        //1 |. . . . . . . . . . . . . . .|
-        //2 |. . . . . . . . . . . . . . .|
-        //3 |. . . . . . . . . . . . . . .|
-        //4 |. . . . . . . . . . . . . . .|
-        //5 |. . . . . . . . . . . . . . .|
-        //6 |. . . . . . . . . . . . . . .|
-        //7 |. . . . . . . . . . . . . . .|
-        //8 |. . . . . . . . . . . . . . .|
-        //9 |. . . . . . . . . . . . . . .|
-        //10|. . . . . . . . . . . . . . .|
-        //11|. . . . . . . . . . . . . . .|
-        //12|. . . . . . . . . . . . . . .|
-        //13|. . . . . . . . . . . . . . .|
-        //14|. . . . . . . . . . . . . . .|
-        //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
-        TestMovies3
-        {
-            .m_cpu{},
-            .m_human{},
-            .m_depth{},
-            .m_expectedMove{}
-        }
-    )
-);
-
-TEST_P(BugsTest, Bug1)
-{
-    TestMovies3 params = GetParam();
-
-    //cpu move
-    for(auto& el : params.m_cpu)
-    {
-        m_board->putMove(el, m_trackerCpu->getPlayer());
-        m_trackerCpu->updateScore(el, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-        m_trackerHuman->updateScore(el, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-    }
-
-    //human move
-    for(auto& el : params.m_human)
-    {
-        m_board->putMove(el, m_trackerHuman->getPlayer());
-        m_trackerCpu->updateScore(el, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-        m_trackerHuman->updateScore(el, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-    }
-
-    const uint32_t maxCandidatesNumber = 20U;
-    ISearchTree::PriorityQueueScore nBestMove{maxCandidatesNumber};
-    for(const auto depth : params.m_depth)
-    {
-        //Check result - shall not crash.
-        m_alphaBeta->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
-
-        m_alphaBeta->setDepth(depth);
-        nBestMove.clearAll();
-        IBoard::PositionXY best = m_alphaBeta->findBestMove(nBestMove);
     }
 }
