@@ -4,6 +4,7 @@
 #include "GomokuBoard.h"
 #include "OpenBook.h"
 #include "Heuristics/AlphaBeta.h"
+#include "Heuristics/MinMax.h"
 
 using namespace std;
 
@@ -26,9 +27,12 @@ GomokuGame::GomokuGame(uint32_t size,
     m_trackerCpu->setBoard(*m_board);
     m_trackerHuman->setBoard(*m_board);
     setBoard(*m_board);
-    m_engine = make_unique<AlphaBeta>(m_level, "AlphaBeta");
-    m_engine->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
-    m_engine->setInitialPlayer(m_computerColor);
+    m_engineMimMax = make_unique<AlphaBeta>(m_level, "MinMax");
+    m_engineMimMax->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
+    m_engineMimMax->setInitialPlayer(m_computerColor);
+    m_engineAlphaBeta = make_unique<AlphaBeta>(m_level, "AlphaBeta");
+    m_engineAlphaBeta->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
+    m_engineAlphaBeta->setInitialPlayer(m_computerColor);
 }
 
 void GomokuGame::play()
@@ -40,7 +44,7 @@ void GomokuGame::play()
     // 'x' means white - always starts.
     bool isComputerMove = (IBoard::PLAYER_A == m_computerColor) ? true : false;
 
-    enum PlayStateMachine
+    enum PlayStateMachine : uint32_t
     {
         PLAY_STATE_MACHINE_NONE,
         START,
@@ -95,7 +99,7 @@ void GomokuGame::play()
             case CPU_WHITE_OPEN_BOOK_MOVE: {
                 assert(IBoard::PLAYER_A == m_computerColor);
 
-                cpuMove = OpenBook::getBestThirdWhiteMove(*m_board);
+                cpuMove = k_XY_OUT_OF_BOARD;//OpenBook::getBestThirdWhiteMove(*m_board);
 
                 if(k_XY_OUT_OF_BOARD == cpuMove)
                 {
@@ -112,7 +116,8 @@ void GomokuGame::play()
                     // 8 |. . . . . c . c . . . . . . .|
                     // 9 |. . . . . . . . . . . . . . .|
                     ISearchTree::PriorityQueueScore nBestMoves(1);
-                    cpuMove = m_engine->findBestMove(nBestMoves);
+                    m_engineMimMax->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
+                    cpuMove = m_engineMimMax->findBestMove(nBestMoves);
                 }
 
                 m_board->putMove(cpuMove, m_computerColor);
@@ -200,6 +205,7 @@ void GomokuGame::play()
                         const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
                         mark.push_back(rXy);
                     }
+
                     m_gameInteraction.winnerNotify(m_computerColor, mark);
 
                     playStateMachine       = GAME_OVER;
@@ -291,6 +297,7 @@ void GomokuGame::play()
                     playStateMachine       = START;
                     playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
                 }
+
             }
             break;
 
@@ -364,33 +371,61 @@ bool GomokuGame::isUserMoveValid(const IBoard::PositionXY xy) const
 IBoard::PositionXY GomokuGame::getBestMove() const
 {
     IBoard::PositionXY retVal = k_XY_OUT_OF_BOARD;
+    uint32_t maxCandidatesNumber{0};
 
     if(BEGINNER == m_level)
     {
-        m_engine->setDepth(2);
+        maxCandidatesNumber=10;
+        m_engineMimMax->setDepth(2);
+        m_engineAlphaBeta->setDepth(0); //don't use it
     }
     else if(INTERMEDIATE == m_level)
     {
-        m_engine->setDepth(3);
+        maxCandidatesNumber=30;
+        m_engineMimMax->setDepth(3);
+        m_engineAlphaBeta->setDepth(0);
     }
     else if(ADVANCED == m_level)
     {
-        m_engine->setDepth(4);
+        maxCandidatesNumber=30;
+        m_engineMimMax->setDepth(3);
+        m_engineAlphaBeta->setDepth(5);
     }
     else if(EXPERT == m_level)
     {
-        m_engine->setDepth(5);
+        maxCandidatesNumber=20;
+        m_engineMimMax->setDepth(3);
+        m_engineAlphaBeta->setDepth(7);
     }
     else
     {
-        m_engine->setDepth(ISearchTree::k_DEFAULT_DEPTH);
+        maxCandidatesNumber=20;
+        m_engineMimMax->setDepth(ISearchTree::k_DEFAULT_DEPTH);
+        m_engineAlphaBeta->setDepth(ISearchTree::k_DEFAULT_DEPTH);
     }
 
-    const uint32_t maxCandidatesNumber = 20;
+    //Do shallow tree browsing
     ISearchTree::PriorityQueueScore nBestMove{maxCandidatesNumber};
-    m_engine->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
-    IBoard::PositionXY best = m_engine->findBestMove(nBestMove);
-    retVal = best;
+    m_engineMimMax->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
+    m_engineMimMax->findBestMove(nBestMove);
+    retVal = nBestMove.topData().m_move;
+
+    //Do deep tree browsing
+    if(0 != m_engineAlphaBeta->getDepth())
+    {
+        vector<IBoard::PositionXY> initCandidates{};
+        for(uint32_t i=0; i<nBestMove.size(); ++i)
+        {
+            const auto el = nBestMove.topData();
+            nBestMove.popData();
+            initCandidates.push_back(el.m_move);
+        }
+
+        nBestMove.clearAll();
+        m_engineAlphaBeta->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
+        m_engineAlphaBeta->findBestMove(nBestMove,initCandidates);
+        retVal = nBestMove.topData().m_move;
+    }
 
     assert(k_XY_OUT_OF_BOARD != retVal);
     return retVal;
