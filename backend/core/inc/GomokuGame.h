@@ -57,7 +57,8 @@ private:
     unique_ptr<ISpotter> m_spotterHuman{nullptr};       //finds threads. Human pov.
     unique_ptr<ThreatTracker> m_trackerCpu{nullptr};    //storages threads for cpu
     unique_ptr<ThreatTracker> m_trackerHuman{nullptr};  //storages threads for human
-    unique_ptr<ISearchTree> m_engine{nullptr};          //algorithm for finding best move
+    unique_ptr<ISearchTree> m_engineMimMax{nullptr};    //algorithm for finding best move - shallow search
+    unique_ptr<ISearchTree> m_engineAlphaBeta{nullptr}; //algorithm for finding best move - deep search
     unique_ptr<IBoard> m_board{nullptr};                //game board
 };
 
