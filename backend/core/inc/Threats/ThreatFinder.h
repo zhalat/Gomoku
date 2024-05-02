@@ -10,8 +10,6 @@
 class ThreatFinder
 {
    public:
-    static constexpr uint32_t k_MAX_ALLOWED_EXCEPTION = 2;
-
     /// Kind of threats. Stronger first.
     enum KindOfThreats : uint8_t
     {
@@ -31,6 +29,8 @@ class ThreatFinder
 
         THREAT_NONE  // Must be the last.
     };
+
+    static constexpr uint32_t k_MAX_ALLOWED_EXCEPTION = 2;
 
     /// Define a 4-way direction.
     enum Trend : uint8_t
