@@ -442,6 +442,7 @@ bool EvalBoard::extendWinnerThreatMove(const bool isMaxPlayer, IBoard::PositionX
         shared_ptr<ThreatTracker> myStateCopy = nullptr;
         shared_ptr<ThreatTracker> adversaryStateCopy = nullptr;
         createCopyState(*m_board, *myState, *adversaryState, boardCopy, myStateCopy, adversaryStateCopy);
+        myStateCopy->mementoEnable();
 
         for(auto iter = gaps3A.begin(); iter != gaps3A.end(); ++iter)
         {
@@ -456,6 +457,10 @@ bool EvalBoard::extendWinnerThreatMove(const bool isMaxPlayer, IBoard::PositionX
                 retVal       = true;
                 break;
             }
+
+            //revert move:
+            boardCopy->removeMove(*iter);
+            myStateCopy->mementoRevert(1);
         }
 
         backFromCopyState(*m_board);

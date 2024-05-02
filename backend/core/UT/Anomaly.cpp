@@ -59,8 +59,8 @@ static bool isOnTheList(const vector<IBoard::PositionXY>& vct, const IBoard::Pos
     return it != vct.end();
 }
 
-//---------------------------------Test: Anomaly---------------------------------
-class Anomaly : public ::testing::TestWithParam<TestMovies>
+//---------------------------------Test: Anomaly single alpha or minmax---------------------------------
+class AnomalyRealGame : public ::testing::TestWithParam<TestMovies>
 {
     void SetUp()
     {
@@ -87,7 +87,7 @@ class Anomaly : public ::testing::TestWithParam<TestMovies>
 
 public:
     static constexpr uint32_t k_DEFAULT_DEPTH = 3;
-    static constexpr uint32_t k_BOARD_SIZE = 15;
+    static constexpr uint32_t k_BOARD_SIZE = 19;
     void SetBoard(const IBoard& rBoard)
     {
         for(uint32_t i = 0; i < Score::MAX_KIND_OF_THREATS; ++i)
@@ -107,7 +107,7 @@ public:
 
 INSTANTIATE_TEST_SUITE_P(
         AnomalyParameters,
-        Anomaly,
+        AnomalyRealGame,
         ::testing::Values
         (
             //Anomaly description:
@@ -177,11 +177,50 @@ INSTANTIATE_TEST_SUITE_P(
                 .m_human{IBoard::PositionXY(9, 8),IBoard::PositionXY(8, 10),IBoard::PositionXY(8, 9),IBoard::PositionXY(10, 10),
                          IBoard::PositionXY(10, 5),IBoard::PositionXY(8, 11),IBoard::PositionXY(9, 11)},
                 .m_expectedMove{IBoard::PositionXY(7, 11),IBoard::PositionXY(6, 11),IBoard::PositionXY(7, 9)},
+            },
+            //Anomaly description:
+            /* CPU started. CPU ('x'). Next move is for 'x':
+             * In provided situation, CPU (x) had winning situation but couldn't finish it.
+             * It put (11, 12) while the best is (9,10)
+             *
+             */
+            //                       1 1 1 1 1 1 1 1 1
+            //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
+            //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            //0 |. . . . . . . . . . . . . . . . . . .|
+            //1 |. . . . . . . . . . . . . . . . . . .|
+            //2 |. . . . . . . . . . . . . . . . . . .|
+            //3 |. . . . . . . . . . . . . . . . . . .|
+            //4 |. . . . . . . . . . . . . . . . . . .|
+            //5 |. . . . . . . . . . . . . . . . . . .|
+            //6 |. . . . . . . . . o . . . . . . . . .|
+            //7 |. . . . . . . . x x o . . . . . . . .|
+            //8 |. . . . . . . . o x o . . . . . . . .|
+            //9 |. . . . . . . o x x . . . . . . . . .|
+            //10|. . . . . . . . o x x x o . . . . . .|
+            //11|. . . . . . . . . o o x . . . . . . .|
+            //12|. . . . . . . . . . x x o . . . . . .|
+            //13|. . . . . . . . . . . . . . . . . . .|
+            //14|. . . . . . . . . . . . . . . . . . .|
+            //15|. . . . . . . . . . . . . . . . . . .|
+            //16|. . . . . . . . . . . . . . . . . . .|
+            //17|. . . . . . . . . . . . . . . . . . .|
+            //18|. . . . . . . . . . . . . . . . . . .|
+            //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+            TestMovies
+            {
+                    .m_cpu{ IBoard::PositionXY(8, 9),IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 9),IBoard::PositionXY(10, 10),
+                            IBoard::PositionXY(9, 8),IBoard::PositionXY(12, 10),IBoard::PositionXY(7, 9),IBoard::PositionXY(11, 11),
+                            IBoard::PositionXY(7, 8),IBoard::PositionXY(12, 11),IBoard::PositionXY(10, 11)},
+                    .m_human{ IBoard::PositionXY(8, 8),IBoard::PositionXY(8, 10),IBoard::PositionXY(10, 8),IBoard::PositionXY(11, 9),
+                              IBoard::PositionXY(9, 7),IBoard::PositionXY(11, 10),IBoard::PositionXY(6, 9),IBoard::PositionXY(10, 12),
+                              IBoard::PositionXY(7, 10),IBoard::PositionXY(12, 12),IBoard::PositionXY(9, 11)},
+                    .m_expectedMove{IBoard::PositionXY(9, 10)},
             }
         )
 );
 
-TEST_P(Anomaly, TestName)
+TEST_P(AnomalyRealGame, TestName)
 {
     TestMovies params = GetParam();
     EXPECT_EQ(params.m_cpu.size(), params.m_cpu.size());
@@ -223,12 +262,8 @@ TEST_P(Anomaly, TestName)
     m_alphaBeta->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
     m_alphaBeta->setDepth(5);
     m_alphaBeta->setInitialPlayer( m_trackerCpu->getPlayer());
-    const IBoard::PositionXY best = m_alphaBeta->findBestMove(nBestMove,alphaBetaCandidates);
+    m_alphaBeta->findBestMove(nBestMove,alphaBetaCandidates);
+    const IBoard::PositionXY best = nBestMove.topData().m_move;
 
-    for(int i=0; i<nBestMove.size(); ++i)
-    {
-        const auto el = nBestMove.topData();
-        nBestMove.popData();
-    }
     ASSERT_TRUE(isOnTheList(params.m_expectedMove, best));
 }
