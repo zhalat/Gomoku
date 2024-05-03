@@ -138,11 +138,11 @@ INSTANTIATE_TEST_SUITE_P(
             //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
             TestMovies
             {
-                    .m_cpu{IBoard::PositionXY(7, 7),IBoard::PositionXY(8, 9),IBoard::PositionXY(6, 7),IBoard::PositionXY(5, 6),
-                           IBoard::PositionXY(8, 7),IBoard::PositionXY(9, 7),IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 6)},
-                    .m_human{IBoard::PositionXY(6, 6),IBoard::PositionXY(8, 6),IBoard::PositionXY(7, 6),IBoard::PositionXY(7, 8),
-                             IBoard::PositionXY(5, 7),IBoard::PositionXY(10, 7),IBoard::PositionXY(9, 6),IBoard::PositionXY(8, 5)},
-                    .m_expectedMove{IBoard::PositionXY(7, 4),IBoard::PositionXY(11, 8)},
+                .m_cpu{IBoard::PositionXY(7, 7),IBoard::PositionXY(8, 9),IBoard::PositionXY(6, 7),IBoard::PositionXY(5, 6),
+                       IBoard::PositionXY(8, 7),IBoard::PositionXY(9, 7),IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 6)},
+                .m_human{IBoard::PositionXY(6, 6),IBoard::PositionXY(8, 6),IBoard::PositionXY(7, 6),IBoard::PositionXY(7, 8),
+                         IBoard::PositionXY(5, 7),IBoard::PositionXY(10, 7),IBoard::PositionXY(9, 6),IBoard::PositionXY(8, 5)},
+                .m_expectedMove{IBoard::PositionXY(7, 4),IBoard::PositionXY(11, 8)},
             },
             //Anomaly description:
             /*
@@ -209,14 +209,51 @@ INSTANTIATE_TEST_SUITE_P(
             //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
             TestMovies
             {
-                    .m_cpu{ IBoard::PositionXY(8, 9),IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 9),IBoard::PositionXY(10, 10),
-                            IBoard::PositionXY(9, 8),IBoard::PositionXY(12, 10),IBoard::PositionXY(7, 9),IBoard::PositionXY(11, 11),
-                            IBoard::PositionXY(7, 8),IBoard::PositionXY(12, 11),IBoard::PositionXY(10, 11)},
-                    .m_human{ IBoard::PositionXY(8, 8),IBoard::PositionXY(8, 10),IBoard::PositionXY(10, 8),IBoard::PositionXY(11, 9),
-                              IBoard::PositionXY(9, 7),IBoard::PositionXY(11, 10),IBoard::PositionXY(6, 9),IBoard::PositionXY(10, 12),
-                              IBoard::PositionXY(7, 10),IBoard::PositionXY(12, 12),IBoard::PositionXY(9, 11)},
-                    .m_expectedMove{IBoard::PositionXY(9, 10)},
+                .m_cpu{ IBoard::PositionXY(8, 9),IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 9),IBoard::PositionXY(10, 10),
+                        IBoard::PositionXY(9, 8),IBoard::PositionXY(12, 10),IBoard::PositionXY(7, 9),IBoard::PositionXY(11, 11),
+                        IBoard::PositionXY(7, 8),IBoard::PositionXY(12, 11),IBoard::PositionXY(10, 11)},
+                .m_human{ IBoard::PositionXY(8, 8),IBoard::PositionXY(8, 10),IBoard::PositionXY(10, 8),IBoard::PositionXY(11, 9),
+                          IBoard::PositionXY(9, 7),IBoard::PositionXY(11, 10),IBoard::PositionXY(6, 9),IBoard::PositionXY(10, 12),
+                          IBoard::PositionXY(7, 10),IBoard::PositionXY(12, 12),IBoard::PositionXY(9, 11)},
+                .m_expectedMove{IBoard::PositionXY(9, 10)},
+            },
+            //Anomaly description:
+            /* CPU started. CPU ('x'). Next move is for 'x':
+             * In provided situation, human has winning threat but could be easily mitigated.
+             * So the best move is (11,8) but cpu took (7,11)
+             */
+            //                       1 1 1 1 1 1 1 1 1
+            //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
+            //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            //0 |. . . . . . . . . . . . . . . . . . .|
+            //1 |. . . . . . . . . . . . . . . . . . .|
+            //2 |. . . . . . . . . . . . . . . . . . .|
+            //3 |. . . . . . . . . . . . . . . . . . .|
+            //4 |. . . . . . . . . . . . . . . . . . .|
+            //5 |. . . . . . . . . . . . . . . . . . .|
+            //6 |. . . . . . . . . . . . . . . . . . .|
+            //7 |. . . . . . . . . . . . . . . . . . .|
+            //8 |. . . . . . . . . . x x . . . . . . .|
+            //9 |. . . . . . . . . x o x . . . . . . .|
+            //10|. . . . . . . . . o x . . . . . . . .|
+            //11|. . . . . . . . o o o o x . . . . . .|
+            //12|. . . . . . . . . . . . . . . . . . .|
+            //13|. . . . . . . . . . . . . . . . . . .|
+            //14|. . . . . . . . . . . . . . . . . . .|
+            //15|. . . . . . . . . . . . . . . . . . .|
+            //16|. . . . . . . . . . . . . . . . . . .|
+            //17|. . . . . . . . . . . . . . . . . . .|
+            //18|. . . . . . . . . . . . . . . . . . .|
+            //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+            TestMovies
+            {
+                .m_cpu{ IBoard::PositionXY(9, 9), IBoard::PositionXY(10, 10), IBoard::PositionXY(9, 11),
+                        IBoard::PositionXY(8, 10), IBoard::PositionXY(11, 12), IBoard::PositionXY(8, 11)},
+                .m_human{ IBoard::PositionXY(10, 9), IBoard::PositionXY(11, 11),IBoard::PositionXY(11, 9),
+                          IBoard::PositionXY(11, 10), IBoard::PositionXY(9, 10), IBoard::PositionXY(11, 8)},
+                .m_expectedMove{IBoard::PositionXY(11, 7)},
             }
+
         )
 );
 
@@ -264,6 +301,12 @@ TEST_P(AnomalyRealGame, TestName)
     m_alphaBeta->setInitialPlayer( m_trackerCpu->getPlayer());
     m_alphaBeta->findBestMove(nBestMove,alphaBetaCandidates);
     const IBoard::PositionXY best = nBestMove.topData().m_move;
+
+    for(int i=0; i<nBestMove.size(); ++i)
+    {
+        const auto el = nBestMove.topData();
+        nBestMove.popData();
+    }
 
     ASSERT_TRUE(isOnTheList(params.m_expectedMove, best));
 }

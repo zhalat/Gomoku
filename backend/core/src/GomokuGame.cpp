@@ -410,7 +410,7 @@ IBoard::PositionXY GomokuGame::getBestMove() const
     m_engineMimMax->findBestMove(nBestMove);
     retVal = nBestMove.topData().m_move;
 
-    //Do deep tree browsing
+    //Do deep tree browsing if game level requires
     if(0 != m_engineAlphaBeta->getDepth())
     {
         vector<IBoard::PositionXY> initCandidates{};
