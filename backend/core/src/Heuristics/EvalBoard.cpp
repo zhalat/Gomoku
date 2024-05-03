@@ -494,6 +494,14 @@ bool EvalBoard::extendWinnerActionMove(const bool isMaxPlayer, IBoard::PositionX
         adversarySign  = 1;
     }
 
+    const bool isAdversary4 = ( adversaryState->getNumberOf(ThreatFinder::THREAT_4_CASE_A) > 0 or
+                                adversaryState->getNumberOf(ThreatFinder::THREAT_4_CASE_AA) > 0 or
+                                adversaryState->getNumberOf(ThreatFinder::THREAT_4_CASE_B) > 0 or
+                                adversaryState->getNumberOf(ThreatFinder::THREAT_4_CASE_B) > 0);
+
+    if(isAdversary4)
+        return false;
+
     const bool isAdversary3A = adversaryState->getNumberOf(ThreatFinder::THREAT_3_CASE_A) > 0;
 
     if(isHeadShot4BCPossible(isMaxPlayer,buildUpMove, *m_board, *m_trackerCpu, *m_trackerHuman))
