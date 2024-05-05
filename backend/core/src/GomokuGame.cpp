@@ -401,7 +401,7 @@ IBoard::PositionXY GomokuGame::getBestMove() const
     {
         maxCandidatesNumber=20;
         m_engineMimMax->setDepth(ISearchTree::k_DEFAULT_DEPTH);
-        m_engineAlphaBeta->setDepth(ISearchTree::k_DEFAULT_DEPTH);
+        m_engineAlphaBeta->setDepth(ISearchTree::k_DEFAULT_DEPTH+1);
     }
 
     //Do shallow tree browsing

@@ -254,6 +254,84 @@ INSTANTIATE_TEST_SUITE_P(
                 .m_expectedMove{IBoard::PositionXY(11, 7)},
             }
 
+
+
+////            To fix those 2 last anomalies the best approach is to ad to EvalBoard::regularEval() rules which adds extra points for situations
+////            where two >=3 threats have common gap
+////                //7 |. . . . . . . x o x . . . . .|
+////                //8 |. . . . . . . o x . . . . . .|
+////                //9 |. . . . . . o o . o . . . . .|
+////                //10|. . . . . . . . . . . . . . .|
+//
+//
+//            //Anomaly description:
+//            /* CPU started. CPU ('x'). Next move is for 'x':
+//             * CPU is willing put (12,7) but it leads that human will create threats which eventally forms winning threats
+//             * The best move is (10,7) or (7,7)
+//             */
+//            //                       1 1 1 1 1 1 1 1 1
+//            //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8
+//            //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+//            //0 |. . . . . . . . . . . . . . . . . . .|
+//            //1 |. . . . . . . . . . . . . . . . . . .|
+//            //2 |. . . . . . . . . . . . . . . . . . .|
+//            //3 |. . . . . . . . . . . . . . . . . . .|
+//            //4 |. . . . . . . . . . . . . . . . . . .|
+//            //5 |. . . . . . . . . . . . . . . . . . .|
+//            //6 |. . . . . x . . . . . . . . . . . . .|
+//            //7 |. . . . . . o . . . . . . . . . . . .|
+//            //8 |. . . . . . . o . . . . . . . . . . .|
+//            //9 |. . . . . . . o o x . . . . . . . . .|
+//            //10|. . . . . . . . x o x . . . . . . . .|
+//            //11|. . . . . . . o . x x . . . . . . . .|
+//            //12|. . . . . . . . . . . . . . . . . . .|
+//            //13|. . . . . . . . . . . . . . . . . . .|
+//            //14|. . . . . . . . . . . . . . . . . . .|
+//            //15|. . . . . . . . . . . . . . . . . . .|
+//            //16|. . . . . . . . . . . . . . . . . . .|
+//            //17|. . . . . . . . . . . . . . . . . . .|
+//            //18|. . . . . . . . . . . . . . . . . . .|
+//            //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+//            TestMovies
+//            {
+//                    .m_cpu{ IBoard::PositionXY(9, 9),IBoard::PositionXY(10, 8),IBoard::PositionXY(11, 9),
+//                            IBoard::PositionXY(11, 10),IBoard::PositionXY(10, 10),IBoard::PositionXY(6, 5)},
+//                    .m_human{IBoard::PositionXY(9, 8),IBoard::PositionXY(11, 7),IBoard::PositionXY(10, 9),
+//                             IBoard::PositionXY(8, 7),IBoard::PositionXY(7, 6),IBoard::PositionXY(9, 7) },
+//                    .m_expectedMove{},
+//            },
+//            //Anomaly description:
+//            /* CPU started. CPU ('x'). Next move is for 'x':
+//             * this is the same situation as before but rotated
+//             *
+//             */
+//            //                       1 1 1 1 1
+//            //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+//            //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+//            //0 |. . . . . . . . . . . . . . .|
+//            //1 |. . . . . . . . . . . . . . .|
+//            //2 |. . . . . . . . . . . . . . .|
+//            //3 |. . . . . . . . . . . . . . .|
+//            //4 |. . . . . . . . . . . . . . .|
+//            //5 |. . . . . . . . . . . . . . .|
+//            //6 |. . . . . . . . x x . . . . .|
+//            //7 |. . . . . . . x o x . . . . .|
+//            //8 |. . . . . . . o x . . . . . .|
+//            //9 |. . . . . . o o . o . . . . .|
+//            //10|. . . . . . . . . . . . . . .|
+//            //11|. . . . . . . . . . . . . . .|
+//            //12|. . . . . . . . . . . . . . .|
+//            //13|. . . . . . . . . . . . . . .|
+//            //14|. . . . . . . . . . . . . . .|
+//            //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+//            TestMovies
+//            {
+//                    .m_cpu{ IBoard::PositionXY(7, 7),IBoard::PositionXY(8, 8),IBoard::PositionXY(7, 9),
+//                            IBoard::PositionXY(6, 9),IBoard::PositionXY(6, 8)},
+//                    .m_human{IBoard::PositionXY(8, 7),IBoard::PositionXY(9, 9),IBoard::PositionXY(7, 8),
+//                             IBoard::PositionXY(9, 6),IBoard::PositionXY(9, 7) },
+//                    .m_expectedMove{},
+//            }
         )
 );
 
@@ -301,12 +379,6 @@ TEST_P(AnomalyRealGame, TestName)
     m_alphaBeta->setInitialPlayer( m_trackerCpu->getPlayer());
     m_alphaBeta->findBestMove(nBestMove,alphaBetaCandidates);
     const IBoard::PositionXY best = nBestMove.topData().m_move;
-
-    for(int i=0; i<nBestMove.size(); ++i)
-    {
-        const auto el = nBestMove.topData();
-        nBestMove.popData();
-    }
 
     ASSERT_TRUE(isOnTheList(params.m_expectedMove, best));
 }
