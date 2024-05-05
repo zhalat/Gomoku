@@ -1340,16 +1340,6 @@ bool EvalBoard::isDouble3AOneStrokePossible(const bool isMaxPlayer, IBoard::Posi
     myStateCopy->mementoEnable();
     adversaryStateCopy->mementoEnable();
 
-    //0. Extend:opponent doesn't have (3AA or 3B or 3C) which can, after extension, create 2A- why because it might lead to constant attack
-    const bool isAdversary3AA = adversaryState->getNumberOf(ThreatFinder::THREAT_3_CASE_AA) > 0;
-    const bool isAdversary3B = adversaryState->getNumberOf(ThreatFinder::THREAT_3_CASE_B) > 0;
-    const bool isAdversary3C = adversaryState->getNumberOf(ThreatFinder::THREAT_3_CASE_C) > 0;
-    if(isAdversary3AA or isAdversary3B or isAdversary3C)
-    {
-        backFromCopyState(board);
-        return  false;
-    }
-
     // 1. Head shoot is possible when you have: at least 2x 2A and opponent neither have 3A nor 4ABC.
     const bool isMy3A   = (myState->getNumberOf(ThreatFinder::THREAT_3_CASE_A) > 0);
     const bool isMy4ABC = (myState->getNumberOf(ThreatFinder::THREAT_4_CASE_A) > 0 ||

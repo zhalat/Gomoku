@@ -252,6 +252,36 @@ INSTANTIATE_TEST_SUITE_P(
                 .m_human{ IBoard::PositionXY(10, 9), IBoard::PositionXY(11, 11),IBoard::PositionXY(11, 9),
                           IBoard::PositionXY(11, 10), IBoard::PositionXY(9, 10), IBoard::PositionXY(11, 8)},
                 .m_expectedMove{IBoard::PositionXY(11, 7)},
+            },
+            //Anomaly description:
+            /* CPU started. CPU ('x'). Next move is for 'x':
+             * In provided situation, human has winning threat but could be easily mitigated.
+             * So the best move is (6,7) or (8,9) but cpu took (9,7)
+             */
+            //                       1 1 1 1 1
+            //   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
+            //   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            //0 |. . . . . . . . . . . . . . .|
+            //1 |. . . . . . . . . . . . . . .|
+            //2 |. . . . . . . . . . . . . . .|
+            //3 |. . . . . . . . . . . . . . .|
+            //4 |. . . . . . . . . . . . . . .|
+            //5 |. . . . . . . . . . . . . . .|
+            //6 |. . . . . . o . o . . . . . .|
+            //7 |. . . . . . o x . . . . . . .|
+            //8 |. . . . . o x x x . . . . . .|
+            //9 |. . . . . . . . . . . . . . .|
+            //10|. . . . . . . . . . . . . . .|
+            //11|. . . . . . . . . . . . . . .|
+            //12|. . . . . . . . . . . . . . .|
+            //13|. . . . . . . . . . . . . . .|
+            //14|. . . . . . . . . . . . . . .|
+            //  |_ _ _ _ _ _ _ _ _ _ _ _ _ _ _|
+            TestMovies
+            {
+                    .m_cpu{ IBoard::PositionXY(7, 7),IBoard::PositionXY(8, 6),IBoard::PositionXY(8, 8),IBoard::PositionXY(8, 7)},
+                    .m_human{ IBoard::PositionXY(7, 6),IBoard::PositionXY(6, 8),IBoard::PositionXY(6, 6),IBoard::PositionXY(8, 5)},
+                    .m_expectedMove{IBoard::PositionXY(6, 7),IBoard::PositionXY(8, 9)},
             }
 
 
@@ -353,7 +383,6 @@ TEST_P(AnomalyRealGame, TestName)
         m_trackerHuman->updateScore(humanMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
         m_trackerCpu->updateScore(humanMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
     }
-
     const uint32_t maxCandidatesNumber =30U;
     ISearchTree::PriorityQueueScore nBestMove{maxCandidatesNumber};
 
@@ -371,14 +400,11 @@ TEST_P(AnomalyRealGame, TestName)
         nBestMove.popData();
         alphaBetaCandidates.push_back(el.m_move);
     }
-
-    //AlphaBeta for finding best on high depth
     nBestMove.clearAll();
     m_alphaBeta->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
     m_alphaBeta->setDepth(5);
     m_alphaBeta->setInitialPlayer( m_trackerCpu->getPlayer());
     m_alphaBeta->findBestMove(nBestMove,alphaBetaCandidates);
     const IBoard::PositionXY best = nBestMove.topData().m_move;
-
     ASSERT_TRUE(isOnTheList(params.m_expectedMove, best));
 }
