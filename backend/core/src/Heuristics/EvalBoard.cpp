@@ -1357,6 +1357,9 @@ bool EvalBoard::isDouble3AOneStrokePossible(const bool isMaxPlayer, IBoard::Posi
         myState->getNumberOf(ThreatFinder::THREAT_3_CASE_A) +
         myState->getNumberOf(ThreatFinder::THREAT_4_CASE_A);
 
+
+
+
     // 2. Check if head shot is possible.
     const bool isDouble3APossibleStage1 = (myState->getNumberOf(ThreatFinder::THREAT_2_CASE_A) > 1);
 

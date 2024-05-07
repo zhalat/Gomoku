@@ -757,7 +757,7 @@ INSTANTIATE_TEST_SUITE_P(
                 .m_cpu{IBoard::PositionXY(7, 4), IBoard::PositionXY(8, 5), IBoard::PositionXY(10, 5),IBoard::PositionXY(11, 4)},
                 .m_human{IBoard::PositionXY(3, 9), IBoard::PositionXY(4, 8), IBoard::PositionXY(4, 10),IBoard::PositionXY(6, 9), IBoard::PositionXY(7, 9)},
                 .m_depth{1,2,3,4},
-                .m_expectedMove{IBoard::PositionXY(4, 9),IBoard::PositionXY(4, 7)},
+                .m_expectedMove{IBoard::PositionXY(4, 9),IBoard::PositionXY(4, 7),IBoard::PositionXY(5, 9)},
         },
         //		                   1 1 1 1 1
         //	   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
