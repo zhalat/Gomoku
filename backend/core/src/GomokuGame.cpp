@@ -27,7 +27,7 @@ GomokuGame::GomokuGame(uint32_t size,
     m_trackerCpu->setBoard(*m_board);
     m_trackerHuman->setBoard(*m_board);
     setBoard(*m_board);
-    m_engineMimMax = make_unique<AlphaBeta>(m_level, "MinMax");
+    m_engineMimMax = make_unique<MinMax>(m_level, "MinMax");
     m_engineMimMax->setStates(*m_board,*m_trackerCpu,*m_trackerHuman);
     m_engineMimMax->setInitialPlayer(m_computerColor);
     m_engineAlphaBeta = make_unique<AlphaBeta>(m_level, "AlphaBeta");

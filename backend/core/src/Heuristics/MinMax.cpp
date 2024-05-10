@@ -56,7 +56,7 @@ IBoard::PositionXY MinMax::findBestMove(PriorityQueueScore& bestMove, const vect
 
     // No candidates means full board or error.
     const uint32_t avaliableCandidats = initCandidatesCpy.size();
-    assert(avaliableCandidats);
+    assert(avaliableCandidats>0);
 
     // When the board goes to limit, it is impossible to go deeper that number of vacant fields.
     const uint32_t currentDeepSearch = m_depth;
@@ -287,7 +287,8 @@ ISearchTree::ScoreForMove MinMax::gameTreeBrowsing( vector<IBoard::PositionXY>& 
         {
             for (const auto el: candidates)
             {
-                assert(m_boardCpy->putMove(el, whoIsTurn()));
+                const bool isMovePut  = m_boardCpy->putMove(el, whoIsTurn());
+                assert(isMovePut);
                 treeTracker.push_back(el);
                 m_cpuCpy->updateScore(el, m_humanCpy->getPlayer() == whoIsTurn(), ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
                 m_humanCpy->updateScore(el, m_cpuCpy->getPlayer() == whoIsTurn(), ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
@@ -373,7 +374,8 @@ ISearchTree::ScoreForMove MinMax::gameTreeBrowsing( vector<IBoard::PositionXY>& 
         {
             for(const auto el: candidates)
             {
-                assert(m_boardCpy->putMove(el, whoIsTurn()));
+                const bool isMovePut = m_boardCpy->putMove(el, whoIsTurn());
+                assert(isMovePut);
                 treeTracker.push_back(el);
                 m_cpuCpy->updateScore(el, m_humanCpy->getPlayer() == whoIsTurn(),ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
                 m_humanCpy->updateScore(el, m_cpuCpy->getPlayer() == whoIsTurn(),ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
