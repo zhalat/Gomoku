@@ -176,7 +176,13 @@ vector<Spotter::SpottedThreats> Spotter::execute(const IBoard::PositionXY xy, co
     return retVal;
 }
 
+void Spotter::setPlayerPerspective(const IBoard::Player playerPerspective)
+{
+    m_myPlayer = playerPerspective;
+}
+
 void Spotter::resetInstance()
 {
     m_regionToInvestigate.clear();
 }
+

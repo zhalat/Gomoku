@@ -19,6 +19,7 @@ using std::vector;
 class Spotter : public ISpotter
 {
    public:
+    void setPlayerPerspective(const IBoard::Player playerPerspective) override;
     void addToExecute(const RegionToInvestigate regionToInvestigate) override;
     vector<SpottedThreats> execute(const IBoard::PositionXY xy,
                                    const bool isOpponentMove,
@@ -31,6 +32,8 @@ class Spotter : public ISpotter
     Spotter & operator=(const Spotter& ref);
     Spotter & operator=(const Spotter&& ref);
     virtual ~Spotter()=default;
+
+
 
    private:
     IBoard::Player m_myPlayer;

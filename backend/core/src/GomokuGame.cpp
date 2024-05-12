@@ -347,9 +347,18 @@ bool GomokuGame::isStalemate() const
 void GomokuGame::restartGame()
 {
     m_board->resetInstance();
+    m_spotterCpu->resetInstance();
+    m_spotterHuman->resetInstance();
+    m_spotterCpu->setPlayerPerspective(m_computerColor);
+    m_spotterHuman->setPlayerPerspective(m_humanColor);
     m_trackerCpu->resetInstance();
     m_trackerHuman->resetInstance();
+    m_trackerCpu->setPlayer(m_computerColor);
+    m_trackerHuman->setPlayer(m_humanColor);
     setBoard(*m_board);
+    m_engineMimMax->setInitialPlayer(m_computerColor);
+    m_engineAlphaBeta->setInitialPlayer(m_computerColor);
+
     m_gameInteraction.restartGameNotify();
 }
 
