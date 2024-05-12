@@ -180,7 +180,8 @@ IBoard::PositionXY OpenBook::getBestThirdWhiteMove(const IBoard & board)
         for(; *pCrawlingList != endList; pCrawlingList++)
         {
             board.goDirection(xyCrawling, pCrawlingList->m_direction, pCrawlingList->m_shift);
-            assert(board.isOnBoard(xyCrawling));
+            const bool isOnBoardOk = board.isOnBoard(xyCrawling);
+            assert(isOnBoardOk);
         }
 
         retVal = xyCrawling;
@@ -223,7 +224,8 @@ IBoard::PositionXY OpenBook::getBestThirdWhiteMove(const IBoard & board)
         for(; *crawlingList != endList; crawlingList++)
         {
             board.goDirection(xyCrawling, crawlingList->m_direction, crawlingList->m_shift);
-            assert(board.isOnBoard(xyCrawling));
+            const bool isOnBoardOk = board.isOnBoard(xyCrawling);
+            assert(isOnBoardOk);
         }
 
         retVal = xyCrawling;
@@ -256,8 +258,10 @@ IBoard::PositionXY OpenBook::getBestSecondBlackMove(const IBoard & rBoard)
     const uint32_t randomIndex = (rand() % std::size(direction));
 
     IBoard::PositionXY xy = XY_OUT_OF_BOARD;
-    assert(rBoard.getLastMove(xy));
-    assert(rBoard.canIGo(xy, direction[randomIndex]));
+    const bool isLastMoveOk = rBoard.getLastMove(xy);
+    assert(isLastMoveOk);
+    const bool isCanIGoOk = rBoard.canIGo(xy, direction[randomIndex]);
+    assert(isCanIGoOk);
     rBoard.goDirection(xy, direction[randomIndex]);
 
     return xy;

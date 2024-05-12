@@ -99,7 +99,7 @@ void GomokuGame::play()
             case CPU_WHITE_OPEN_BOOK_MOVE: {
                 assert(IBoard::PLAYER_A == m_computerColor);
 
-                cpuMove = k_XY_OUT_OF_BOARD;//OpenBook::getBestThirdWhiteMove(*m_board);
+                cpuMove = OpenBook::getBestThirdWhiteMove(*m_board);
 
                 if(k_XY_OUT_OF_BOARD == cpuMove)
                 {

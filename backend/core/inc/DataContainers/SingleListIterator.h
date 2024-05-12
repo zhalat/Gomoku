@@ -56,7 +56,8 @@ bool SingleListIterator<parList>::hasNext() const
 template<class parList>
 parList SingleListIterator<parList>::getNext()
 {
-    assert(hasNext());
+    const bool isNextOk = hasNext();
+    assert(isNextOk);
     assert(m_ppCursor);
 
     const parList retVal = (*m_ppCursor)->m_Data;

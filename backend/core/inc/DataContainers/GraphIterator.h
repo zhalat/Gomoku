@@ -12,7 +12,8 @@ class GraphIterator : public IIterator<graph::Node>
 
     inline graph::Node getNext() override
     {
-        assert(hasNext());
+        const bool isNextOk = hasNext();
+        assert(isNextOk);
         const graph::Node retVal = m_collection[m_cntr];
         ++m_cntr;
         return retVal;

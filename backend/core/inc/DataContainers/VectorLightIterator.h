@@ -28,7 +28,8 @@ class VectorLightIterator : public IIterator<uint32_t>
 
     uint32_t getNext()
     {
-        assert(hasNext());
+        const bool isNextOk = hasNext();
+        assert(isNextOk);
 
         // Set cursor for the next non empty data.
         for(; m_empty == m_dataArray[m_cntr]; ++m_cntr);

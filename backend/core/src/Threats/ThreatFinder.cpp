@@ -23,10 +23,12 @@ bool ThreatFinder::findThreatPattern(const IBoard::PositionXY & initialPosition,
     assert(NULL != m_board);
 
     // Ensure that initial field is on board.
-    assert(m_board->isOnBoard(initialPosition));
+    const bool isOnBoardOk = m_board->isOnBoard(initialPosition);
+    assert(isOnBoardOk);
 
     // Ensure that initialPosition is not empty.
-    assert(IBoard::PLAYER_EMPTY != m_board->getMove(initialPosition));
+    const bool isGetMoveOk = IBoard::PLAYER_EMPTY != m_board->getMove(initialPosition);
+    assert(isGetMoveOk);
 
     const IBoard::Player opponentPlayer = (IBoard::PLAYER_A == playerPerspective) ? IBoard::PLAYER_B : IBoard::PLAYER_A;
 

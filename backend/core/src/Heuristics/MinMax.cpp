@@ -20,8 +20,6 @@ void MinMax::setStates(const IBoard& board, const ThreatTracker& cpu, const Thre
     m_human = &human;
     m_cpuCpy.reset(new ThreatTracker(*m_cpu));
     m_humanCpy.reset(new ThreatTracker(*m_human));
-    //that is not enough. Notice that m_cpuCpy, m_humanCpy are copies and they originals were set ot operate on original m_board_ab.
-    //So here there is need to switch their board.
     m_cpuCpy->setBoard(*m_boardCpy.get());
     m_humanCpy->setBoard(*m_boardCpy.get());
 

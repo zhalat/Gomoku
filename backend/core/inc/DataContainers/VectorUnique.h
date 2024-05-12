@@ -89,7 +89,8 @@ bool VectorUnique<T, Size>::remove(const T val)
         m_MarkArray[convertVal]   = EMPTY_VAL;
 
         typename std::list<T>::iterator iter = std::find(m_list.begin(), m_list.end(), val);
-        assert(iter != m_list.end());
+        const bool isOk = iter != m_list.end();
+        assert(isOk);
         iter = m_list.erase(iter);
 
         retVal = true;
