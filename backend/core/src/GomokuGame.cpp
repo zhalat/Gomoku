@@ -16,8 +16,8 @@ GomokuGame::GomokuGame(uint32_t size,
                        bool isRandomize,
                        uint32_t maxTime,
                        IGameInteraction& gameInteraction)
-:IGame{size, humanColor, level, isRandomize, maxTime}
-,m_gameInteraction{gameInteraction}
+    :IGame{size, humanColor, level, isRandomize, maxTime}
+    ,m_gameInteraction{gameInteraction}
 {
     m_board= make_unique<GomokuBoard>(m_boardSize);
     m_spotterCpu = make_unique<Spotter>(m_computerColor);
@@ -67,242 +67,248 @@ void GomokuGame::play()
     {
         switch(playStateMachine)
         {
-            case START: {
-                playStateMachineShadow = CHECK_WINNER;
-                if(IBoard::Player::PLAYER_A == m_computerColor)
-                {
-                    // Don't display empty board when cpu starts.
-                    playStateMachine = CHECK_WINNER;
-                }
-                else
-                {
-                    playStateMachine = DISPLAY;
-                }
+        case START: {
+            playStateMachineShadow = CHECK_WINNER;
+            if(IBoard::Player::PLAYER_A == m_computerColor)
+            {
+                // Don't display empty board when cpu starts.
+                playStateMachine = CHECK_WINNER;
             }
-            break;
+            else
+            {
+                playStateMachine = DISPLAY;
+            }
+        }
+        break;
 
-            case CPU_WHITE_FIRST_MOVE: {
-                // Put the first move on center of the board.
-                const IBoard::PositionXY firstMove(m_board->getSize() / 2, m_board->getSize() / 2);
-                cpuMove = firstMove;
-                m_board->putMove(firstMove, m_computerColor);
-                m_trackerCpu->updateScore(firstMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                m_trackerHuman->updateScore(firstMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+        case CPU_WHITE_FIRST_MOVE: {
+            // Put the first move on center of the board.
+            const IBoard::PositionXY firstMove(m_board->getSize() / 2, m_board->getSize() / 2);
+            cpuMove = firstMove;
+            m_board->putMove(firstMove, m_computerColor);
+            m_trackerCpu->updateScore(firstMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+            m_trackerHuman->updateScore(firstMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
 
-                isComputerMove = false;
+            isComputerMove = false;
+
+            playStateMachineShadow = CHECK_WINNER;
+            playStateMachine       = DISPLAY;
+        }
+        break;
+
+        case CPU_WHITE_OPEN_BOOK_MOVE: {
+            assert(IBoard::PLAYER_A == m_computerColor);
+
+           // cpuMove = OpenBook::getBestThirdWhiteMove(*m_board);
+
+            // if(k_XY_OUT_OF_BOARD == cpuMove)
+            // {
+            //     // game is neither direct nor indirect.
+            //     //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            //     // 0 |. . . . . . . . . . . . . . .|
+            //     // 1 |. . . . . . . . . . . . . . .|
+            //     // 2 |. . . . . . . . . . . . . . .|
+            //     // 3 |. . . . . . . . . . . . . . .|
+            //     // 4 |. . . . . c . c . . . . . . .|
+            //     // 5 |. . . . c . . . c . . . . . .|
+            //     // 6 |. . . . . . x . . . . . . . .|
+            //     // 7 |. . . . c . . . c . . . . . .|
+            //     // 8 |. . . . . c . c . . . . . . .|
+            //     // 9 |. . . . . . . . . . . . . . .|
+            //     ISearchTree::PriorityQueueScore nBestMoves(10);
+            //     m_engineMimMax->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
+            //     m_engineMimMax->findBestMove(nBestMoves);
+            //     cpuMove = nBestMoves.topData().m_move;
+            // }
+
+            ISearchTree::PriorityQueueScore nBestMoves(10);
+            m_engineMimMax->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
+            m_engineMimMax->findBestMove(nBestMoves);
+            cpuMove = nBestMoves.topData().m_move;
+
+            m_board->putMove(cpuMove, m_computerColor);
+            m_trackerCpu->updateScore(cpuMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+            m_trackerHuman->updateScore(cpuMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+
+            isComputerMove = false;
+
+            playStateMachineShadow = CHECK_WINNER;
+            playStateMachine       = DISPLAY;
+        }
+        break;
+
+        case CPU_BLACK_OPEN_BOOK_MOVE: {
+            assert(IBoard::PLAYER_B == m_computerColor);
+
+            cpuMove = OpenBook::getBestSecondBlackMove(*m_board);
+
+            m_board->putMove(cpuMove, m_computerColor);
+            m_trackerCpu->updateScore(cpuMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+            m_trackerHuman->updateScore(cpuMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+
+            isComputerMove = false;
+
+            playStateMachineShadow = CHECK_WINNER;
+            playStateMachine       = DISPLAY;
+        }
+        break;
+
+        case CPU_AI_MOVE: {
+            cpuMove = getBestMove();
+
+            m_board->putMove(cpuMove, m_computerColor);
+            m_trackerCpu->updateScore(cpuMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+            m_trackerHuman->updateScore(cpuMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+
+            isComputerMove = false;
+
+            playStateMachineShadow = CHECK_WINNER;
+            playStateMachine       = DISPLAY;
+        }
+        break;
+
+        case HUMAN_MOVE: {
+            humanMove              = m_gameInteraction.getUserMove();
+            playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+            playStateMachine       = HUMAN_VALIDATION_MOVE;
+        }
+        break;
+
+        case HUMAN_VALIDATION_MOVE: {
+            if(isUserMoveValid(humanMove))
+            {
+                m_board->putMove(humanMove, m_humanColor);
+                m_trackerCpu->updateScore(humanMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+                m_trackerHuman->updateScore(humanMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
+                humanMove = k_XY_OUT_OF_BOARD;
+
+                isComputerMove = true;
 
                 playStateMachineShadow = CHECK_WINNER;
                 playStateMachine       = DISPLAY;
             }
-            break;
-
-            case CPU_WHITE_OPEN_BOOK_MOVE: {
-                assert(IBoard::PLAYER_A == m_computerColor);
-
-                cpuMove = OpenBook::getBestThirdWhiteMove(*m_board);
-
-                if(k_XY_OUT_OF_BOARD == cpuMove)
-                {
-                    // game is neither direct nor indirect.
-                    //    _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-                    // 0 |. . . . . . . . . . . . . . .|
-                    // 1 |. . . . . . . . . . . . . . .|
-                    // 2 |. . . . . . . . . . . . . . .|
-                    // 3 |. . . . . . . . . . . . . . .|
-                    // 4 |. . . . . c . c . . . . . . .|
-                    // 5 |. . . . c . . . c . . . . . .|
-                    // 6 |. . . . . . x . . . . . . . .|
-                    // 7 |. . . . c . . . c . . . . . .|
-                    // 8 |. . . . . c . c . . . . . . .|
-                    // 9 |. . . . . . . . . . . . . . .|
-                    ISearchTree::PriorityQueueScore nBestMoves(1);
-                    m_engineMimMax->setStates(*m_board, *m_trackerCpu, *m_trackerHuman);
-                    cpuMove = m_engineMimMax->findBestMove(nBestMoves);
-                }
-
-                m_board->putMove(cpuMove, m_computerColor);
-                m_trackerCpu->updateScore(cpuMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                m_trackerHuman->updateScore(cpuMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-
-                isComputerMove = false;
-
-                playStateMachineShadow = CHECK_WINNER;
-                playStateMachine       = DISPLAY;
-            }
-            break;
-
-            case CPU_BLACK_OPEN_BOOK_MOVE: {
-                assert(IBoard::PLAYER_B == m_computerColor);
-
-                cpuMove = OpenBook::getBestSecondBlackMove(*m_board);
-
-                m_board->putMove(cpuMove, m_computerColor);
-                m_trackerCpu->updateScore(cpuMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                m_trackerHuman->updateScore(cpuMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-
-                isComputerMove = false;
-
-                playStateMachineShadow = CHECK_WINNER;
-                playStateMachine       = DISPLAY;
-            }
-            break;
-
-            case CPU_AI_MOVE: {
-                cpuMove = getBestMove();
-
-                m_board->putMove(cpuMove, m_computerColor);
-                m_trackerCpu->updateScore(cpuMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                m_trackerHuman->updateScore(cpuMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-
-                isComputerMove = false;
-
-                playStateMachineShadow = CHECK_WINNER;
-                playStateMachine       = DISPLAY;
-            }
-            break;
-
-            case HUMAN_MOVE: {
-                humanMove              = m_gameInteraction.getUserMove();
-                playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
-                playStateMachine       = HUMAN_VALIDATION_MOVE;
-            }
-            break;
-
-            case HUMAN_VALIDATION_MOVE: {
-                if(isUserMoveValid(humanMove))
-                {
-                    m_board->putMove(humanMove, m_humanColor);
-                    m_trackerCpu->updateScore(humanMove, true, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                    m_trackerHuman->updateScore(humanMove, false, ThreatFinder::ThreatLocation::k_DEFAULT_MULTIPLIER);
-                    humanMove = k_XY_OUT_OF_BOARD;
-
-                    isComputerMove = true;
-
-                    playStateMachineShadow = CHECK_WINNER;
-                    playStateMachine       = DISPLAY;
-                }
-                else
-                {
-                    m_gameInteraction.invalidUserMoveNotify();
-
-                    playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
-                    playStateMachine       = HUMAN_MOVE;
-                }
-            }
-            break;
-
-            case CHECK_WINNER: {
-                bool isCpuWhiteOpening = (isComputerMove && (2 == m_board->getMoveNumber()));
-                bool isCpuBlackOpening = (isComputerMove && (1 == m_board->getMoveNumber()));
-                bool isCpuFirstMove    = (isComputerMove && (0 == m_board->getMoveNumber()));
-
-                if(isWinner(m_computerColor))
-                {
-                    vector<IBoard::PositionXY> mark;
-                    const ThreatFinder::ThreatLocation & rThreatLocation = m_trackerCpu->getThreatList(ThreatFinder::THREAT_WINNER).front();
-                    for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS; ++i)
-                    {
-                        const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
-                        mark.push_back(rXy);
-                    }
-
-                    m_gameInteraction.winnerNotify(m_computerColor, mark);
-
-                    playStateMachine       = GAME_OVER;
-                    playStateMachineShadow = GAME_OVER;
-                }
-                else if(isWinner(m_humanColor))
-                {
-                    vector<IBoard::PositionXY> mark;
-                    const ThreatFinder::ThreatLocation & rThreatLocation =m_trackerHuman->getThreatList(ThreatFinder::THREAT_WINNER).front();
-                    for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS; ++i)
-                    {
-                        const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
-                        mark.push_back(rXy);
-                    }
-                    m_gameInteraction.winnerNotify(m_humanColor, mark);
-
-                    playStateMachine       = GAME_OVER;
-                    playStateMachineShadow = GAME_OVER;
-                }
-                else if(isStalemate())
-                {
-                    m_gameInteraction.stalemateNotify();
-
-                    playStateMachine       = GAME_OVER;
-                    playStateMachineShadow = GAME_OVER;
-                }
-                else if(isCpuWhiteOpening)
-                {
-                    playStateMachine = CPU_WHITE_OPEN_BOOK_MOVE;
-                }
-                else if(isCpuBlackOpening)
-                {
-                    playStateMachine = CPU_BLACK_OPEN_BOOK_MOVE;
-                }
-                else if(isCpuFirstMove)
-                {
-                    playStateMachine = CPU_WHITE_FIRST_MOVE;
-                }
-                else if(isComputerMove)
-                {
-                    playStateMachine = CPU_AI_MOVE;
-                }
-                else
-                {
-                    playStateMachine = HUMAN_MOVE;
-                }
+            else
+            {
+                m_gameInteraction.invalidUserMoveNotify();
 
                 playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+                playStateMachine       = HUMAN_MOVE;
             }
-            break;
+        }
+        break;
 
-            case DISPLAY: {
-                IBoard::PositionXY lastMove = k_XY_OUT_OF_BOARD;
+        case CHECK_WINNER: {
+            bool isCpuWhiteOpening = (isComputerMove && (2 == m_board->getMoveNumber()));
+            bool isCpuBlackOpening = (isComputerMove && (1 == m_board->getMoveNumber()));
+            bool isCpuFirstMove    = (isComputerMove && (0 == m_board->getMoveNumber()));
 
-                if(m_board->getLastMove(lastMove))
+            if(isWinner(m_computerColor))
+            {
+                vector<IBoard::PositionXY> mark;
+                const ThreatFinder::ThreatLocation & rThreatLocation = m_trackerCpu->getThreatList(ThreatFinder::THREAT_WINNER).front();
+                for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS; ++i)
                 {
-                    const bool isComputerMovePrint = !isComputerMove;
-
-                    if(isComputerMovePrint)
-                    {
-                        m_gameInteraction.cpuMoveNotify(lastMove);
-                    }
-                    else
-                    {
-                        m_gameInteraction.humanMoveNotify(lastMove);
-                    }
+                    const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
+                    mark.push_back(rXy);
                 }
 
-                playStateMachine = playStateMachineShadow;
-            }
-            break;
+                m_gameInteraction.winnerNotify(m_computerColor, mark);
 
-            case GAME_OVER: {
-                m_isEnd = !m_gameInteraction.getIsPlayAgain();
-                if(m_isEnd)
+                playStateMachine       = GAME_OVER;
+                playStateMachineShadow = GAME_OVER;
+            }
+            else if(isWinner(m_humanColor))
+            {
+                vector<IBoard::PositionXY> mark;
+                const ThreatFinder::ThreatLocation & rThreatLocation =m_trackerHuman->getThreatList(ThreatFinder::THREAT_WINNER).front();
+                for(uint32_t i = 0; i < ThreatFinder::ThreatUpDetails::k_MAX_MY_PAWNS; ++i)
                 {
-                    // Bye bye.
-                   m_gameInteraction.endGameNotify();
+                    const IBoard::PositionXY rXy = rThreatLocation.m_threatDetails.m_myPawns[i];
+                    mark.push_back(rXy);
+                }
+                m_gameInteraction.winnerNotify(m_humanColor, mark);
+
+                playStateMachine       = GAME_OVER;
+                playStateMachineShadow = GAME_OVER;
+            }
+            else if(isStalemate())
+            {
+                m_gameInteraction.stalemateNotify();
+
+                playStateMachine       = GAME_OVER;
+                playStateMachineShadow = GAME_OVER;
+            }
+            else if(isCpuWhiteOpening)
+            {
+                playStateMachine = CPU_WHITE_OPEN_BOOK_MOVE;
+            }
+            else if(isCpuBlackOpening)
+            {
+                playStateMachine = CPU_BLACK_OPEN_BOOK_MOVE;
+            }
+            else if(isCpuFirstMove)
+            {
+                playStateMachine = CPU_WHITE_FIRST_MOVE;
+            }
+            else if(isComputerMove)
+            {
+                playStateMachine = CPU_AI_MOVE;
+            }
+            else
+            {
+                playStateMachine = HUMAN_MOVE;
+            }
+
+            playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+        }
+        break;
+
+        case DISPLAY: {
+            IBoard::PositionXY lastMove = k_XY_OUT_OF_BOARD;
+
+            if(m_board->getLastMove(lastMove))
+            {
+                const bool isComputerMovePrint = !isComputerMove;
+
+                if(isComputerMovePrint)
+                {
+                    m_gameInteraction.cpuMoveNotify(lastMove);
                 }
                 else
                 {
-                    // Switch players color
-                    IBoard::Player tmp = m_computerColor;
-                    m_computerColor   = m_humanColor;
-                    m_humanColor      = tmp;
-                    isComputerMove    = (IBoard::PLAYER_A == m_computerColor) ? true : false;
-
-                    restartGame();
-                    playStateMachine       = START;
-                    playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+                    m_gameInteraction.humanMoveNotify(lastMove);
                 }
-
             }
-            break;
 
-            default:
-                assert(false);
+            playStateMachine = playStateMachineShadow;
+        }
+        break;
+
+        case GAME_OVER: {
+            m_isEnd = !m_gameInteraction.getIsPlayAgain();
+            if(m_isEnd)
+            {
+                // Bye bye.
+                m_gameInteraction.endGameNotify();
+            }
+            else
+            {
+                // Switch players color
+                IBoard::Player tmp = m_computerColor;
+                m_computerColor   = m_humanColor;
+                m_humanColor      = tmp;
+                isComputerMove    = (IBoard::PLAYER_A == m_computerColor) ? true : false;
+
+                restartGame();
+                playStateMachine       = START;
+                playStateMachineShadow = PLAY_STATE_MACHINE_NONE;
+            }
+
+        }
+        break;
+
+        default:
+            assert(false);
         }
     }
 }
@@ -312,12 +318,12 @@ bool GomokuGame::isWinner(const IBoard::Player player) const
     bool retVal = false;
 
     if((m_trackerHuman->getPlayer() == player) &&
-       (m_trackerHuman->getThreatList(ThreatFinder::THREAT_WINNER).size()))
+        (m_trackerHuman->getThreatList(ThreatFinder::THREAT_WINNER).size()))
     {
         retVal = true;
     }
     else if((m_trackerCpu->getPlayer() == player) &&
-            (m_trackerCpu->getThreatList(ThreatFinder::THREAT_WINNER).size()))
+             (m_trackerCpu->getThreatList(ThreatFinder::THREAT_WINNER).size()))
     {
         retVal = true;
     }

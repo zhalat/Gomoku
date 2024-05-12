@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	//-------backend----------------------
     unsigned boardSize{19};
     std::string player{"o"};
-    unsigned level{2};
+    unsigned level{3};
     unsigned timeLimit{0};
 
     GomokuGameClientGUI gomokuGameClientGUI{IBoard::String2Player(player.c_str())};
