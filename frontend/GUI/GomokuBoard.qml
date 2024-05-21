@@ -20,8 +20,7 @@ Rectangle {
     property var currentHotCell           : { "posx": -1, "posy": -1 }
     property var previousHotCell          : { "posx": -1, "posy": -1 }
     property var redDotBallIndex          : (-1)
-    property var humanWonNotyfication     : "You_Won!"
-    property var cpuWonNotyfication       : "AI_Won"
+    property var gameOverNotyfication     : "Game Over"
     width                                 : (parent.width)
     height                                : (parent.width)
     color                                 : (realGomokuBoardBackgroundColor)
@@ -41,6 +40,7 @@ Rectangle {
         onBackendevent_stalemate : onBackendevent_stalemate()
         onBackendevent_cpu_move : onBackendevent_cpu_move(cpuRow,cpuColumn)
         onBackendevent_human_move_invalid : onBackendevent_human_move_invalid()
+        onBackendevent_is_play_again : onBackendevent_is_play_again()
     }
 
     Grid {
@@ -576,9 +576,6 @@ Rectangle {
             var map = positions[i]
             cpuReplyWinnerMarkHelper( Number(map["x"]), Number(map["y"]) );
         }
-
-        // Emit signal.
-        showNotificationMsg(humanWonNotyfication);
     }
 
     function onBackendevent_cpu_won(positions)
@@ -588,9 +585,6 @@ Rectangle {
             var map = positions[i]
             cpuReplyWinnerMarkHelper( Number(map["x"]), Number(map["y"]) );
         }
-
-        // Emit signal.
-        showNotificationMsg(cpuWonNotyfication);
     }
 
     function onBackendevent_stalemate()
@@ -620,6 +614,12 @@ Rectangle {
 
     function onBackendevent_human_move_invalid()
     {
+    }
+
+    function onBackendevent_is_play_again()
+    {
+        // Emit signal.
+        showNotificationMsg(gameOverNotyfication);
     }
 
     function cpuReplyWinnerMarkHelper( cpuRow, cpuColumn )

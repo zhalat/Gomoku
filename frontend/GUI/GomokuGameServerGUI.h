@@ -42,6 +42,8 @@ signals:
     void backendevent_stalemate();											//emits when stalemate
     void backendevent_cpu_move(const int cpuRow, const int cpuColumn);		//emits when cpu puts new move
     void backendevent_human_move_invalid();									//emits when human puts invalid new move
+    void backendevent_is_play_again();                                      //emits when game is  end to decide if play again
+
 private:
     static constexpr auto k_SOCKET_GUI_NAME = "/tmp/GomokuGuiSocket";
     static constexpr auto k_SOCKET_TYPE = AF_LOCAL;
@@ -64,5 +66,7 @@ private:
     //data GUI->Backend, helper data
     std::atomic<bool> m_isNewHumanMove{false};
     IBoard::PositionXY m_lastHumanMove{k_XY_OUT_OF_BOARD};
+    std::atomic<bool> m_isNewHumanDecisionPlayOrStop{false};
+    int m_playOrStop{-1};
 };
 

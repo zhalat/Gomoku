@@ -219,8 +219,8 @@ Window {
         // c. Connect game over signal to notification object (gloabalNotificationId).
         gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.showNotificationMsg.connect( gloabalNotificationId.onShowNotificationMsg )
         // d. Connect notification restart event to function restarting GUI.
-        gloabalNotificationId.resetBoardInstance.connect( gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.onResetBoardInstance );
-        gloabalNotificationId.resetBoardInstance.connect( goButton.onResetInstance )
+        gloabalNotificationId.playOrNotClicked.connect( gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.onResetBoardInstance );
+        gloabalNotificationId.playOrNotClicked.connect( goButton.onResetInstance )
         // e. Connect game over notyfication to score human & AI
         gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.showNotificationMsg.connect(yourScoreSt1Id.onShowNotificationMsg)
         gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.showNotificationMsg.connect(aiScoreSt1Id.onShowNotificationMsg)

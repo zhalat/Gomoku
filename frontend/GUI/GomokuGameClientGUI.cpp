@@ -33,22 +33,48 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: Get user move creating msg failed"};
 
-	IBoard::PositionXY resp;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, true, resp);
-
+    IBoard::PositionXY resp;
+    ResponseVariant respVar= resp;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, true, respVar);
 	if(stat<0)
 		throw game_except::General{"Socket Client: Get user move failed"};
 
+    resp = std::get<IBoard::PositionXY>(respVar);
 	qInfo() << "Socket Client: Human move is: ("<<resp.m_x<<","<<resp.m_y<<")";
     return resp;
 }
 
 bool GomokuGameClientGUI::getIsPlayAgain() const
 {
-	qInfo() << "Ask human if play again. Waiting for response..";
+    qInfo() << "Socket Client: Ask user if play again";
 
-	//Temporarily always true.
-	return true;
+    m_msgQuery.Clear();
+    m_msgHeader.Clear();
+    std::string serializedHeader;
+    std::string serializedMessage;
+
+    //data
+    m_msgQuery.set_k_id(message::MsgID::REPLAY_QUERY);
+    if(!m_msgQuery.SerializeToString(&serializedMessage))
+        throw game_except::General{"Socket Client: 'getIsPlayAgain()' creating msg failed"};
+
+    //header
+    m_msgHeader.set_m_msgid(message::MsgID::REPLAY_QUERY);
+    m_msgHeader.set_m_msgsize(serializedMessage.size());
+    if(!m_msgHeader.SerializeToString(&serializedHeader))
+        throw game_except::General{"Socket Client: 'getIsPlayAgain()' creating msg header failed"};
+
+    bool resp{false};
+    ResponseVariant respVar = resp;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, true, respVar);
+
+    if(stat<0)
+        throw game_except::General{"Socket Client: 'getIsPlayAgain()' response failed"};
+
+     resp = std::get<bool>(respVar);
+
+    return resp;
+
 };
 
 void GomokuGameClientGUI::invalidUserMoveNotify() const
@@ -71,8 +97,9 @@ void GomokuGameClientGUI::invalidUserMoveNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: Get invalid human move creating msg failed"};
 
-    IBoard::PositionXY none;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
+    bool none{false};
+    ResponseVariant noneVar= none;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, noneVar);
 
 	if(stat<0)
 		throw game_except::General{"Socket Client: Invalid human move notify failed"};
@@ -101,8 +128,9 @@ void GomokuGameClientGUI::cpuMoveNotify(IBoard::PositionXY xy) const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: Cpu move notify msg failed"};
 
-    IBoard::PositionXY none;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
+    bool none{false};
+    ResponseVariant noneVar= none;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, noneVar);
 
 	if(stat<0)
 		throw game_except::General{"Socket Client: Cpu  move notify failed"};
@@ -116,7 +144,7 @@ void GomokuGameClientGUI::humanMoveNotify(IBoard::PositionXY xy) const
 
 void GomokuGameClientGUI::winnerNotify(IBoard::Player player,vector<IBoard::PositionXY> winnerMark) const
 {
-    qInfo()<<"Socket Client: Winner movies notify - ";
+    qInfo()<<"Socket Client: Winner movies notify";
 
     m_msgNotify.Clear();
     m_msgHeader.Clear();
@@ -153,8 +181,9 @@ void GomokuGameClientGUI::winnerNotify(IBoard::Player player,vector<IBoard::Posi
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: Winner notification creating msg failed."};
 
-    IBoard::PositionXY none;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
+    bool none{false};
+    ResponseVariant noneVar= none;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, noneVar);
 
 	if(stat<0)
 		throw game_except::General{"Socket Client: Winner notification failed."};
@@ -180,8 +209,9 @@ void GomokuGameClientGUI::stalemateNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: Stalemate notification creating msg failed."};
 
-    IBoard::PositionXY none;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
+    bool none{false};
+    ResponseVariant noneVar= none;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, noneVar);
 
 	if(stat<0)
 		throw game_except::General{"Socket Client: Stalemate notification failed."};
@@ -207,8 +237,9 @@ void GomokuGameClientGUI::restartGameNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: Restart notification creating msg failed."};
 
-    IBoard::PositionXY none;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
+    bool none{false};
+    ResponseVariant noneVar= none;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, noneVar);
 
 	if(stat<0)
 		throw game_except::General{"Socket Client: Restart notification failed."};
@@ -234,8 +265,9 @@ void GomokuGameClientGUI::endGameNotify() const
 	if(!m_msgHeader.SerializeToString(&serializedHeader))
 		throw game_except::General{"Socket Client: End game notification creating msg failed."};
 
-    IBoard::PositionXY none;
-	const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, none);
+    bool none{false};
+    ResponseVariant noneVar= none;
+    const int stat = sendMsgToServer(serializedHeader, serializedMessage, false, noneVar);
 
 	if(stat<0)
 		throw game_except::General{"Socket Client: End game notification failed."};

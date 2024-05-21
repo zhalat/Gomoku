@@ -15,6 +15,7 @@
 class GomokuGameClientGUI final : public IGameInteraction
 {
 public:
+    using ResponseVariant = std::variant<IBoard::PositionXY, bool>;
     GomokuGameClientGUI(IBoard::Player humanColor);
     GomokuGameClientGUI(const GomokuGameClientGUI&) = delete;
     GomokuGameClientGUI(GomokuGameClientGUI&&) = delete;
@@ -144,9 +145,13 @@ private:
             {
                 if(m_msgAnswer.ParseFromString(receivedMessage))
                 {
-                   resp.m_x = m_msgAnswer.m_move().m_x();
-                   resp.m_y =  m_msgAnswer.m_move().m_y();
-                   qDebug() << "Socket Client: Human move ("<< resp.m_x<<","<< resp.m_y <<")";
+                    if (std::holds_alternative<IBoard::PositionXY>(resp))
+                    {
+                        auto& moveResp = std::get<IBoard::PositionXY>(resp);
+                        moveResp.m_x = m_msgAnswer.m_move().m_x();
+                        moveResp.m_y = m_msgAnswer.m_move().m_y();
+                        qDebug() << "Socket Client: Human move ("<< moveResp.m_x<<","<< moveResp.m_y <<")";
+                    }
                 }
                 else
                 {
@@ -155,7 +160,19 @@ private:
             }
             else if(id == message::MsgID::REPLAY_ANSWER)
             {
-                qDebug() <<"ok, got REPLAY_ANSWER message";
+                if(m_msgAnswer.ParseFromString(receivedMessage))
+                {
+                    if (std::holds_alternative<bool>(resp))
+                    {
+                        auto& isPlayResp = std::get<bool>(resp);
+                        isPlayResp = m_msgAnswer.m_isplayagain();
+                        qDebug() << "Socket Client: Is play again?: "<< (isPlayResp==true ? "yes":"no");
+                    }
+                }
+                else
+                {
+                    qCritical() << "Socket Client: Can not parse REPLAY_ANSWER message";
+                }
             }
             else
             {
