@@ -52,7 +52,7 @@ Rectangle
         yourScoreSt2IdAlias.setText(initText)
     }
 
-    function onShowNotificationMsg( msg )
+    function onScoreUp(msg)
     {
         if( msg == incTextCase )
         {

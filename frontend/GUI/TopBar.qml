@@ -154,9 +154,33 @@ Rectangle
             // nothing to do
         }
 
-        Text {
+        Text
+        {
             color: "#00FF00"
             text: "<b>Release</b> <br> 04.2018:: <i>v1.0</i>"
+            anchors.top: parent.top
+            anchors.topMargin: 20
+        }
+
+        Image
+        {
+            id: photoId
+            source: "Images/menu/icons8-cancel-filled-100_disabled.png"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 300
+            width: 100
+            height: 100
+        }
+
+        Text
+        {
+            text: "Embedded software engineer,<br>
+            specialized to control and measurement"
+            color: "white"
+            anchors.top: photoId.bottom
+            anchors.topMargin: 10
+            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
 }

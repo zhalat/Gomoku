@@ -25,7 +25,7 @@ Rectangle {
     //Quit timer. Additional delay to close app gracefully.
     Timer {
         id: quitTimer
-        interval: 1000  // 1000 milliseconds = 1 second
+        interval: 200  // 1000 milliseconds = 1 second
         repeat: false   // Run only once
         onTriggered: Qt.quit()  // Call Qt.quit() when the timer triggers
     }

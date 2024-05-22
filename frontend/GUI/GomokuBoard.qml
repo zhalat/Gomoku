@@ -29,7 +29,8 @@ Rectangle {
     signal hotMoveUp()                      // Emits when user set pretended move.
     signal hotMoveDown()                    // Emits when user accepts pretended move (no move selected on board any more - set ball)
     signal cpuReplyReceived()               // Emits when cpu put move.
-    signal showNotificationMsg( string msg) // Emits when cpu/human won.
+    signal showNotificationMsg( string msg) // Emits when cpu/human won to ask human if he wants play again.
+    signal scoreUp(string msg)              // Emits when human won to update score. msg=="cpu" if cpu won, msg=="human" otherwise
 
     // Handle BACKEND -> GUI signals.
     Connections {
@@ -576,6 +577,8 @@ Rectangle {
             var map = positions[i]
             cpuReplyWinnerMarkHelper( Number(map["x"]), Number(map["y"]) );
         }
+
+        scoreUp("human")
     }
 
     function onBackendevent_cpu_won(positions)
@@ -585,6 +588,8 @@ Rectangle {
             var map = positions[i]
             cpuReplyWinnerMarkHelper( Number(map["x"]), Number(map["y"]) );
         }
+
+        scoreUp("cpu")
     }
 
     function onBackendevent_stalemate()

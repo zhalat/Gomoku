@@ -44,7 +44,7 @@ IBoard::PositionXY GomokuGameClientGUI::getUserMove() const
     return resp;
 }
 
-bool GomokuGameClientGUI::getIsPlayAgain() const
+bool GomokuGameClientGUI::getIsPlayAgain()
 {
     qInfo() << "Socket Client: Ask user if play again";
 
@@ -72,6 +72,12 @@ bool GomokuGameClientGUI::getIsPlayAgain() const
         throw game_except::General{"Socket Client: 'getIsPlayAgain()' response failed"};
 
      resp = std::get<bool>(respVar);
+
+     //human continues game. We have to switch player A->B or B->A as backend do the same.
+    if(resp==true)
+    {
+         m_humanColor = m_humanColor==IBoard::Player::PLAYER_A?  IBoard::Player::PLAYER_B : IBoard::Player::PLAYER_A;
+    }
 
     return resp;
 
@@ -157,6 +163,7 @@ void GomokuGameClientGUI::winnerNotify(IBoard::Player player,vector<IBoard::Posi
     	m_msgNotify.set_m_playerid(message::PlayerID::HUMAN);
     else
     	m_msgNotify.set_m_playerid(message::PlayerID::CPU);
+
     message::MoveXy* move1 = m_msgNotify.add_m_movies();
     message::MoveXy* move2 = m_msgNotify.add_m_movies();
     message::MoveXy* move3 = m_msgNotify.add_m_movies();

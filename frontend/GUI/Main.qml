@@ -182,8 +182,8 @@ Window {
         {  id: yourScoreSt1Id
            width: gridCellWSize
            height: gridCellHSize
-           incTextCase: gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.humanWonNotyfication
-           initText: "Your Score: 0/0" // Must be ":" in this string! See score.qml
+           incTextCase: "human"
+           initText: "Your Score: 0/0"
         }
 
         GoButton
@@ -196,8 +196,8 @@ Window {
         {  id: aiScoreSt1Id
            width: gridCellWSize
            height: gridCellHSize
-           incTextCase: gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.cpuWonNotyfication
-           initText: "AI Score: 0/0" // Must be ":" in this string! See score.qml
+           incTextCase: "cpu"
+           initText: "AI Score: 0/0"
         }
     }
 
@@ -222,7 +222,7 @@ Window {
         gloabalNotificationId.playOrNotClicked.connect( gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.onResetBoardInstance );
         gloabalNotificationId.playOrNotClicked.connect( goButton.onResetInstance )
         // e. Connect game over notyfication to score human & AI
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.showNotificationMsg.connect(yourScoreSt1Id.onShowNotificationMsg)
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.showNotificationMsg.connect(aiScoreSt1Id.onShowNotificationMsg)
+        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.scoreUp.connect(yourScoreSt1Id.onScoreUp)
+        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.scoreUp.connect(aiScoreSt1Id.onScoreUp)
     }
 }
