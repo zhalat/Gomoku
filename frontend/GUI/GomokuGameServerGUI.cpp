@@ -186,8 +186,8 @@ void GomokuGameServerGUI::doNotify(const message::MsgID id, const std::string& m
 	}
 	else if(id == message::MsgID::END_NOTIFY)
 	{
-		qInfo() << "Go from  backend: end game";
-
+        qInfo() << "Got end notify. Server listener (me) is about to quit..";
+        this->m_isRunning=false;
 	}
 	else
 	{
@@ -254,7 +254,54 @@ void GomokuGameServerGUI::doQuery(const message::MsgID id, const std::string& ms
 	}
 	else if(id == message::MsgID::REPLAY_QUERY)
 	{
-		//emit backendevent_is_play_again();
+        //emit singal to show user option play/stop
+        emit backendevent_is_play_again();
+
+        qInfo() << "Waiting for human decision..";
+        while(not m_isNewHumanDecisionPlayOrStop)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        m_isNewHumanDecisionPlayOrStop = false;
+
+        std::string serializedHeader;
+        std::string serializedMessage;
+
+        //data
+        m_msgAnswer.set_k_id(message::MsgID::REPLAY_ANSWER);
+        m_msgAnswer.set_m_isplayagain(m_playOrStop>0 ? true: false);
+
+
+        if(!m_msgAnswer.SerializeToString(&serializedMessage))
+        {
+            qFatal()<<"Preparing user play/stop - message data: Message data answer serialization error.";
+            throw game_except::General{"Message data answer serialization error."};
+        }
+
+        //header
+        m_msgHeader.set_m_msgid(message::MsgID::REPLAY_ANSWER);
+        m_msgHeader.set_m_msgsize(serializedMessage.size());
+        if(!m_msgHeader.SerializeToString(&serializedHeader))
+        {
+            qFatal()<<"Preparing user play/stop - header: Header serialization error.";
+            throw game_except::General{"Header answer serialization error."};
+        }
+
+
+        ssize_t bytesSent = 0;
+        const auto headSize = getMessageSize(m_msgHeader);
+        bytesSent = write(socketId, serializedHeader.data(), headSize);
+        if(bytesSent != headSize)
+        {
+            close(socketId);
+        }
+
+        bytesSent = write(socketId, serializedMessage.data(), serializedMessage.size());
+        if(bytesSent != serializedMessage.size())
+        {
+            close(socketId);
+        }
 	}
 	else
 	{
@@ -279,7 +326,10 @@ void GomokuGameServerGUI::frontend_human_move(int humanX, int humanY)
 
 void GomokuGameServerGUI::frontend_is_play_again(int answer)
 {
-    qInfo()<<"play again ??:"<< answer;
+    qDebug() << "c++: dbg::GUI->BackEND:: Event Type:[" << message::MsgID::REPLAY_ANSWER<< "]. Data: " << answer;
+
+    m_playOrStop = answer;
+    m_isNewHumanDecisionPlayOrStop = true;
 }
 
 

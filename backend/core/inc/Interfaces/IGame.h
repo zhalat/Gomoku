@@ -69,7 +69,7 @@ class IGameInteraction
 {
 public:
     virtual IBoard::PositionXY getUserMove() const = 0;
-    virtual bool getIsPlayAgain() const = 0;
+    virtual bool getIsPlayAgain()  = 0;
     virtual void invalidUserMoveNotify() const = 0;
     virtual void cpuMoveNotify(IBoard::PositionXY xy) const = 0;
     virtual void humanMoveNotify(IBoard::PositionXY xy) const =0;
