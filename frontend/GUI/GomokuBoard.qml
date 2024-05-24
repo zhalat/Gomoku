@@ -1,6 +1,8 @@
 import QtQuick 2.5
 import QtQuick.Window 2.1
 import QtMultimedia 5.0
+import QtMultimedia
+
 
 Rectangle {
     id          : realGomokuBoard
@@ -523,6 +525,28 @@ Rectangle {
 
     }
 
+    //sounds:
+    SoundEffect {
+        id: newGameSound
+        source: "qrc:/GomokuGui/Sound/newGame.wav"
+    }
+    SoundEffect {
+        id: pcMoveSound
+        source: "qrc:/GomokuGui/Sound/pcMove.wav"
+    }
+    SoundEffect {
+        id: humanMoveSound
+        source: "qrc:/GomokuGui/Sound/yourMove.wav"
+    }
+    SoundEffect {
+        id: humanLostSound
+        source: "qrc:/GomokuGui/Sound/youLost.wav"
+    }
+    SoundEffect {
+        id: humanWonSound
+        source: "qrc:/GomokuGui/Sound/youWon.wav"
+    }
+
     // Revert instance to initial state.
     function onResetBoardInstance()
     {
@@ -568,6 +592,7 @@ Rectangle {
     function onBackendevent_restart()
     {
         onResetBoardInstance()
+        newGameSound.play()
     }
 
     function onBackendevent_human_won(positions)
@@ -579,6 +604,7 @@ Rectangle {
         }
 
         scoreUp("human")
+        humanWonSound.play()
     }
 
     function onBackendevent_cpu_won(positions)
@@ -590,6 +616,7 @@ Rectangle {
         }
 
         scoreUp("cpu")
+        humanLostSound.play()
     }
 
     function onBackendevent_stalemate()
@@ -615,6 +642,7 @@ Rectangle {
 
         cpuReplyReceived()
 
+        pcMoveSound.play()
     }
 
     function onBackendevent_human_move_invalid()
@@ -651,5 +679,6 @@ Rectangle {
 
         // Emit signal.
         hotMoveDown()
+        humanMoveSound.play()
     }
 }
