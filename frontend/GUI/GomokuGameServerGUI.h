@@ -11,7 +11,6 @@
 #include <QString>
 #include <QTimer>
 #include <QVariantList>
-//#include <QSoundEffect>
 #include "Interfaces/IGame.h"
 #include "protobuf/messages.pb.h"
 
