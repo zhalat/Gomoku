@@ -1198,7 +1198,8 @@ bool EvalBoard::isHeadShotLizardPossible(const bool isMaxPlayer, IBoard::Positio
     {
         // a. Get gaps for each 3BC threat.
         static constexpr uint32_t maxGapSize                    = 2;
-        IBoard::PositionXY xyGaps[myNumberOf3BC][maxGapSize] = {  };
+        std::vector<std::vector<IBoard::PositionXY>> xyGaps(myNumberOf3BC, std::vector<IBoard::PositionXY>(maxGapSize));
+
         ThreatFinder::KindOfThreats kindOfThreats[] = { ThreatFinder::THREAT_3_CASE_AA, ThreatFinder::THREAT_3_CASE_B,
                                                         ThreatFinder::THREAT_3_CASE_C };
 
