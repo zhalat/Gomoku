@@ -3,7 +3,6 @@ import QtQuick.Window 2.1
 import QtMultimedia 5.0
 import QtMultimedia
 
-
 Rectangle {
     id          : realGomokuBoard
     objectName  : "qmlRealGomokuBoard"
@@ -33,18 +32,6 @@ Rectangle {
     signal cpuReplyReceived()               // Emits when cpu put move.
     signal showNotificationMsg( string msg) // Emits when cpu/human won to ask human if he wants play again.
     signal scoreUp(string msg)              // Emits when human won to update score. msg=="cpu" if cpu won, msg=="human" otherwise
-
-    // Handle BACKEND -> GUI signals.
-    Connections {
-        target: gomokuGameServerGUI // class must be defined in C++ and registered by setContextProperty()
-        onBackendevent_restart : onBackendevent_restart()
-        onBackendevent_human_won : onBackendevent_human_won(positions)
-        onBackendevent_cpu_won : onBackendevent_cpu_won(positions)
-        onBackendevent_stalemate : onBackendevent_stalemate()
-        onBackendevent_cpu_move : onBackendevent_cpu_move(cpuRow,cpuColumn)
-        onBackendevent_human_move_invalid : onBackendevent_human_move_invalid()
-        onBackendevent_is_play_again : onBackendevent_is_play_again()
-    }
 
     Grid {
             id                          : realGomokuBoardGrid
@@ -520,10 +507,7 @@ Rectangle {
     // Methods:
 
     // Object constructor.
-    Component.onCompleted: {
-        // Signal connections:
-
-    }
+    Component.onCompleted: {}
 
     //sounds:
     SoundEffect {
@@ -589,6 +573,20 @@ Rectangle {
     }
 
     // BACKEND -> GUI. Handlers
+    // Handle BACKEND -> GUI signals.
+    // class gomokuGameServerGUI - must be defined in C++ and registered by setContextProperty()
+    // You can then handle here RPC form that class
+    Connections {
+        target: gomokuGameServerGUI // c++ class name
+        onBackendevent_restart : onBackendevent_restart()
+        onBackendevent_human_won : onBackendevent_human_won(positions)
+        onBackendevent_cpu_won : onBackendevent_cpu_won(positions)
+        onBackendevent_stalemate : onBackendevent_stalemate()
+        onBackendevent_cpu_move : onBackendevent_cpu_move(cpuRow,cpuColumn)
+        onBackendevent_human_move_invalid : onBackendevent_human_move_invalid()
+        onBackendevent_is_play_again : onBackendevent_is_play_again()
+    }
+
     function onBackendevent_restart()
     {
         onResetBoardInstance()
