@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Multimedia)
+find_package(GTest REQUIRED) #for gtest_prod.h
+find_package(Protobuf CONFIG REQUIRED)
 
 qt_standard_project_setup()
 
@@ -527,7 +529,8 @@ target_link_libraries(appGomokuGui
     PRIVATE Qt6::Quick
     PRIVATE Qt6::Multimedia
     gomokuAlgo
-    protobuf
+    protobuf::libprotobuf
+    GTest::gtest #for gtest_prod.h
 )
 
 include(GNUInstallDirs)

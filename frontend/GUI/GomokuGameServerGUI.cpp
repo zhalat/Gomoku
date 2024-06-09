@@ -28,7 +28,7 @@ GomokuGameServerGUI::GomokuGameServerGUI()
     strncpy(m_sockName.sun_path, k_SOCKET_GUI_NAME, sizeof(m_sockName.sun_path)-1);
 
     //3. “assigning a name to a socket” (bind) the socket that has been allocated to m_sockName, so I can use it then in the program
-    int ret = bind(m_sockMaster,(const struct sockaddr *)&m_sockName, sizeof(m_sockName));
+    int ret = ::bind(m_sockMaster,(const struct sockaddr *)&m_sockName, sizeof(m_sockName));
 
     if(ret==-1)
         throw game_except::General{"Os can not bind() socket " + std::string{k_SOCKET_GUI_NAME}};

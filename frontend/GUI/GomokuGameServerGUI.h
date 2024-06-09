@@ -44,7 +44,7 @@ signals:
     void backendevent_is_play_again();                                      //emits when game is  end to decide if play again
 
 private:
-    static constexpr auto k_SOCKET_GUI_NAME = "/tmp/GomokuGuiSocket";
+    static constexpr auto k_SOCKET_GUI_NAME = "GomokuGuiSocket";
     static constexpr auto k_SOCKET_TYPE = AF_LOCAL;
     static constexpr IBoard::PositionXY k_XY_OUT_OF_BOARD = IBoard::PositionXY(IBoard::PositionXY::k_INVALID_FIELD, IBoard::PositionXY::k_INVALID_FIELD);
     mutable message::Header m_msgHeader;
