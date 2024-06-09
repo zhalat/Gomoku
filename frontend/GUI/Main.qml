@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick 2.5
-import QtQuick.Window 2.2
+import QtQuick 2.15
+import QtQuick.Window 2.15
+import QtQuick.Controls 2.15
 
 Window {
     id: root
@@ -18,9 +18,7 @@ Window {
         source  : "Images/mainBackGroundBlack.jpg"
     }
 
-    // Flickable playing board.
-    Rectangle
-    {
+    Rectangle {
         id: gomokuBoardWindow
 
         // Define margins:
@@ -36,7 +34,8 @@ Window {
         property int rightMarginSize:   (rightMarginPercent * parent.width)
         property int wView:             (parent.width - leftMarginSize - rightMarginSize)
         property int hView:             (parent.height - topMarginSize - bottomMarginSize)
-        property int longView:          ((hView > wView) ? hView:wView)
+        property int longerEdge:        ((hView > wView) ? hView:wView)
+        property int shortenEdge:       ((hView > wView) ? wView:hView)
         property int posX:              (leftMarginSize)
         property int posY:              (topMarginSize)
 
@@ -54,74 +53,17 @@ Window {
         color: "transparent"
 
         property alias flickAlias: flick
-        Flickable
-        {
+        Flickable {
             id: flick
             anchors.fill: parent
-            contentWidth: gomokuBoardWindow.realGomokuBoardSize
-            contentHeight: gomokuBoardWindow.realGomokuBoardSize
             clip: true
+            contentWidth: 1*realGomokuBoard.width; contentHeight: 1.5*realGomokuBoard.height
 
-            property alias pinchAlias: pinch
-            PinchArea
+            property alias realGomokuBoardAlias: realGomokuBoard
+            GomokuBoard
             {
-                id: pinch
-                width: Math.max(flick.contentWidth, flick.width)
-                height: Math.max(flick.contentHeight, flick.height)
-                pinch.minimumRotation : 0
-                pinch.maximumRotation : 0
-                property bool isScaleAllowed: true
-                property real initialWidth
-                property real initialHeight
-
-                //----------------Start::Events handlers------------
-                onPinchStarted: {
-                    initialWidth = flick.contentWidth
-                    initialHeight = flick.contentHeight
-                }
-
-                onPinchUpdated: {
-                    isScaleAllowed = !(initialWidth * pinch.scale < gomokuBoardWindow.longView)
-                    if( isScaleAllowed )
-                    {
-                        // adjust content pos due to drag
-                        flick.contentX += pinch.previousCenter.x - pinch.center.x
-                        flick.contentY += pinch.previousCenter.y - pinch.center.y
-
-                        // Resize. If you are close (15%) to minimal scale use magnetic.
-                        var isMagnetic = (initialWidth * pinch.scale/gomokuBoardWindow.longView) < 1.15
-                        if(isMagnetic)
-                        {
-                            flick.resizeContent( gomokuBoardWindow.minrealGomokuBoardSizeScale * gomokuBoardWindow.realGomokuBoardSize, gomokuBoardWindow.longView, pinch.center)
-                        }
-                        else
-                        {
-                            flick.resizeContent(initialWidth * pinch.scale, initialHeight * pinch.scale, pinch.center)
-                        }
-                    }
-                }
-
-                onPinchFinished: {
-                    // Move its content within bounds.
-                    flick.returnToBounds()
-                }
-                //----------------End::Events handlers------------
-
-                property alias realGomokuBoardWindowAlias: realGomokuBoardWindow
-                Rectangle
-                {
-                    id: realGomokuBoardWindow
-                    width: flick.contentWidth
-                    height: flick.contentHeight
-                    color: "transparent"
-
-                   // Real gomoku board.
-                   property alias realGomokuBoardAlias:realGomokuBoard
-                    GomokuBoard
-                    {
-                        id: realGomokuBoard
-                    }
-                }
+                id: realGomokuBoard
+                screenSize: Math.max(gomokuBoardWindow.wView, gomokuBoardWindow.hView)
             }
         }
     }
@@ -211,18 +153,18 @@ Window {
     Component.onCompleted: {
         // Signal connections.
         // a. Enable goButton when user set any cell.
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.hotMoveUp.connect( goButton.onHotMoveUp )
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.hotMoveDown.connect( goButton.onHotMoveDown )
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.cpuReplyReceived.connect( goButton.onCpuReplyReceived )
+        gomokuBoardWindow.flickAlias.realGomokuBoardAlias.hotMoveUp.connect( goButton.onHotMoveUp )
+        gomokuBoardWindow.flickAlias.realGomokuBoardAlias.hotMoveDown.connect( goButton.onHotMoveDown )
+        gomokuBoardWindow.flickAlias.realGomokuBoardAlias.cpuReplyReceived.connect( goButton.onCpuReplyReceived )
         // b. Connect goButton event to human reply function.
-        goButton.goButtonSt2IdAlias.goButtonMouseAreaIdAlias.clicked.connect( gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.humanReply )
+        goButton.goButtonSt2IdAlias.goButtonMouseAreaIdAlias.clicked.connect( gomokuBoardWindow.flickAlias.realGomokuBoardAlias.humanReply )
         // c. Connect game over signal to notification object (gloabalNotificationId).
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.showNotificationMsg.connect( gloabalNotificationId.onShowNotificationMsg )
+        gomokuBoardWindow.flickAlias.realGomokuBoardAlias.showNotificationMsg.connect( gloabalNotificationId.onShowNotificationMsg )
         // d. Connect notification restart event to function restarting GUI.
-        gloabalNotificationId.playOrNotClicked.connect( gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.onResetBoardInstance );
+        gloabalNotificationId.playOrNotClicked.connect( gomokuBoardWindow.flickAlias.realGomokuBoardAlias.onResetBoardInstance );
         gloabalNotificationId.playOrNotClicked.connect( goButton.onResetInstance )
         // e. Connect game over notyfication to score human & AI
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.scoreUp.connect(yourScoreSt1Id.onScoreUp)
-        gomokuBoardWindow.flickAlias.pinchAlias.realGomokuBoardWindowAlias.realGomokuBoardAlias.scoreUp.connect(aiScoreSt1Id.onScoreUp)
+        gomokuBoardWindow.flickAlias.realGomokuBoardAlias.scoreUp.connect(yourScoreSt1Id.onScoreUp)
+        gomokuBoardWindow.flickAlias.realGomokuBoardAlias.scoreUp.connect(aiScoreSt1Id.onScoreUp)
     }
 }

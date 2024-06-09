@@ -7,23 +7,24 @@ Rectangle {
     id          : realGomokuBoard
     objectName  : "qmlRealGomokuBoard"
 
-    //anchors.fill: parent
+    property int screenSize               : 0 //to be int when construct
+    width                                 : screenSize
+    height                                : screenSize
 
     property int realGomokuBoardSize      : (19)
-    property real workingArea             : (parent.width-(gridSpacingSize*(realGomokuBoardSize+2-1))) // due to 2xframe
+    property real workingArea             : (screenSize-(gridSpacingSize*(realGomokuBoardSize+2-1))) // due to 2xframe
     property real cellBoardFrameHPercent  : (2.95/100)
     property real cellBoardFrameHSize     : (cellBoardFrameHPercent*workingArea)
     property real cellInteriorSize        : ((workingArea-2*cellBoardFrameHSize)/realGomokuBoardSize)
     property real cellBoardFrameWSize     : cellInteriorSize
     property int gridSpacingSize          : (1)
-    property color realGomokuBoardBackgroundColor: ("black")
+    property color realGomokuBoardBackgroundColor: ("balck")
     property bool isUserWhite             : (false)
     property var currentHotCell           : { "posx": -1, "posy": -1 }
     property var previousHotCell          : { "posx": -1, "posy": -1 }
     property var redDotBallIndex          : (-1)
     property var gameOverNotyfication     : "Game Over"
-    width                                 : (parent.width)
-    height                                : (parent.width)
+
     color                                 : (realGomokuBoardBackgroundColor)
 
     // Signals:
@@ -39,7 +40,6 @@ Rectangle {
             spacing                     : gridSpacingSize
             rows                        : gridSize
             columns                     : gridSize
-
             // row frame top:
             Cell{cellSizeW:cellBoardFrameHSize; cellSizeH:cellBoardFrameHSize; backgroundImg: "Images/boardBorder/corner_top_left.gif"}
             Cell{cellSizeW:cellBoardFrameWSize; cellSizeH:cellBoardFrameHSize; backgroundImg: "Images/boardBorder/border_top_01.gif"}
