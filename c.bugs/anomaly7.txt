@@ -1,0 +1,41 @@
+Line  1: Human has put a new move: ( 9 , 10 )
+Line  2: Human has put a new move: ( 9 , 9 )
+Line 3: Human has put a new move: ( 7 , 10 )
+Line 4: Human has put a new move: ( 10 , 8 )
+Line 5: Human has put a new move: ( 8 , 7 )
+Line 6: Human has put a new move: ( 8 , 12 )
+Line 7: Human has put a new move: ( 9 , 7 )
+Line 8: Human has put a new move: ( 6 , 8 )
+Line 9: Human has put a new move: ( 11 , 13 )
+Line 10: Human has put a new move: ( 7 , 11 )
+Line 11: Human has put a new move: ( 12 , 11 )
+Line 12: Human has put a new move: ( 12 , 10 )
+Line 13: Human has put a new move: ( 6 , 7 )
+Line 14: Human has put a new move: ( 6 , 10 )
+Line 15: Human has put a new move: ( 12 , 9 )
+Line 16: Human has put a new move: ( 11 , 8 )
+Line 17: Human has put a new move: ( 7 , 15 )
+Line 18: Human has put a new move: ( 12 , 7 ) <-----best human move. It didn't noticed it
+
+
+Line  1: Emit signal: CPU move( 8 , 9 )
+Line  2: Emit signal: CPU move( 9 , 8 )
+Line 3: Emit signal: CPU move( 8 , 8 )
+Line 4: Emit signal: CPU move( 8 , 10 )
+Line 5: Emit signal: CPU move( 8 , 11 )
+Line 6: Emit signal: CPU move( 7 , 9 )
+Line 7: Emit signal: CPU move( 9 , 11 )
+Line 8: Emit signal: CPU move( 10 , 12 )
+Line 9: Emit signal: CPU move( 10 , 11 )
+Line 10: Emit signal: CPU move( 11 , 11 )
+Line 11: Emit signal: CPU move( 9 , 13 )
+Line 12: Emit signal: CPU move( 11 , 9 )
+Line 13: Emit signal: CPU move( 7 , 7 )
+Line 14: Emit signal: CPU move( 6 , 9 )
+Line 15: Emit signal: CPU move( 12 , 12 )
+Line 16: Emit signal: CPU move( 8 , 14 )
+Line 17: Emit signal: CPU move( 9 , 14 )  ---> cpu tryied to attack by double 3 but human has winning. On i tka nie ma pomyslu co dalej jesli mu sie zblokuje tą dobule3. Dalej w nasepnym ruchu nie widzi zagrozenia
+todo: sprawdz na deep 3. co sie dzieje na bordzie w ruchu 
+12,7 ja
+12,8 cpu
+10,7 ja --> to jest wygrywajaca seria

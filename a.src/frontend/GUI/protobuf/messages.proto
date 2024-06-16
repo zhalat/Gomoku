@@ -1,0 +1,53 @@
+syntax = "proto2";
+
+package message;
+
+enum MsgID
+{
+    USR_MOVE_QUERY             = 0; //backend asks for user move (wants response)
+    USR_MOVE_ANSWER            = 1; //gui answer for backend query (USR_MOVE_QUERY)
+    REPLAY_QUERY               = 2; //backend asks if user wants play again (wants response)
+    REPLAY_ANSWER              = 3; //gui answer for backend query (REPLAY_QUERY)
+    USR_MOVE_INVALID_NOTIFY    = 4; //backend notifies user that last move is invalid (doesn't want response )
+    CPU_MOVE_NOTIFY            = 5; //backend notifies user of CPU last move (doesn't want response )
+    WINNER_NOTIFY              = 6; //backend notifies user who has won (doesn't want response )
+    STALEMATE_NOTIFY           = 7; //backend notifies user that there is stalemate (doesn't want response )
+    RESTART_NOTIFY             = 8; //backend notifies GUI/user to clear board (doesn't want response )
+    END_NOTIFY                 = 9; //backend's farewell  (doesn't want response )
+    KEEP_ME_LAST               = 10;
+};
+
+enum PlayerID
+{
+    HUMAN   = 0;
+    CPU     = 1;
+};
+
+message MoveXy {
+    optional int32 m_x = 1; //-1 means invalid move
+    optional int32 m_y = 2; //-1 means invalid move
+}
+
+//--------------- use those below over the socket ------------------
+message Header {
+    required uint32 m_msgId   =1;
+    required uint32 m_msgSize =2;
+}
+
+message MsgQuery {
+    required MsgID k_id = 1 [default = KEEP_ME_LAST];
+    optional MoveXy m_move = 2;
+}
+
+message MsgAnswer {
+    required MsgID k_id = 1 [default = KEEP_ME_LAST];
+    optional MoveXy m_move = 2;
+    optional bool m_isPlayAgain = 3;
+}
+
+message MsgNotify {
+    required MsgID k_id = 1 [default = KEEP_ME_LAST];
+    repeated MoveXy m_movies = 2;      //for WINNER_NOTIFY, tells winning movies. 
+    optional PlayerID m_playerId =3;   //for WINNER_NOTIFY, tells who won 
+}
+//--------------- use those above over the socket ------------------

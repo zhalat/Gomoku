@@ -1,0 +1,774 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>462</x>
+      <y>1141</y>
+      <w>294</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>ThreatFinder
+--
++FindThreatPattern( initialPosition, trend, playerPerspective)
+
++CheckThreat( pretendThreat, pointOfView, playerPerspective)
++SetBoard( pBoard )
++GetThreatFields( rThreatLocation )
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>616</x>
+      <y>1351</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat2CaseA</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>637</x>
+      <y>1372</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat2CaseB</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>651</x>
+      <y>1393</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat2CaseC</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>672</x>
+      <y>1414</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat3CaseA</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>1435</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat3CaseB</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>728</x>
+      <y>1456</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat3CaseC</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>798</x>
+      <y>1456</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat4CaseA</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>861</x>
+      <y>1414</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat4CaseB</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>819</x>
+      <y>1435</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Threat4CaseC</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>896</x>
+      <y>1393</y>
+      <w>70</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>ThreatWinner</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>644</x>
+      <y>1232</y>
+      <w>84</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>189</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;250.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>686</x>
+      <y>1232</y>
+      <w>42</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>40.0;10.0;10.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>21</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>35</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;30.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>56</w>
+      <h>217</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;290.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>84</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;320.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>147</w>
+      <h>217</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;190.0;290.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>119</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;150.0;320.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>707</x>
+      <y>1232</y>
+      <w>238</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;320.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>532</x>
+      <y>763</y>
+      <w>175</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Keeps recognized threats on a board
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1701</x>
+      <y>1197</y>
+      <w>336</w>
+      <h>189</h>
+    </coordinates>
+    <panel_attributes>Score
+--
+static const uint32_t  THREAT_WINNER_SCORE = 0x00FFFFFF;
+static const uint32_t  THREAT_4_CASE_A_SCORE = 100000;
+static const uint32_t  THREAT_4_CASE_C_SCORE = 30000;
+static const uint32_t  THREAT_4_CASE_B_SCORE = 20000;
+static const uint32_t  THREAT_3_CASE_C_SCORE = 2000;
+static const uint32_t  THREAT_3_CASE_A_SCORE = 1500;
+static const uint32_t  THREAT_3_CASE_B_SCORE = 1000;
+static const uint32_t  THREAT_2_CASE_A_SCORE = 50;
+static const uint32_t  THREAT_2_CASE_B_SCORE = 20;
+static const uint32_t  THREAT_2_CASE_C_SCORE = 20;
+static const ThreatScore m_ThreatScore[]
+
++UpdateScore( boardScore, xyList );
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>476</x>
+      <y>1022</y>
+      <w>35</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..9</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>658</x>
+      <y>1106</y>
+      <w>98</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Design Pattern:
+Template Method
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>483</x>
+      <y>784</y>
+      <w>224</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>BoardScore
+--
++AddThreats( rTreatLocation,  kindOfThreat )
++RemoveThreats( xy )
++GetNumberOfRecognizedThreat( threatKind )
++SetBoard(  rBoard)
+--
+-Board* m_pBoard
+-Spotter m_Spotter
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>518</x>
+      <y>987</y>
+      <w>196</w>
+      <h>14</h>
+    </coordinates>
+    <panel_attributes>Runs only those threats which are probable 
+to exist.
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>686</y>
+      <w>98</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>/&lt;&lt;Board&gt;&gt;/
+bg=orange
+--
++PutMove()
++GetMove()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>833</y>
+      <w>98</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>GomokuBoard
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>42</x>
+      <y>728</y>
+      <w>21</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>63</x>
+      <y>728</y>
+      <w>21</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>70</x>
+      <y>784</y>
+      <w>119</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>GomokuBoardIterator</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>119</x>
+      <y>686</y>
+      <w>112</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>/&lt;&lt;Iterator&gt;&gt;/
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>147</x>
+      <y>700</y>
+      <w>21</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>119</x>
+      <y>665</y>
+      <w>112</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Desing Pattern: Iterator
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>91</x>
+      <y>854</y>
+      <w>406</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>560.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1750</x>
+      <y>812</y>
+      <w>147</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>/&gt;&gt;SearchTreeAlgorythmIf&lt;&lt;/
+bg=orange
+--
++FindBestMove()
++SetDeep()
++SetBoardScore(rBoardScore )</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1687</x>
+      <y>924</y>
+      <w>133</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>MinMax</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1876</x>
+      <y>917</y>
+      <w>98</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>AlphaBeta</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1722</x>
+      <y>861</y>
+      <w>105</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>130.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1806</x>
+      <y>861</y>
+      <w>119</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;150.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1785</x>
+      <y>952</y>
+      <w>126</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Singletons
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>987</x>
+      <y>0</y>
+      <w>434</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>/&gt;&gt;TwoPlayersGame&lt;&lt;/
+bg=orange
+--
++void Init(uint32_t size) = 0;
++void Play(Player cpuColor, Level level, uint32_t maxTime) = 0;
++bool ValidateMove(PositionXY&amp; rXy) = 0;
++bool PutUserMove(PositionXY&amp; rXy) = 0;
++bool WinnerCheck(Player player) = 0;
++void Display(Board&amp; rBoard) = 0;
+--
+uint32_t m_Size;
+Player m_ComputerColor;
+Player m_HumanColor;
+Board* m_pBoard;
+BoardScore* m_pBoardScoreHuman;
+BoardScore* m_pBoardScoreComputer;
+SearchTreeAlgorithmIf* m_pSearchAlgorithm;
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1015</x>
+      <y>252</y>
+      <w>378</w>
+      <h>161</h>
+    </coordinates>
+    <panel_attributes>GomokuGame
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1197</x>
+      <y>203</y>
+      <w>21</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>231</x>
+      <y>1225</y>
+      <w>133</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>ThreatsBloodRelation
+--
++DISMISSAL[]
++PROMOTION[]
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>273</x>
+      <y>1008</y>
+      <w>217</w>
+      <h>231</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>290.0;10.0;10.0;310.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>700</x>
+      <y>406</y>
+      <w>469</w>
+      <h>420</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>650.0;10.0;10.0;580.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1239</x>
+      <y>406</y>
+      <w>525</w>
+      <h>427</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;730.0;590.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1722</x>
+      <y>945</y>
+      <w>21</w>
+      <h>266</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;360.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>700</x>
+      <y>833</y>
+      <w>1015</w>
+      <h>385</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;370.0;530.0;1430.0;530.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>476</x>
+      <y>1001</y>
+      <w>238</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>Spotter</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>504</x>
+      <y>889</y>
+      <w>21</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1785</x>
+      <y>1155</y>
+      <w>252</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Design Pattern: Singleton
+Keeps association between threat and its points (score).
+Update score of BoardScore.
+
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>245</x>
+      <y>1113</y>
+      <w>119</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>bg=gray
+Spotter wants to 
+know which threat run
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1106</x>
+      <y>798</y>
+      <w>196</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>OpenBook
+--
+GetBestThirdWhiteMove()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1106</x>
+      <y>833</y>
+      <w>133</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>bg=gray
+Provide 3rd move for white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1190</x>
+      <y>406</y>
+      <w>21</w>
+      <h>406</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;560.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1274</x>
+      <y>231</y>
+      <w>119</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Design Pattern: Strategy
+
+bg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>644</x>
+      <y>294</y>
+      <w>210</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>/DisplayIf/
+bg=orange
+--
++bool IsFileExists(const char* name) = 0;
++bool LoadBoard( Board&amp; rBoard ) = 0;
++bool WriteBoard( Board&amp; rBoard ) = 0;
++bool Display( Board&amp; rBoard ) = 0;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>847</x>
+      <y>329</y>
+      <w>182</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>240.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>
