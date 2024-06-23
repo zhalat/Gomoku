@@ -86,6 +86,3 @@ adb -s 4815ed70 install /home/zby/Desktop/shared/build-GUI-Android_kit_oppo-Rele
 adb devices #lists phone devices attached to usb
 adb catlog  #shows online logs
 ```
-
-3. Android Manifest and icon
-https://forum.qt.io/topic/140365/how-to-set-icon-for-qt-android-app-in-cmake/2
