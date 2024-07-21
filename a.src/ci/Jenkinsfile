@@ -19,101 +19,45 @@ pipeline {
         stage('Pull Docker Image') {
             steps {
                 script {
-                    // Pull the Docker image from Docker Hub
-                    docker.image("${env.DOCKER_IMAGE}").pull()
+                    // Check if the Docker image exists locally
+                    def imageExists = sh(script: "docker images -q ${env.DOCKER_IMAGE}", returnStdout: true).trim()
+                    if (imageExists == "") {
+                        echo "Docker image ${env.DOCKER_IMAGE} not found locally. Pulling from Docker Hub..."
+                        retry(2) { //try max 2x 
+                            sh(script: "docker pull ${env.DOCKER_IMAGE}", returnStdout: true, returnStatus: false).eachLine { line ->
+                                echo line
+                            }
+                        }
+                        echo "Docker image ${env.DOCKER_IMAGE} successfully pulled."
+                    } else {
+                        echo "Docker image ${env.DOCKER_IMAGE} already exists locally. Skipping pull."
+                    }
+
+                    //Verify Docker Image
+                    def imageVerify = sh(script: "docker images -q ${env.DOCKER_IMAGE}", returnStdout: true).trim()
+                    if (imageVerify == "") {
+                        error "Docker image ${env.DOCKER_IMAGE} not found after pull. Aborting."
+                    } else {
+                        echo "Docker image ${env.DOCKER_IMAGE} is available locally."
+                    }
+                }
+            }
+        }
+        
+        stage('Build') {
+            stages {
+                stage('Android') {
+                    steps {
+                        sh 'pwd'
+                        sh 'ls -las'
+                        // sh 'docker run -dt -v build_android'
+                        // sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} make'
+                        // zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_debug/src/", exclude: "*/CMakeFiles/*"
+                    }
                 }
             }
         }
 
-        // stage('Build') {
-        //     parallel {
-        //         stage('doxygen doc') {
-        //             steps {
-        //                 sh 'docker run  ${DOCKER_LABEL_COMMON} --label task=doxygen --rm --volume ${PRJ}:/gomoku_prj ${DOCKER_DOXYGEN_TAG_ID_IMG}'
-        //                 sh 'rm -f ${PRJ}/Doxygen/*.map ${PRJ}/Doxygen/*.md5 doxygen_html_doc.zip'
-        //                 zip zipFile: "doxygen_html_doc.zip", archive: true, dir: "${PRJ}/Doxygen"
-        //                 publishHTML (target : [allowMissing: true,
-        //                    alwaysLinkToLastBuild: true,
-        //                    keepAll: true,
-        //                    reportDir: "${PRJ}/Doxygen",
-        //                    reportFiles: 'index.html',
-        //                    reportName: 'Doxygen',
-        //                    reportTitles: 'Doxygen documentation for gomoku project'])
-        //             }
-        //         }
-
-        //         stage('cppcheck') {
-        //             steps {
-        //                     sh 'mkdir -p build_cppcheck'
-        //                     sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_cppcheck --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
-        //                     sh 'docker run ${DOCKER_LABEL_COMMON} --label task=cppcheck --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_cppcheck ${DOCKER_BUILDER_TAG_ID_IMG} cmake --build . --target cppcheck'
-        //                     dir("${PRJ}/build_cppcheck") {
-        //                         publishCppcheck()
-        //                     }         
-        //             }
-        //         }
-
-        //         stage('x86') {
-        //             stages {
-        //                 stage('PC gomoku_al debug') {
-        //                     steps {
-        //                         sh 'mkdir -p build_debug'
-        //                         sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="../cmake/toolchain-gcc-default.cmake"'
-        //                         sh 'docker run -e DEFAULT_TOOLCHAIN_PATH=/usr/bin ${DOCKER_LABEL_COMMON} --label task=build_debug --rm --volume ${PRJ}:/gomoku_prj -w=/gomoku_prj/build_debug ${DOCKER_BUILDER_TAG_ID_IMG} make'
-        //                         zip zipFile: "gomoku_al_debug.zip", archive: true, dir: "${PRJ}/build_debug/src/", exclude: "*/CMakeFiles/*"
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        // Add further stages here as needed
     }
-
-    // post {
-    //     always {
-
-
-    //         //Do that command to keep jekins images & container under control.
-    //         //Images and containers shall be removed are not used to free disk usage.
-    //         sh '''
-    //         #before cleaning
-    //         echo "---------------------------------------"
-    //         echo "containers before cleaning:"
-    //         docker ps -q --filter "label=project=gomoku"
-    //         echo "images before cleaning:"
-    //         docker images --filter label=project=gomoku -q
-    //         echo "---------------------------------------"
-
-    //         #stop containers if any
-    //         docker ps -q --filter "label=project=gomoku" | xargs --verbose --no-run-if-empty docker stop || true
-
-    //         #remove containers if any
-    //         docker ps -q --filt | xargs --verbose --no-run-if-empty docker rm || true
-            
-    //         #remove images older than 24h
-    //         docker image prune --force --all --filter "label=project=gomoku" --filter until=12h
-
-    //         #after cleaning
-    //         echo "---------------------------------------"
-    //         echo "containers after cleaning:"
-    //         docker ps -q --filter "label=project=gomoku"
-    //         echo "images after cleaning:"
-    //         docker images --filter label=project=gomoku -q
-    //         echo "---------------------------------------"
-            
-    //         '''
-    //     }
-
-    //     success {
-    //         echo 'I succeeded!'
-    //     }
-
-    //     unstable {
-    //         echo 'I am unstable :/'
-    //     }
-
-    //     failure {
-    //         echo 'I failed :('
-    //     }
-    // }
 }
