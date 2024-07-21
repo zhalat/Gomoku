@@ -49,9 +49,9 @@ pipeline {
             agent {
                 docker {
                     image "${env.DOCKER_IMAGE}" 
-                    args '''--user zby -e ANDROID_HOME=/home/zby/Android/Sdk 
-                                       -e PATH=$PATH:/home/zby/Android/Sdk/cmdline-tools/latest/bin:/home/zby/Android/Sdk/platform-tools
-                                       -e PRJ=${PRJ}''' 
+                    // args '''--user zby -e ANDROID_HOME=/home/zby/Android/Sdk 
+                    //                    -e PATH=$PATH:/home/zby/Android/Sdk/cmdline-tools/latest/bin:/home/zby/Android/Sdk/platform-tools
+                    //                    -e PRJ=${PRJ}''' 
                 }
             }
 
