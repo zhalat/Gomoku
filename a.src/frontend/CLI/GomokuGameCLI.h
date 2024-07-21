@@ -37,7 +37,7 @@ public:
 
 private:
     IBoard::PositionXY getUserMove() const override;
-    bool getIsPlayAgain() const override;
+    bool getIsPlayAgain() override;
     void invalidUserMoveNotify() const override;
     void cpuMoveNotify(IBoard::PositionXY xy) const override;
     void humanMoveNotify(IBoard::PositionXY xy) const override;

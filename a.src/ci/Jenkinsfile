@@ -12,7 +12,10 @@ pipeline {
 
     environment {
         PRJ = "${env.WORKSPACE}"
-        DOCKER_IMAGE = 'ginar/android_qt6_img:latest'
+        MY_SPACE_VOLUME_NAME = 'my_space_volume'
+        MY_SPACE_VOLUME_MAPPED = '/home/my_space_volume'
+        DOCKER_IMAGE_ARM = 'ginar/android_qt6_img:latest'
+        DOCKER_IMAGE_X86 = 'x86_gomoku_img:latest'
     }
 
     stages {
@@ -20,88 +23,168 @@ pipeline {
             steps {
                 script {
                     // Check if the Docker image exists locally
-                    def imageExists = sh(script: "docker images -q ${env.DOCKER_IMAGE}", returnStdout: true).trim()
+                    def imageExists = sh(script: "docker images -q ${env.DOCKER_IMAGE_ARM}", returnStdout: true).trim()
                     if (imageExists == "") {
-                        echo "Docker image ${env.DOCKER_IMAGE} not found locally. Pulling from Docker Hub..."
+                        echo "Docker image ${env.DOCKER_IMAGE_ARM} not found locally. Pulling from Docker Hub..."
                         retry(2) { //try max 2x 
-                            sh(script: "docker pull ${env.DOCKER_IMAGE}", returnStdout: true, returnStatus: false).eachLine { line ->
+                            sh(script: "docker pull ${env.DOCKER_IMAGE_ARM}", returnStdout: true, returnStatus: false).eachLine { line ->
                                 echo line
                             }
                         }
-                        echo "Docker image ${env.DOCKER_IMAGE} successfully pulled."
+                        echo "Docker image ${env.DOCKER_IMAGE_ARM} successfully pulled."
                     } else {
-                        echo "Docker image ${env.DOCKER_IMAGE} already exists locally. Skipping pull."
+                        echo "Docker image ${env.DOCKER_IMAGE_ARM} already exists locally. Skipping pull."
                     }
 
                     //Verify Docker Image
-                    def imageVerify = sh(script: "docker images -q ${env.DOCKER_IMAGE}", returnStdout: true).trim()
+                    def imageVerify = sh(script: "docker images -q ${env.DOCKER_IMAGE_ARM}", returnStdout: true).trim()
                     if (imageVerify == "") {
-                        error "Docker image ${env.DOCKER_IMAGE} not found after pull. Aborting."
+                        error "Docker image ${env.DOCKER_IMAGE_ARM} not found after pull. Aborting."
                     } else {
-                        echo "Docker image ${env.DOCKER_IMAGE} is available locally."
+                        echo "Docker image ${env.DOCKER_IMAGE_ARM} is available locally."
+                    }
+                }
+
+                script {
+                    // Check if the Docker image exists locally
+                    def imageExists = sh(script: "docker images -q ${env.DOCKER_IMAGE_X86}", returnStdout: true).trim()
+                    if (imageExists == "") {
+                        echo "Docker image ${env.DOCKER_IMAGE_X86} not found locally. Building from dockerfile."
+                        sh'''
+                            docker build -t ${DOCKER_IMAGE_X86} -f a.src/ci/dockers/docker_build/Dockerfile_x86 .
+                        '''
+                        echo "Docker image ${env.DOCKER_IMAGE_X86} built sucesfully."
+                    }
+                    else {
+                        echo "Docker image ${env.DOCKER_IMAGE_X86} already exists locally. Skipping building."
+                    }
+
+                    //Verify Docker Image
+                    def imageVerify = sh(script: "docker images -q ${env.DOCKER_IMAGE_X86}", returnStdout: true).trim()
+                    if (imageVerify == "") {
+                        error "Docker image ${env.DOCKER_IMAGE_X86} not found after build. Aborting."
+                    } else {
+                        echo "Docker image ${env.DOCKER_IMAGE_X86} is available locally."
                     }
                 }
             }
         }
         
         stage('Build') {
+            parallel{
+                stage('Android'){
+                    steps{
+                        script {
+                            //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
+                            sh '''
+                                rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
+                                mkdir -p ${MY_SPACE_VOLUME_MAPPED}
+                                rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                            '''
 
-            agent {
-                docker {
-                    image "${env.DOCKER_IMAGE}" 
-                    args '--user zby --entrypoint /bin/bash'
-                    // args '''--user zby 
-                    //         --entrypoint /bin/bash
-                    //         -e ANDROID_HOME=/home/zby/Android/Sdk 
-                    //         -e PATH=$PATH:/home/zby/Android/Sdk/cmdline-tools/latest/bin:/home/zby/Android/Sdk/platform-tools
-                    //         -e PRJ=${PRJ}''' 
+                            sh '''
+                                docker run --rm --name gomoku_container_arm \
+                                -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
+                                -w /Gomoku \
+                                -e ANDROID_HOME=/home/zby/Android/Sdk \
+                                -e PATH=$PATH:/home/zby/Android/Sdk/cmdline-tools/latest/bin:/home/zby/Android/Sdk/platform-tools \
+                                --user root \
+                                ${DOCKER_IMAGE_ARM} /bin/bash -c "
+
+                                echo '----------- Build Android app-----------'
+
+                                echo '#[cmake]'
+                                /opt/Qt/Tools/CMake/bin/cmake -S /Gomoku/a.src/frontend/GUI -B /Gomoku/a.src/frontend/build_gui \
+                                -DCMAKE_GENERATOR:STRING='Unix Makefiles' \
+                                -DCMAKE_BUILD_TYPE:STRING=Release \
+                                -DQT_QMAKE_EXECUTABLE:FILEPATH=/opt/Qt/6.6.1/android_armv7/bin/qmake \
+                                -DCMAKE_PREFIX_PATH:PATH=/opt/Qt/6.6.1/android_armv7 \
+                                -DCMAKE_C_COMPILER:FILEPATH=/home/zby/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang \
+                                -DCMAKE_CXX_COMPILER:FILEPATH=/home/zby/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ \
+                                -DANDROID_PLATFORM:STRING=android-23 \
+                                -DANDROID_NDK:PATH=/home/zby/Android/Sdk/ndk/25.1.8937393 \
+                                -DCMAKE_TOOLCHAIN_FILE:FILEPATH=/home/zby/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake \
+                                -DANDROID_USE_LEGACY_TOOLCHAIN_FILE:BOOL=OFF \
+                                -DANDROID_ABI:STRING=armeabi-v7a \
+                                -DANDROID_STL:STRING=c++_shared \
+                                -DCMAKE_FIND_ROOT_PATH:PATH=/opt/Qt/6.6.1/android_armv7 \
+                                -DQT_NO_GLOBAL_APK_TARGET_PART_OF_ALL:BOOL=ON \
+                                -DQT_HOST_PATH:PATH=/opt/Qt/6.6.1/gcc_64 \
+                                -DANDROID_SDK_ROOT:PATH=/home/zby/Android/Sdk \
+                                -DProtobuf_DIR:STRING=/home/zby/Android/protobuf-v5.27.0-rc3/lib/cmake/protobuf \
+                                -Dutf8_range_DIR:STRING=/home/zby/Android/protobuf-v5.27.0-rc3/lib/cmake/utf8_range \
+                                -Dabsl_DIR:STRING=/home/zby/Android/abseil/lib/cmake/absl \
+                                -DGTest_DIR:STRING=/home/zby/Android/gtest1.14/lib/cmake/GTest;
+
+                                echo '#[build]'
+                                cd /Gomoku/a.src/frontend/build_gui
+                                make
+
+                                echo '#[deploy to get apk files]'
+                                mkdir -p /tmp
+                                /opt/Qt/6.6.1/gcc_64/bin/androiddeployqt \
+                                --input /Gomoku/a.src/frontend/build_gui/android-GomokuFree-deployment-settings.json \
+                                --output /Gomoku/a.src/frontend/build_gui/android-build \
+                                --android-platform android-34 \
+                                --jdk /usr/lib/jvm/java-11-openjdk-amd64 --gradle --release
+                                echo '----------- Build Android app finished-----------'
+                                "
+                            '''
+                        }
+                        // Zip the apk file and archive it
+                        script {
+                            def apkDir = "${MY_SPACE_VOLUME_MAPPED}/a.src/frontend/build_gui/android-build/build/outputs/apk/release/"
+                            def apkFile = "android-build-release-unsigned.apk"
+                            sh "zip -j GomokuFreeAppGUI.zip ${apkDir}${apkFile}"
+                            archiveArtifacts artifacts: 'GomokuFreeAppGUI.zip', allowEmptyArchive: false
+                        }
+                    }
+                }
+                stage('x86'){
+                    steps{
+                        script {
+                            //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
+                            sh '''
+                                rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
+                                mkdir -p ${MY_SPACE_VOLUME_MAPPED}
+                                rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                            '''
+
+                            sh '''
+                                docker run --rm --name gomoku_container_x86 \
+                                -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
+                                -w /Gomoku \
+                                -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
+                                --user root \
+                                ${DOCKER_IMAGE_ARM} /bin/bash -c "
+
+                                echo '----------- Build x86 app-----------'
+            
+                                echo '#[cmake]'
+                                /opt/Qt/Tools/CMake/bin/cmake -S /Gomoku/a.src/frontend/CLI -B /Gomoku/a.src/frontend/build_cli \
+                                -DCMAKE_BUILD_TYPE=Release  \
+                                -DCMAKE_TOOLCHAIN_FILE="/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
+                                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+                                echo '#[build]'
+                                cd /Gomoku/a.src/frontend/build_cli
+                                make
+
+                                echo '----------- Build x86 app finished-----------'
+                                "
+                            '''
+                        }
+                        // Zip the bin file and archive it
+                        script {
+                            def apkDir = "${MY_SPACE_VOLUME_MAPPED}/a.src/frontend/build_cli/"
+                            def apkFile = "GomokuGui"
+                            sh "zip -j GomokuFreeAppCLI.zip ${apkDir}${apkFile}"
+                            archiveArtifacts artifacts: 'GomokuFreeAppCLI.zip', allowEmptyArchive: false
+                        }
+                    }
                 }
             }
 
-            steps{
-
-                script{
-                    sh ''' echo "alamakota"'''
-                }
-            }
-
-            // steps{
-            //     script {
-            //         sh '''
-            //         #[cmake]
-
-            //         /opt/Qt/Tools/CMake/bin/cmake -S ${PRJ}/a.src/frontend/GUI -B ${PRJ}/a.src/frontend/build_gui -DCMAKE_GENERATOR:STRING="Unix Makefiles" 
-            //         -DCMAKE_BUILD_TYPE:STRING=Release  
-            //         -DQT_QMAKE_EXECUTABLE:FILEPATH=/opt/Qt/6.6.1/android_armv7/bin/qmake 
-            //         -DCMAKE_PREFIX_PATH:PATH=/opt/Qt/6.6.1/android_armv7 
-            //         -DCMAKE_C_COMPILER:FILEPATH=/home/zby/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang 
-            //         -DCMAKE_CXX_COMPILER:FILEPATH=/home/zby/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ 
-            //         -DANDROID_PLATFORM:STRING=android-23 -DANDROID_NDK:PATH=/home/zby/Android/Sdk/ndk/25.1.8937393 
-            //         -DCMAKE_TOOLCHAIN_FILE:FILEPATH=/home/zby/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake 
-            //         -DANDROID_USE_LEGACY_TOOLCHAIN_FILE:BOOL=OFF 
-            //         -DANDROID_ABI:STRING=armeabi-v7a 
-            //         -DANDROID_STL:STRING=c++_shared 
-            //         -DCMAKE_FIND_ROOT_PATH:PATH=/opt/Qt/6.6.1/android_armv7 
-            //         -DQT_NO_GLOBAL_APK_TARGET_PART_OF_ALL:BOOL=ON 
-            //         -DQT_HOST_PATH:PATH=/opt/Qt/6.6.1/gcc_64 
-            //         -DANDROID_SDK_ROOT:PATH=/home/zby/Android/Sdk 
-            //         -DProtobuf_DIR:STRING=/home/zby/Android/protobuf-v5.27.0-rc3/lib/cmake/protobuf 
-            //         -Dutf8_range_DIR:STRING=/home/zby/Android/protobuf-v5.27.0-rc3/lib/cmake/utf8_range 
-            //         -Dabsl_DIR:STRING=/home/zby/Android/abseil/lib/cmake/absl 
-            //         -DGTest_DIR:STRING=/home/zby/Android/gtest1.14/lib/cmake/GTest
-
-            //         #[make]
-            //         cd ${PRJ}/a.src/frontend/build_gui
-            //         make
-
-
-            //         #[deploy]
-            //         "/opt/Qt/6.6.1/gcc_64/bin/androiddeployqt" --input /home/zby/repos/Gomoku/a.src/frontend/build_gui/android-GomokuFree-deployment-settings.json 
-            //                                                    --output /home/zby/repos/Gomoku/a.src/frontend/build_gui/android-build 
-            //                                                    --android-platform android-34 --jdk /usr/lib/jvm/java-11-openjdk-amd64 --gradle --release
-            //         '''
-            //     }
-            // }
 
         }
 

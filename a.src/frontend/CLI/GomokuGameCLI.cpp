@@ -52,7 +52,7 @@ IBoard::PositionXY GomokuGameCLI::getUserMove() const
     return retVal;
 }
 
-bool GomokuGameCLI::getIsPlayAgain() const
+bool GomokuGameCLI::getIsPlayAgain() 
 {
 
 
