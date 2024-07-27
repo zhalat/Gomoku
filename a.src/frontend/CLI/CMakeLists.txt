@@ -9,6 +9,9 @@ if(NOT CMAKE_BUILD_TYPE)
     message(FATAL_ERROR "Missing CMAKE_BUILD_TYPE, set to Debug or Release")
 endif()
 
+set(CMAKE_FIND_LIBRARY_SUFFIXES .a)
+set(BUILD_SHARED_LIBS OFF)
+
 find_package(Boost 1.74 REQUIRED COMPONENTS program_options filesystem regex)
 find_package(Threads)
 

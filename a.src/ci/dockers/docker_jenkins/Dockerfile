@@ -15,8 +15,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
 #avaliable plugin https://jenkins-plugin-hub.herokuapp.com/
 #Set base plugins. The other you will install via GUI.
 RUN apt-get update && apt-get install -y docker-ce-cli
-RUN jenkins-plugin-cli --plugins "ssh-credentials:337.v395d2403ccd4 ssh-slaves:2.973.v0fa_8c0dea_f9f github-api:1.318-461.v7a_c09c9fa_d63 pipeline-stage-view:2.34"
-
+RUN jenkins-plugin-cli --plugins "ssh-credentials:337.v395d2403ccd4 ssh-slaves:2.973.v0fa_8c0dea_f9f github-api:1.318-461.v7a_c09c9fa_d63 pipeline-stage-view:2.34 junit:1279.v72cf99b_25c43"
 
 #Build & run
 # H - host machine; D1 - first container ; D2 container in D1
