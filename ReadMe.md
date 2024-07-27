@@ -12,7 +12,7 @@ It's easy to learn but offers deep strategic game play that will keep you hooked
 
 Frontend supports:
 - GUI - Android   
-![](d.releases/Icon_114x114.png)
+![](d.releases/Icon_114x114.png)   
 ![](d.releases/phone0_533x948.png)
 
 - GUI - console

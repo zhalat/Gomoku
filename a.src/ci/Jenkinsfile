@@ -67,6 +67,23 @@ pipeline {
                         echo "Docker image ${env.DOCKER_IMAGE_X86} is available locally."
                     }
                 }
+
+
+
+                
+            }
+        }
+
+        stage('Clone repo') {
+            steps {
+                script{
+                        //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
+                        sh '''
+                            rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
+                            mkdir -p ${MY_SPACE_VOLUME_MAPPED}
+                            rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                        '''
+                }
             }
         }
         
@@ -75,12 +92,7 @@ pipeline {
                 stage('Android'){
                     steps{
                         script {
-                            //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
-                            sh '''
-                                rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
-                                mkdir -p ${MY_SPACE_VOLUME_MAPPED}
-                                rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
-                            '''
+
 
                             sh '''
                                 docker run --rm --name gomoku_container_arm \
@@ -143,12 +155,12 @@ pipeline {
                 stage('x86'){
                     steps{
                         script {
-                            //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
-                            sh '''
-                                rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
-                                mkdir -p ${MY_SPACE_VOLUME_MAPPED}
-                                rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
-                            '''
+                            // //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
+                            // sh '''
+                            //     rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
+                            //     mkdir -p ${MY_SPACE_VOLUME_MAPPED}
+                            //     rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                            // '''
 
                             sh '''
                                 docker run --rm --name gomoku_container_x86 \
@@ -156,12 +168,12 @@ pipeline {
                                 -w /Gomoku \
                                 -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
                                 --user root \
-                                ${DOCKER_IMAGE_ARM} /bin/bash -c "
+                                ${DOCKER_IMAGE_X86} /bin/bash -c "
 
                                 echo '----------- Build x86 app-----------'
             
                                 echo '#[cmake]'
-                                /opt/Qt/Tools/CMake/bin/cmake -S /Gomoku/a.src/frontend/CLI -B /Gomoku/a.src/frontend/build_cli \
+                                 cmake -S /Gomoku/a.src/frontend/CLI -B /Gomoku/a.src/frontend/build_cli \
                                 -DCMAKE_BUILD_TYPE=Release  \
                                 -DCMAKE_TOOLCHAIN_FILE="/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
                                 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -177,7 +189,7 @@ pipeline {
                         // Zip the bin file and archive it
                         script {
                             def apkDir = "${MY_SPACE_VOLUME_MAPPED}/a.src/frontend/build_cli/"
-                            def apkFile = "GomokuGui"
+                            def apkFile = "gomokuBackendCLI"
                             sh "zip -j GomokuFreeAppCLI.zip ${apkDir}${apkFile}"
                             archiveArtifacts artifacts: 'GomokuFreeAppCLI.zip', allowEmptyArchive: false
                         }
