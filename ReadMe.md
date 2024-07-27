@@ -1,5 +1,7 @@
 ## Gomoku
-*Gomoku game engine from scratch to android application*
+*Gomoku game engine from scratch to android application*   
+![](d.releases/openSourceLogo.png) 
+
 
 ---
 **Discover the ancient game of Gomoku, a timeless classic that has been sharpening minds for centuries. 
@@ -9,8 +11,8 @@ The goal is simple: be the first to align five stones in a row either horizontal
 It's easy to learn but offers deep strategic game play that will keep you hooked.**
 
 Frontend supports:
-- GUI - Android
-![](d.releases/Icon_114x114.png)  
+- GUI - Android   
+![](d.releases/Icon_114x114.png)
 ![](d.releases/phone0_533x948.png)
 
 - GUI - console
