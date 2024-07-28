@@ -1,8 +1,15 @@
 ## How to build
+
+To set up Jenkins use [Jenkins Docker](https://github.com/zhalat/Gomoku/blob/master/a.src/ci/dockers/docker_jenkins/Dockerfile)
+Then use [Jenkinsfile](https://github.com/zhalat/Gomoku/blob/master/a.src/ci/Jenkinsfile)  to get all pipeline.
+
+---
+
+If you don't want setting Jenkins, here is alternative:    
+
 *There are three ways to build the code depending on your needs.*
-- *android GUI arm7 CI - use it when you want to release the code for your phone. Usefull for CI*
+- *android GUI arm7 CI - full android application. Use it for release*
 - *PC GUI x86 - usefull for developing GUI. You will use Qt IDE*
-- *android GUI arm7 PC- optional. If you want to debug on your phone*
 - *console GUI -  usefull for deveoping engine.*
 
 *All steps requires to have prepared environment.   
@@ -43,20 +50,11 @@ to get to know how to deploy it onto your mobile phone.
 Compile & run!
 ![](doc_storage/2024-07-07_16-46.png) 
 
-- **android GUI arm7 PC** (optinal, usefull for testing GUI on your phone)
-If you want compile android from IDE you need add pathes to extra libraries which we installed. Do it for all listed below:
-![](doc_storage/2024-07-07_16-55.png) 
-```
--DProtobuf_DIR:STRING=/home/zby/Android/protobuf-v5.27.0-rc3/lib/cmake/protobuf  
--Dutf8_range_DIR:STRING=/home/zby/Android/protobuf-v5.27.0-rc3/lib/cmake/utf8_range 
--Dabsl_DIR:STRING=/home/zby/Android/abseil/lib/cmake/absl 
--DGTest_DIR:STRING=/home/zby/Android/gtest1.14/lib/cmake/GTest
-```
 ---
 - **console GUI** (usefull for testing & developing backend==engine)
 ```
 #[cmake]
-cmake -S /home/zby/repos/Gomoku/a.src/backend -B /home/zby/repos/Gomoku/a.src/frontend/build_cli -DCMAKE_BUILD_TYPE=Debug  -DCMAKE_TOOLCHAIN_FILE="/home/zby/repos/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake -S /home/zby/repos/Gomoku/a.src/frontend/CLI -B /home/zby/repos/Gomoku/a.src/frontend/build_cli -DCMAKE_BUILD_TYPE=Debug  -DCMAKE_TOOLCHAIN_FILE="/home/zby/repos/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 #[build binaries]
 cd /home/zby/repos/Gomoku/a.src/frontend/build_cli

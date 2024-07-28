@@ -16,6 +16,8 @@ pipeline {
         MY_SPACE_VOLUME_MAPPED = '/home/my_space_volume'
         DOCKER_IMAGE_ARM = 'ginar/android_qt6_img:latest'
         DOCKER_IMAGE_X86 = 'x86_gomoku_img:latest'
+        DOCKER_CONTAINER_NAME_ARM = 'gomoku_container_arm'
+        DOCKER_CONTAINER_NAME_X86 = 'gomoku_container_x86'
     }
 
     stages {
@@ -43,6 +45,15 @@ pipeline {
                     } else {
                         echo "Docker image ${env.DOCKER_IMAGE_ARM} is available locally."
                     }
+
+                    //Verify Docker container. If active, treat is as it was zombie
+                    def containerVerify = sh(script: "docker ps -a --filter 'name=${DOCKER_CONTAINER_NAME_ARM}' --format '{{.Names}}'", returnStdout: true).trim()
+                    if (containerVerify != "") {
+                        sh'''
+                            docker stop ${DOCKER_CONTAINER_NAME_ARM}
+                            docker rm ${DOCKER_CONTAINER_NAME_ARM}
+                        '''
+                    } 
                 }
 
                 script {
@@ -66,11 +77,16 @@ pipeline {
                     } else {
                         echo "Docker image ${env.DOCKER_IMAGE_X86} is available locally."
                     }
-                }
 
-
-
-                
+                    //Verify Docker container. If active, treat is as it was zombie
+                    def containerVerify = sh(script: "docker ps -a --filter 'name=${DOCKER_CONTAINER_NAME_X86}' --format '{{.Names}}'", returnStdout: true).trim()
+                    if (containerVerify != "") {
+                        sh'''
+                            docker stop ${DOCKER_CONTAINER_NAME_X86}
+                            docker rm ${DOCKER_CONTAINER_NAME_X86}
+                        '''
+                    } 
+                }                
             }
         }
 
@@ -86,16 +102,14 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Build') {
             parallel{
                 stage('Android'){
                     steps{
                         script {
-
-
                             sh '''
-                                docker run --rm --name gomoku_container_arm \
+                                docker run --rm --name ${DOCKER_CONTAINER_NAME_ARM} \
                                 -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
                                 -w /Gomoku \
                                 -e ANDROID_HOME=/home/zby/Android/Sdk \
@@ -139,6 +153,7 @@ pipeline {
                                 --output /Gomoku/a.src/frontend/build_gui/android-build \
                                 --android-platform android-34 \
                                 --jdk /usr/lib/jvm/java-11-openjdk-amd64 --gradle --release
+
                                 echo '----------- Build Android app finished-----------'
                                 "
                             '''
@@ -155,15 +170,8 @@ pipeline {
                 stage('x86'){
                     steps{
                         script {
-                            // //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
-                            // sh '''
-                            //     rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
-                            //     mkdir -p ${MY_SPACE_VOLUME_MAPPED}
-                            //     rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
-                            // '''
-
                             sh '''
-                                docker run --rm --name gomoku_container_x86 \
+                                docker run --rm --name ${DOCKER_CONTAINER_NAME_X86} \
                                 -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
                                 -w /Gomoku \
                                 -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
@@ -182,6 +190,16 @@ pipeline {
                                 cd /Gomoku/a.src/frontend/build_cli
                                 make
 
+                                echo '#[cmake UT]'
+                                cmake -S /Gomoku/a.src/backend -B /Gomoku/a.src/backend/build_ut \
+                                -DCMAKE_BUILD_TYPE=Release  \
+                                -DCMAKE_TOOLCHAIN_FILE="/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
+                                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+                                echo '#[build UT]'
+                                cd /Gomoku/a.src/backend/build_ut
+                                make
+
                                 echo '----------- Build x86 app finished-----------'
                                 "
                             '''
@@ -196,10 +214,36 @@ pipeline {
                     }
                 }
             }
-
-
         }
 
-        // Add further stages here as needed
+        stage('UT') {
+            when {
+                expression { return params.RUN_UT }
+            }
+            steps {
+                script{
+                    sh '''
+                        docker run --rm --name ${DOCKER_CONTAINER_NAME_X86} \
+                        -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
+                        -w /Gomoku \
+                        -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
+                        --user root \
+                        ${DOCKER_IMAGE_X86} /bin/bash -c "
+
+                        echo '----------- Run UT-----------'
+                        /Gomoku/a.src/backend/build_ut/core/UT/ut --gtest_output=xml:/Gomoku/ut_test_results.xml
+                        echo '----------- Run UT finished-----------'
+                        "
+                    '''
+
+                    // Ensure the test results file is copied to the workspace
+                    sh '''
+                        cp ${MY_SPACE_VOLUME_MAPPED}/ut_test_results.xml ${WORKSPACE}/ut_test_results.xml
+                    '''
+                }
+
+                junit 'ut_test_results.xml'
+            }
+        }
     }
 }

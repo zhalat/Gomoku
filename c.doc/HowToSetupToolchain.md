@@ -8,11 +8,6 @@ However you can do it from scratch*
 1. Log in to qt account:  
  https://login.qt.io/login  
 
-```
-zby.halat.backup@gmail.com
-xxxxxx
-```
-
 2. Download online installer:  
 https://www.qt.io/download-qt-installer 
 
