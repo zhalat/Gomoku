@@ -1,12 +1,11 @@
 ## How to deploy
 *Use it when you want to test application on your phone.  
-It is assumed you have already ```android-build-release-unsigned.apk```*
-See [How to build](c.doc/HowToBuild.md.md)*
+It is assumed you have built```android-build-release-unsigned.apk```
+See [How to build](HowToBuild.md)*
 
 ---
 
 You will be using ```adb``` tool to connecting/upload/log of your phone.  
-```adb``` is instaled in .vdi and docker.
 
 0. discover phone  
 ```
@@ -32,4 +31,4 @@ adb -s 4815ed70 install <path_to_app>/android-build-release-unsigned.apk
 So far app has been released to amazon app story:
   - [Amazon app](https://developer.amazon.com/apps-and-games/console/apps/list.html?ref_=pe_2190150_146100820)  
  Name: **GomokuFree**
- ![alt text](doc_storage/amazonApp.png)
+  ![alt text](doc_storage/amazonApp.png)
