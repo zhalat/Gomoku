@@ -1,18 +1,20 @@
 ## How to setup envirnoment
-*There is prepared virtual machine .vdi you can use for development or docker images for CI.   
-[DockerQT6](https://hub.docker.com/repository/docker/ginar/android_qt6_img/general)  
-However you can do it from scratch*
+*There is prepared docker images for CI: [DockerQT6](https://hub.docker.com/repository/docker/ginar/android_qt6_img/general)  
+However you can do it from scratch. This instruction is for how to do it.*
+
+All things were tested on Virtual Machine **Ubuntu 20.04LTS**
+and QT installers **qt-online-installer-linux-x64-4.8.0.run**  
 
 ---
-
 1. Log in to qt account:  
- https://login.qt.io/login  
+https://login.qt.io/login  
 
-2. Download online installer:  
+2. Download online installer: 
+You must choose open source license LGPL
 https://www.qt.io/download-qt-installer 
 
 3. Components to install  
-Minimalistic setup is *Qt for Desktop* and *QT for Android*  
+A minimalistic setup is *Qt for PC Desktop (x86)* and *QT for Android (arm7)*  
 ![](doc_storage/image-lrwag28o.png)
 
 4. Configuration  
@@ -33,7 +35,7 @@ Go to ``/home/zby/Android/Sdk``
 ```
 wget https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip
 ```
-Extract it. You should get:   
+Extract it. You should get (**extract to 'latest' folder**):   
 ![](doc_storage/image-lrwar3bp.png)
 
 ```
@@ -56,7 +58,16 @@ After that you should have no red warnings in Devices->Androdid tab.
 5. Kits  
 Only Desktop PC kits is auto-detected.  
 Fro Android you have to add it manually
-![](doc_storage/image-lrwazrvz.png)
+![](doc_storage/image-lrwazrvz.png)  
+You' ll need to install Google Test and protobuf lib. 
+For how to do it see section 6. 
+Use native toolchain instead Android ndk:
+```
+mkdir build
+cd build
+cmake ..  #that it
+sudo make install
+```
 
 6. Additional library needed by app
 In order to use protobuf on android your toolchain (which is ndk: ```~/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin)``` must see it.
@@ -65,6 +76,7 @@ By default it is not installed so you have to install it from source.
 - abseil library [dependency to protobuf]
 ```
 git clone git@github.com:abseil/abseil-cpp.git  
+cd abseil-cpp  
 git checkout 20240116.rc2
 mkdir build
 cd build
@@ -78,7 +90,8 @@ sudo make install
 
 - google test library
 ```
-git@github.com:google/googletest.git
+git clone git@github.com:google/googletest.git 
+cd googletest
 git checkout v1.14.0-pre
 mkdir build
 cd build
@@ -94,6 +107,7 @@ remember you have to use your toolchain. Notice that from some version (at least
 for cross compilation DCMAKE_TOOLCHAIN_FILE= ...android.toolchain.cmake. We will use it.
 ```
 git clone git@github.com:protocolbuffers/protobuf.git
+cd protobuf
 git checkout v5.27.0-rc3
 mkdir build
 cd build
@@ -109,5 +123,4 @@ cmake .. \
 
 sudo make install
 ```
-
 
