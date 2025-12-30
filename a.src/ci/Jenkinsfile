@@ -92,16 +92,32 @@ pipeline {
 
         stage('Clone repo') {
             steps {
-                script{
-                        //because ${WORKSPACE} is read-only copy the content into MY_SPACE_VOLUME_NAME (which is docker volume created while docker run) which can be sharable
-                        sh '''
-                            rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
-                            mkdir -p ${MY_SPACE_VOLUME_MAPPED}
-                            rsync -rv --delete ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
-                        '''
+                //This is temporary solution to have clean workspace in docker volume.
+                //Jenkins doesnt have root access to delete files created by docker with root user.
+                //Better solution is to configure Jenkins to have root access to workspace folder or use proper user in docker containers.
+                script {
+                    sh '''
+                        docker run --rm \
+                        --name ${DOCKER_CONTAINER_NAME_X86} \
+                        -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
+                        -w /Gomoku \
+                        -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
+                        --user root \
+                        ${DOCKER_IMAGE_X86} \
+                        sh -c '
+                            echo "----------- clean all old artefacts -----------"
+                            rm -rf /Gomoku/*
+                        '
+                    '''
+
+                    sh '''
+                        mkdir -p ${MY_SPACE_VOLUME_MAPPED}
+                        rsync -rv --delete ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                    '''
                 }
             }
         }
+
 
         stage('Build') {
             parallel{
