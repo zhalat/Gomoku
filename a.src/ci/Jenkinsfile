@@ -97,7 +97,7 @@ pipeline {
                         sh '''
                             rm -rf ${MY_SPACE_VOLUME_MAPPED}/*
                             mkdir -p ${MY_SPACE_VOLUME_MAPPED}
-                            rsync -av ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                            rsync -rv --delete ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
                         '''
                 }
             }
