@@ -99,25 +99,23 @@ pipeline {
                     sh '''
                         docker run --rm \
                         --name ${DOCKER_CONTAINER_NAME_X86} \
-                        -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
-                        -w /Gomoku \
+                        -v /home/media/jenkins_home:/volume:rw \
+                        -w /volume \
                         -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
                         --user root \
                         ${DOCKER_IMAGE_X86} \
                         sh -c '
                             echo "----------- clean all old artefacts -----------"
-                            rm -rf /Gomoku/*
+                            rm -rf /volume/Gomoku/*
                         '
                     '''
 
                     sh '''
-                        mkdir -p ${MY_SPACE_VOLUME_MAPPED}
-                        rsync -rv --delete ${WORKSPACE}/ ${MY_SPACE_VOLUME_MAPPED}
+                        rsync -rv --delete ${WORKSPACE}/ /var/jenkins_home/Gomoku
                     '''
                 }
             }
         }
-
 
         stage('Build') {
             parallel{
@@ -126,17 +124,16 @@ pipeline {
                         script {
                             sh '''
                                 docker run --rm --name ${DOCKER_CONTAINER_NAME_ARM} \
-                                -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
-                                -w /Gomoku \
+                                -v /home/media/jenkins_home:/volume:rw \
+                                -w /volume \
                                 -e ANDROID_HOME=/home/zby/Android/Sdk \
                                 -e PATH=$PATH:/home/zby/Android/Sdk/cmdline-tools/latest/bin:/home/zby/Android/Sdk/platform-tools \
-                                --user root \
                                 ${DOCKER_IMAGE_ARM} /bin/bash -c "
 
                                 echo '----------- Build Android app-----------'
 
                                 echo '#[cmake]'
-                                /home/zby/Qt/Tools/CMake/bin/cmake -S /Gomoku/a.src/frontend/GUI -B /Gomoku/a.src/frontend/build_gui \
+                                /home/zby/Qt/Tools/CMake/bin/cmake -S /volume/Gomoku/a.src/frontend/GUI -B /volume/Gomoku/a.src/frontend/build_gui \
                                 -DCMAKE_GENERATOR:STRING='Unix Makefiles' \
                                 -DCMAKE_BUILD_TYPE:STRING=Release \
                                 -DQT_QMAKE_EXECUTABLE:FILEPATH=/home/zby/Qt/6.6.3/android_armv7/bin/qmake \
@@ -159,14 +156,14 @@ pipeline {
                                 -DGTest_DIR:STRING=/home/zby/Android/gtest1.14/lib/cmake/GTest;
 
                                 echo '#[build]'
-                                cd /Gomoku/a.src/frontend/build_gui
+                                cd /volume/Gomoku/a.src/frontend/build_gui
                                 make
 
                                 echo '#[deploy to get apk files]'
                                 mkdir -p /tmp
                                 /home/zby/Qt/6.6.3/gcc_64/bin/androiddeployqt \
-                                --input /Gomoku/a.src/frontend/build_gui/android-GomokuFree-deployment-settings.json \
-                                --output /Gomoku/a.src/frontend/build_gui/android-build \
+                                --input /volume/Gomoku/a.src/frontend/build_gui/android-GomokuFree-deployment-settings.json \
+                                --output /volume/Gomoku/a.src/frontend/build_gui/android-build \
                                 --android-platform android-34 \
                                 --jdk /usr/lib/jvm/java-11-openjdk-amd64 --gradle --release
 
@@ -176,44 +173,44 @@ pipeline {
                         }
                         // Zip the apk file and archive it
                         script {
-                            def apkDir = "${MY_SPACE_VOLUME_MAPPED}/a.src/frontend/build_gui/android-build/build/outputs/apk/release/"
+                            def apkDir = "/var/jenkins_home/Gomoku/a.src/frontend/build_gui/android-build/build/outputs/apk/release/"
                             def apkFile = "android-build-release-unsigned.apk"
                             sh "zip -j GomokuFreeAppGUI.zip ${apkDir}${apkFile}"
                             archiveArtifacts artifacts: 'GomokuFreeAppGUI.zip', allowEmptyArchive: false
                         }
                     }
                 }
+
                 stage('x86'){
                     steps{
                         script {
                             sh '''
                                 docker run --rm --name ${DOCKER_CONTAINER_NAME_X86} \
-                                -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
-                                -w /Gomoku \
+                                -v /home/media/jenkins_home:/volume:rw \
+                                -w /volume \
                                 -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
-                                --user root \
                                 ${DOCKER_IMAGE_X86} /bin/bash -c "
 
                                 echo '----------- Build x86 app-----------'
             
                                 echo '#[cmake]'
-                                 cmake -S /Gomoku/a.src/frontend/CLI -B /Gomoku/a.src/frontend/build_cli \
+                                 cmake -S /volume/Gomoku/a.src/frontend/CLI -B /volume/Gomoku/a.src/frontend/build_cli \
                                 -DCMAKE_BUILD_TYPE=Release  \
-                                -DCMAKE_TOOLCHAIN_FILE="/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
+                                -DCMAKE_TOOLCHAIN_FILE="/volume/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
                                 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-
+                                
                                 echo '#[build]'
-                                cd /Gomoku/a.src/frontend/build_cli
+                                cd /volume/Gomoku/a.src/frontend/build_cli
                                 make
 
                                 echo '#[cmake UT]'
-                                cmake -S /Gomoku/a.src/backend -B /Gomoku/a.src/backend/build_ut \
+                                cmake -S /volume/Gomoku/a.src/backend -B /volume/Gomoku/a.src/backend/build_ut \
                                 -DCMAKE_BUILD_TYPE=Release  \
-                                -DCMAKE_TOOLCHAIN_FILE="/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
+                                -DCMAKE_TOOLCHAIN_FILE="/volume/Gomoku/a.src/backend/cmake/toolchain-gcc-default.cmake" \
                                 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
                                 echo '#[build UT]'
-                                cd /Gomoku/a.src/backend/build_ut
+                                cd /volume/Gomoku/a.src/backend/build_ut
                                 make
 
                                 echo '----------- Build x86 app finished-----------'
@@ -222,7 +219,7 @@ pipeline {
                         }
                         // Zip the bin file and archive it
                         script {
-                            def apkDir = "${MY_SPACE_VOLUME_MAPPED}/a.src/frontend/build_cli/"
+                            def apkDir = "/var/jenkins_home/Gomoku/a.src/frontend/build_cli/"
                             def apkFile = "gomokuBackendCLI"
                             sh "zip -j GomokuFreeAppCLI.zip ${apkDir}${apkFile}"
                             archiveArtifacts artifacts: 'GomokuFreeAppCLI.zip', allowEmptyArchive: false
@@ -240,21 +237,20 @@ pipeline {
                 script{
                     sh '''
                         docker run --rm --name ${DOCKER_CONTAINER_NAME_X86} \
-                        -v ${MY_SPACE_VOLUME_NAME}:/Gomoku:rw \
-                        -w /Gomoku \
+                        -v /home/media/jenkins_home:/volume:rw \
+                        -w /volume \
                         -e DEFAULT_TOOLCHAIN_PATH=/usr/bin \
-                        --user root \
                         ${DOCKER_IMAGE_X86} /bin/bash -c "
 
                         echo '----------- Run UT-----------'
-                        /Gomoku/a.src/backend/build_ut/core/UT/ut --gtest_output=xml:/Gomoku/ut_test_results.xml
+                        /volume/Gomoku/a.src/backend/build_ut/core/UT/ut --gtest_output=xml:/volume/Gomoku/ut_test_results.xml
                         echo '----------- Run UT finished-----------'
                         "
                     '''
 
                     // Ensure the test results file is copied to the workspace
                     sh '''
-                        cp ${MY_SPACE_VOLUME_MAPPED}/ut_test_results.xml ${WORKSPACE}/ut_test_results.xml
+                        cp /var/jenkins_home/Gomoku/ut_test_results.xml ${WORKSPACE}/ut_test_results.xml
                     '''
                 }
 
